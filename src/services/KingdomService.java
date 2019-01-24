@@ -1,6 +1,7 @@
 package services;
 
 import java.sql.CallableStatement;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,10 +27,10 @@ public class KingdomService {
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setString(2, k.Name);
 			cs.setString(3, k.ShortName);
-			cs.setDate(2, k.DateConquered);
-			cs.setLong(3, k.GDP);
-			cs.setString(2, k.Succession);
-			cs.setString(3, k.Type);
+			cs.setDate(4, k.DateConquered);
+			cs.setLong(5, k.GDP);
+			cs.setString(6, k.Succession);
+			cs.setString(7, k.Type);
 			cs.execute();
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
@@ -58,45 +59,38 @@ public class KingdomService {
 		return false;
 	}
 
-//	public boolean updateKingdom(String KingdomName, String ShortName, Date DateConquered, int GDP, String Succession,
-//			String Type) {
-//		try {
-//			CallableStatement cs = this.dbService.getConnection()
-//					.prepareCall("{ ? = call dbo.Insert_Kingdom(?, ?, ?, ?, ?, ?) }");
-//			cs.registerOutParameter(1, Types.INTEGER);
-//			cs.setString(2, k.Name);
-//			cs.setString(3, k.ShortName);
-//			cs.setDate(2, k.DateConquered);
-//			cs.setInt(3, k.GDP);
-//			cs.setString(2, k.Succession);
-//			cs.setString(3, k.Type);
-//			cs.execute();
-//			int returnVal = cs.getInt(1);
-//			switch (returnVal) {
-//			case 1:
-//				JOptionPane.showMessageDialog(null, "Please provide a Name");
-//				break;
-//			case 2:
-//				JOptionPane.showMessageDialog(null, "Please provide a ShortName");
-//				break;
-//			case 4:
-//				JOptionPane.showMessageDialog(null, "Please provide a GDP");
-//				break;
-//			case 5:
-//				JOptionPane.showMessageDialog(null, "Please provide a Date that has happened");
-//				break;
-//			case 6:
-//				JOptionPane.showMessageDialog(null, "Please provide the Kingdom Type");
-//				break;
-//			default:
-//				break;
-//			}
-//			return true;
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return false;
-//	}
+	public boolean updateKingdom(int id, String KingdomName, String ShortName, Date DateConquered, long GDP,
+			String Succession, String Type) {
+		try {
+			CallableStatement cs = this.dbService.getConnection()
+					.prepareCall("{ ? = call dbo.Update_Kingdom(?,?,?,?,?,?,?) }");
+			cs.registerOutParameter(1, Types.INTEGER);
+			cs.setInt(2, id);
+			cs.setString(3, KingdomName);
+			cs.setString(4, ShortName);
+			cs.setDate(5, DateConquered);
+			cs.setLong(6, GDP);
+			cs.setString(7, Succession);
+			cs.setString(8, Type);
+
+			cs.execute();
+			int returnVal = cs.getInt(1);
+			switch (returnVal) {
+			case 1:
+				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null, "Please provide a Date that has happened");
+				break;
+			default:
+				break;
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
 	public ArrayList<String> getKingdomNames() {
 		Statement stmt;
