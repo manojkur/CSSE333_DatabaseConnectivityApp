@@ -30,64 +30,36 @@ public class Main {
 		try {
 			// Boolean connectionBool = dbcs.connect(user, password);
 			Boolean connectionBool = dbcs.connect("kurapam", "csse333pass");
-//			ResultSet rs;
-//			kingdoms = new ArrayList<String>();
-//			stmt = dbcs.getConnection().createStatement();
-//			stmt.execute("select * from Kingdom");
-//			rs = stmt.getResultSet();
-//			while (rs.next()) {
-//				kingdoms.add(rs.getString("Name"));
-//			}
 			KingdomService ks = new KingdomService(dbcs);
 			ArrayList<Kingdom> kingdoms = ks.getKingdoms();
-			for (int i = 0; i < kingdoms.size(); i++) {
-				System.out.println(kingdoms.get(i).Name);
-			}
 
-			String[] columnNames = { "Name", "ShortName", "GDP", "Succession", "Type" };
+			String[] columnNames = { "ID", "Name", "ShortName", "DateConquered", "GDP", "Succession", "Type" };
 
 			Object[][] data = new Object[kingdoms.size()][5];
-			System.out.println(kingdoms.size());
 			for (int i = 0; i < kingdoms.size(); i++) {
 				Kingdom k = kingdoms.get(i);
-				Object[] o = { k.Name, k.ShortName, k.GDP, k.Succession, k.Type };
-				System.out.println(i);
-				data[i] = o;
-			}
-			for (Object[] o : data) {
-				for (Object ob : o) {
-					System.out.print(ob + "    ");
-				}
-				System.out.println();
+				data[i] = k.getKingdom();
 			}
 
+			String[] Actions = { "View", "Insert", "Update", "Delete" };
+
+//			JComboBox petList = new JComboBox(petStrings);
+//			petList.setSelectedIndex(4);
+//			petList.addActionListener(this);
+
 			JTable table = new JTable(data, columnNames);
+			table.setAutoCreateRowSorter(true);
 			JScrollPane scrollPane = new JScrollPane(table);
 			JFrame tableFrame = new JFrame();
 			tableFrame.add(scrollPane);
+//			tableFrame.remove(scrollPane);
 			tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			tableFrame.pack();
 			tableFrame.setVisible(true);
 
-//			SwingUtilities.invokeLater(new Runnable() {
-//				@Override
-//				public void run() {
-//					JTable table = new JTable(data, columnNames);
-//					JScrollPane scrollPane = new JScrollPane(table);
-//					JFrame tableFrame = new JFrame();
-//					tableFrame.add(scrollPane);
-//					tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//					tableFrame.pack();
-//					tableFrame.setVisible(true);
-//				}
-//			});
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		for (String kingdom : kingdoms) {
-//			System.out.println(kingdom);
-//		}
 		dbcs.closeConnection();
 	}
 

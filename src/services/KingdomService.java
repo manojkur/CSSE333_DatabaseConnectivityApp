@@ -1,5 +1,6 @@
 package services;
 
+import java.awt.BorderLayout;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +9,11 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import tables.Kingdom;
 
@@ -17,6 +22,29 @@ public class KingdomService {
 
 	public KingdomService(DatabaseConnectionService dbService) {
 		this.dbService = dbService;
+	}
+
+	public JPanel getJPanel() {
+		JPanel panel = new JPanel(new BorderLayout());
+
+		String[] actions = { "View", "Insert", "Update", "Delete" };
+		JComboBox actionsComboBox = new JComboBox(actions);
+		actionsComboBox.setSelectedIndex(4);
+		// actionsComboBox.addActionListener(this);
+
+		String[] columnNames = { "ID", "Name", "ShortName", "DateConquered", "GDP", "Succession", "Type" };
+		ArrayList<Kingdom> kingdoms = getKingdoms();
+		Object[][] data = new Object[kingdoms.size()][5];
+		for (int i = 0; i < kingdoms.size(); i++) {
+			Kingdom k = kingdoms.get(i);
+			data[i] = k.getKingdom();
+		}
+		JTable table = new JTable(data, columnNames);
+		JScrollPane scrollPane = new JScrollPane(table);
+
+		panel.add(actionsComboBox, BorderLayout.PAGE_START);
+		panel.add(scrollPane, BorderLayout.CENTER);
+		return panel;
 	}
 
 	public boolean addKingdom(Kingdom k) {
