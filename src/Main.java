@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import services.DatabaseConnectionService;
 import services.KingdomService;
@@ -47,11 +45,11 @@ public class Main {
 //			petList.setSelectedIndex(4);
 //			petList.addActionListener(this);
 
-			JTable table = new JTable(data, columnNames);
-			table.setAutoCreateRowSorter(true);
-			JScrollPane scrollPane = new JScrollPane(table);
+//			JTable table = new JTable(data, columnNames);
+//			table.setAutoCreateRowSorter(true);
+//			JScrollPane scrollPane = new JScrollPane(table)
 			JFrame tableFrame = new JFrame();
-			tableFrame.add(scrollPane);
+			tableFrame.add(ks.getJPanel());
 //			tableFrame.remove(scrollPane);
 			tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			tableFrame.pack();
