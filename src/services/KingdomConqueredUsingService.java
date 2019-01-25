@@ -1,4 +1,3 @@
-
 package services;
 
 import java.sql.PreparedStatement;
@@ -6,7 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import Views.KingdomConqueredUsing;
 
@@ -17,7 +19,7 @@ public class KingdomConqueredUsingService {
 		this.dbService = dbService;
 	}
 
-	public ArrayList<KingdomConqueredUsing> getKingdomBuiltOnTopOfView() {
+	public ArrayList<KingdomConqueredUsing> getKingdomConqueredWith() {
 		try {
 			String query = "SELECT * \nFROM dbo.KingdomConqueredUsing\n";
 			PreparedStatement stmt = this.dbService.getConnection().prepareStatement(query);
@@ -32,6 +34,21 @@ public class KingdomConqueredUsingService {
 
 	}
 
+	public JComponent getScrollableTable() {
+		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,ConqueredMethodName,Effectiveness".split(",");
+		ArrayList<KingdomConqueredUsing> kingdoms = getKingdomConqueredWith();
+		Object[][] data = new Object[kingdoms.size()][5];
+		for (int i = 0; i < kingdoms.size(); i++) {
+			KingdomConqueredUsing k = kingdoms.get(i);
+			data[i] = k.getRow();
+		}
+		JTable table = new JTable(data, columnNames);
+		table.setAutoCreateRowSorter(true);
+		JScrollPane scrollPane = new JScrollPane(table);
+
+		return scrollPane;
+	}
+	
 	private ArrayList<KingdomConqueredUsing> parseResults(ResultSet rs) {
 		try {
 			ArrayList<KingdomConqueredUsing> kingdoms = new ArrayList<>();

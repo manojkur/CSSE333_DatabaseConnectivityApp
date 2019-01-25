@@ -5,7 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import Views.KingdomBuiltOnTopOf;
 
@@ -18,19 +21,34 @@ public class KingdomBuiltOnTopOfService {
 
 	public ArrayList<KingdomBuiltOnTopOf> getKingdomBuiltOnTopOfView() {
 		try {
-			String query = "SELECT * \nFROM dbo.KingdomBuiltOnTopOf\n";
+			String query = "SELECT * FROM dbo.KingdomBuiltOnTopOf\n";
 			PreparedStatement stmt = this.dbService.getConnection().prepareStatement(query);
 			stmt.executeQuery();
 			ResultSet rs = stmt.getResultSet();
 			return parseResults(rs);
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "Failed to retrieve kingdoms by what they were buillt on top of.");
+			JOptionPane.showMessageDialog(null, "Failed to retrieve kingdoms by what they were built on top of.");
 			ex.printStackTrace();
 			return new ArrayList<KingdomBuiltOnTopOf>();
 		}
 
 	}
 
+	public JComponent getScrollableTable() {
+		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,CityName,TerrainName,TraverseDifficulty".split(",");
+		ArrayList<KingdomBuiltOnTopOf> kingdoms = getKingdomBuiltOnTopOfView();
+		Object[][] data = new Object[kingdoms.size()][5];
+		for (int i = 0; i < kingdoms.size(); i++) {
+			KingdomBuiltOnTopOf k = kingdoms.get(i);
+			data[i] = k.getRow();
+		}
+		JTable table = new JTable(data, columnNames);
+		table.setAutoCreateRowSorter(true);
+		JScrollPane scrollPane = new JScrollPane(table);
+
+		return scrollPane;
+	}
+	
 	private ArrayList<KingdomBuiltOnTopOf> parseResults(ResultSet rs) {
 		try {
 			ArrayList<KingdomBuiltOnTopOf> kingdoms = new ArrayList<KingdomBuiltOnTopOf>();
@@ -50,6 +68,7 @@ public class KingdomBuiltOnTopOfService {
 				kingdom.GDP = rs.getLong("GDP");
 				kingdom.Succession = rs.getString("Succession");
 				kingdom.Type = rs.getString("Type");
+				kingdom.cityName = rs.getString("CityName");
 				kingdom.terrainName = rs.getString("TerrainName");
 				kingdom.traverseDifficulty = rs.getString("TraverseDifficulty");
 

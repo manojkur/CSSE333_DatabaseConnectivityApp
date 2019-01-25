@@ -200,6 +200,7 @@ public class KingdomService {
 				k.Type = updateTypeText.getText();
 				updateKingdom(k);
 
+				updateIDLabel.setText("");
 				updateNameText.setText("");
 				updateShortNameText.setText("");
 				updateDateConqueredYearText.setText("");

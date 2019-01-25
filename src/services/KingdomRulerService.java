@@ -1,4 +1,3 @@
-
 package services;
 
 import java.sql.PreparedStatement;
@@ -6,8 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
+import Views.KingdomBuiltOnTopOf;
 import Views.KingdomRuler;
 
 public class KingdomRulerService {
@@ -17,7 +20,7 @@ public class KingdomRulerService {
 		this.dbService = dbService;
 	}
 
-	public ArrayList<KingdomRuler> getKingdomBuiltOnTopOfView() {
+	public ArrayList<KingdomRuler> getKingdomWithRuler() {
 		try {
 			String query = "SELECT * \nFROM dbo.KingdomRuler\n";
 			PreparedStatement stmt = this.dbService.getConnection().prepareStatement(query);
@@ -30,6 +33,21 @@ public class KingdomRulerService {
 			return new ArrayList<KingdomRuler>();
 		}
 
+	}
+	
+	public JComponent getScrollableTable() {
+		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,YearsOfExperience,Title,Dynasty,FirstName,LastName,Gender,OtherNames,Suffix".split(",");
+		ArrayList<KingdomRuler> kingdoms = getKingdomWithRuler();
+		Object[][] data = new Object[kingdoms.size()][5];
+		for (int i = 0; i < kingdoms.size(); i++) {
+			KingdomRuler k = kingdoms.get(i);
+			data[i] = k.getRow();
+		}
+		JTable table = new JTable(data, columnNames);
+		table.setAutoCreateRowSorter(true);
+		JScrollPane scrollPane = new JScrollPane(table);
+
+		return scrollPane;
 	}
 
 	private ArrayList<KingdomRuler> parseResults(ResultSet rs) {

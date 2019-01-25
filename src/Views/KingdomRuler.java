@@ -18,7 +18,7 @@ public class KingdomRuler {
 	public String otherNames;
 	public String suffix;
 	
-	public Object[] getKingdomRuler() {
+	public Object[] getRow() {
 		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, YearsOfExperience, title, dynasty, firstName, lastName, gender, otherNames, suffix};
 		return o;
 	}

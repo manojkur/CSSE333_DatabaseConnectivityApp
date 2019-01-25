@@ -10,12 +10,11 @@ public class KingdomCity {
 	public String Succession;
 	public String Type;
 	public String cityName;
-	public int latitude;
-	public int longitude;
+	public String Coordinates;
 	public int population;
 	
 	public Object[] getRow() {
-		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, cityName, latitude, longitude, population};
+		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, cityName, Coordinates, population};
 		return o;
 	}
 }
