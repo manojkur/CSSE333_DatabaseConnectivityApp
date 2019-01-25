@@ -1,6 +1,8 @@
 package services;
 
-import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -10,11 +12,16 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 
-import javax.swing.JComboBox;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 
 import tables.Kingdom;
 
@@ -26,13 +33,86 @@ public class KingdomService {
 	}
 
 	public JPanel getJPanel() {
-		JPanel panel = new JPanel(new BorderLayout());
+		JPanel panel = new JPanel(new CardLayout());
+		JTabbedPane tabbedPane = new JTabbedPane();
+		JComponent view = getScrollableTable();
+		tabbedPane.addTab("View", view);
 
-		String[] actions = { "View", "Insert", "Update", "Delete" };
-		JComboBox actionsComboBox = new JComboBox(actions);
-		// actionsComboBox.setSelectedIndex();
-		// actionsComboBox.addActionListener(this);
+		JPanel insert = new JPanel();
+		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+		JLabel insertNameLabel = new JLabel("Name: ");
+		insert.add(insertNameLabel);
+		JTextField insertNameText = new JTextField();
+		insert.add(insertNameText);
 
+		JLabel insertShortNameLabel = new JLabel("ShortName: ");
+		insert.add(insertShortNameLabel);
+		JTextField insertShortNameText = new JTextField();
+		insert.add(insertShortNameText);
+
+		JLabel insertDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
+		insert.add(insertDateConqueredYearLabel);
+		JTextField insertDateConqueredYearText = new JTextField();
+		insert.add(insertDateConqueredYearText);
+
+		JLabel insertDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
+		insert.add(insertDateConqueredMonthLabel);
+		JTextField insertDateConqueredMonthText = new JTextField();
+		insert.add(insertDateConqueredMonthText);
+
+		JLabel insertDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
+		insert.add(insertDateConqueredDayLabel);
+		JTextField insertDateConqueredDayText = new JTextField();
+		insert.add(insertDateConqueredDayText);
+
+		JLabel insertGdpLabel = new JLabel("GDP: ");
+		insert.add(insertGdpLabel);
+		JTextField insertGdpText = new JTextField();
+		insert.add(insertGdpText);
+
+		JLabel insertSuccessionLabel = new JLabel("Succession: ");
+		insert.add(insertSuccessionLabel);
+		JTextField insertSuccessionText = new JTextField();
+		insert.add(insertSuccessionText);
+
+		JLabel insertTypeLabel = new JLabel("Type: ");
+		insert.add(insertTypeLabel);
+		JTextField insertTypeText = new JTextField();
+		insert.add(insertTypeText);
+
+		JButton insertButton = new JButton("Insert");
+		insertButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				insertSuccessionText.getText();
+			}
+		});
+
+		insert.add(insertButton);
+		tabbedPane.addTab("Insert", insert);
+//		panel.add(view);
+//		String[] actions = { "View", "Insert", "Update", "Delete" };
+//		JComboBox actionsComboBox = new JComboBox(actions);
+//		actionsComboBox.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				JComboBox combo = (JComboBox) e.getSource();
+//				String setting = (String) combo.getSelectedItem();
+//				if (setting.equals("View")) {
+//					panel.remove
+//					panel.add(getScrollableTable());
+//					panel.revalidate();
+//					panel.repaint();
+//				} else {
+//					panel.remove(1);
+//					panel.revalidate();
+//					panel.repaint();
+//				}
+//			}
+//		});
+		panel.add(tabbedPane);
+		return panel;
+	}
+
+	public JComponent getScrollableTable() {
 		String[] columnNames = { "ID", "Name", "ShortName", "DateConquered", "GDP", "Succession", "Type" };
 		ArrayList<Kingdom> kingdoms = getKingdoms();
 		Object[][] data = new Object[kingdoms.size()][5];
@@ -44,9 +124,7 @@ public class KingdomService {
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 
-		panel.add(actionsComboBox, BorderLayout.PAGE_START);
-		panel.add(scrollPane, BorderLayout.CENTER);
-		return panel;
+		return scrollPane;
 	}
 
 	public boolean addKingdom(Kingdom k) {

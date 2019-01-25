@@ -31,34 +31,22 @@ public class Main {
 			KingdomService ks = new KingdomService(dbcs);
 			ArrayList<Kingdom> kingdoms = ks.getKingdoms();
 
-			String[] columnNames = { "ID", "Name", "ShortName", "DateConquered", "GDP", "Succession", "Type" };
-
-			Object[][] data = new Object[kingdoms.size()][5];
-			for (int i = 0; i < kingdoms.size(); i++) {
-				Kingdom k = kingdoms.get(i);
-				data[i] = k.getKingdom();
-			}
-
-			String[] Actions = { "View", "Insert", "Update", "Delete" };
-
-//			JComboBox petList = new JComboBox(petStrings);
-//			petList.setSelectedIndex(4);
-//			petList.addActionListener(this);
-
-//			JTable table = new JTable(data, columnNames);
-//			table.setAutoCreateRowSorter(true);
-//			JScrollPane scrollPane = new JScrollPane(table)
 			JFrame tableFrame = new JFrame();
 			tableFrame.add(ks.getJPanel());
 //			tableFrame.remove(scrollPane);
 			tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			tableFrame.pack();
 			tableFrame.setVisible(true);
-
+			tableFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+				@Override
+				public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+					dbcs.closeConnection();
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		dbcs.closeConnection();
+
 	}
 
 }
