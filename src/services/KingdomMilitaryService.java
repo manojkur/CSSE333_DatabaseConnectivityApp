@@ -5,13 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import Views.KingdomMilitary;
-import Views.KingdomRuler;
 
 public class KingdomMilitaryService {
 	private DatabaseConnectionService dbService = null;
@@ -20,7 +16,7 @@ public class KingdomMilitaryService {
 		this.dbService = dbService;
 	}
 
-	public ArrayList<KingdomMilitary> getKingdomWithMilitary() {
+	public ArrayList<KingdomMilitary> getKingdomBuiltOnTopOfView() {
 		try {
 			String query = "SELECT * \nFROM dbo.KingdomMilitary\n";
 			PreparedStatement stmt = this.dbService.getConnection().prepareStatement(query);
@@ -33,21 +29,6 @@ public class KingdomMilitaryService {
 			return new ArrayList<>();
 		}
 
-	}
-	
-	public JComponent getScrollableTable() {
-		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,MilitaryName,Budget".split(",");
-		ArrayList<KingdomMilitary> kingdoms = getKingdomWithMilitary();
-		Object[][] data = new Object[kingdoms.size()][5];
-		for (int i = 0; i < kingdoms.size(); i++) {
-			KingdomMilitary k = kingdoms.get(i);
-			data[i] = k.getRow();
-		}
-		JTable table = new JTable(data, columnNames);
-		table.setAutoCreateRowSorter(true);
-		JScrollPane scrollPane = new JScrollPane(table);
-
-		return scrollPane;
 	}
 
 	private ArrayList<KingdomMilitary> parseResults(ResultSet rs) {
