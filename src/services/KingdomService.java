@@ -83,31 +83,14 @@ public class KingdomService {
 		JButton insertButton = new JButton("Insert");
 		insertButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
+				// Kingdom
 				insertSuccessionText.getText();
 			}
 		});
 
 		insert.add(insertButton);
 		tabbedPane.addTab("Insert", insert);
-//		panel.add(view);
-//		String[] actions = { "View", "Insert", "Update", "Delete" };
-//		JComboBox actionsComboBox = new JComboBox(actions);
-//		actionsComboBox.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				JComboBox combo = (JComboBox) e.getSource();
-//				String setting = (String) combo.getSelectedItem();
-//				if (setting.equals("View")) {
-//					panel.remove
-//					panel.add(getScrollableTable());
-//					panel.revalidate();
-//					panel.repaint();
-//				} else {
-//					panel.remove(1);
-//					panel.revalidate();
-//					panel.repaint();
-//				}
-//			}
-//		});
+
 		panel.add(tabbedPane);
 		return panel;
 	}
@@ -118,7 +101,7 @@ public class KingdomService {
 		Object[][] data = new Object[kingdoms.size()][5];
 		for (int i = 0; i < kingdoms.size(); i++) {
 			Kingdom k = kingdoms.get(i);
-			data[i] = k.getKingdom();
+			data[i] = k.getRow();
 		}
 		JTable table = new JTable(data, columnNames);
 		table.setAutoCreateRowSorter(true);
@@ -255,8 +238,7 @@ public class KingdomService {
 			}
 			return kingdoms;
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null,
-					"An error ocurred while retrieving kingdoms. See printed stack trace.");
+			JOptionPane.showMessageDialog(null, "An error ocurred while retrieving kingdoms. See printed stack trace.");
 			ex.printStackTrace();
 			return new ArrayList<Kingdom>();
 		}

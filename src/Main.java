@@ -2,8 +2,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 
 import services.DatabaseConnectionService;
 import services.KingdomService;
@@ -15,15 +13,15 @@ public class Main {
 		DatabaseConnectionService dbcs = new DatabaseConnectionService("golem.csse.rose-hulman.edu", "KingdomDB");
 		Statement stmt;
 
-		JFrame frame = new JFrame("Credentials");
-		String user = JOptionPane.showInputDialog(frame, "Please enter your username");
-		String password = "";
-		JPasswordField pf = new JPasswordField();
-		int pass = JOptionPane.showConfirmDialog(null, pf, "Please enter your password", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.PLAIN_MESSAGE);
-		if (pass == JOptionPane.OK_OPTION) {
-			password = new String(pf.getPassword());
-		}
+//		JFrame frame = new JFrame("Credentials");
+//		String user = JOptionPane.showInputDialog(frame, "Please enter your username");
+//		String password = "";
+//		JPasswordField pf = new JPasswordField();
+//		int pass = JOptionPane.showConfirmDialog(null, pf, "Please enter your password", JOptionPane.OK_CANCEL_OPTION,
+//				JOptionPane.PLAIN_MESSAGE);
+//		if (pass == JOptionPane.OK_OPTION) {
+//			password = new String(pf.getPassword());
+//		}
 
 		try {
 			// Boolean connectionBool = dbcs.connect(user, password);

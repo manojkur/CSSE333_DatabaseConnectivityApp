@@ -11,7 +11,7 @@ public class Kingdom {
 	public String Succession;
 	public String Type;
 
-	public Object[] getKingdom() {
+	public Object[] getRow() {
 		Object[] o = { ID, Name, ShortName, DateConquered, GDP, Succession, Type };
 		return o;
 	}
