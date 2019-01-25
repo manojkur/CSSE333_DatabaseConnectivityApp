@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
 import java.sql.CallableStatement;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,6 +32,7 @@ import tables.Kingdom;
 
 public class KingdomService {
 	private DatabaseConnectionService dbService = null;
+	private static JComponent view;
 
 	public KingdomService(DatabaseConnectionService dbService) {
 		this.dbService = dbService;
@@ -41,7 +41,7 @@ public class KingdomService {
 	public JPanel getJPanel() {
 		JPanel panel = new JPanel(new CardLayout());
 		JTabbedPane tabbedPane = new JTabbedPane();
-		JComponent view = getScrollableTable();
+		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
 
 		JPanel insert = new JPanel();
@@ -89,13 +89,135 @@ public class KingdomService {
 		JButton insertButton = new JButton("Insert");
 		insertButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				// Kingdom
-				insertSuccessionText.getText();
+				Kingdom k = new Kingdom();
+				k.Name = insertNameText.getText();
+				k.ShortName = insertShortNameText.getText();
+
+				try {
+					k.DateConquered = java.sql.Date.valueOf(insertDateConqueredYearText.getText() + "-"
+							+ insertDateConqueredMonthText.getText() + "-" + insertDateConqueredDayText.getText());
+				} catch (IllegalArgumentException e) {
+
+				}
+				try {
+					k.GDP = Integer.parseInt(insertGdpText.getText());
+				} catch (NumberFormatException e) {
+
+				}
+				k.Succession = insertSuccessionText.getText();
+				k.Type = insertTypeText.getText();
+				addKingdom(k);
+
+				insertNameText.setText("");
+				insertShortNameText.setText("");
+				insertDateConqueredYearText.setText("");
+				insertDateConqueredDayText.setText("");
+				insertDateConqueredMonthText.setText("");
+				insertGdpText.setText("");
+				insertSuccessionText.setText("");
+				insertTypeText.setText("");
+
+				tabbedPane.remove(view);
+				view = getScrollableTable();
+				tabbedPane.insertTab("View", null, view, "View", 0);
 			}
 		});
 
 		insert.add(insertButton);
 		tabbedPane.addTab("Insert", insert);
+
+		JPanel update = new JPanel();
+		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+
+		JLabel updateIDLabel = new JLabel("ID: ");
+		update.add(updateIDLabel);
+		JTextField updateIDText = new JTextField();
+		update.add(updateIDText);
+
+		JLabel updateNameLabel = new JLabel("Name: ");
+		update.add(updateNameLabel);
+		JTextField updateNameText = new JTextField();
+		update.add(updateNameText);
+
+		JLabel updateShortNameLabel = new JLabel("ShortName: ");
+		update.add(updateShortNameLabel);
+		JTextField updateShortNameText = new JTextField();
+		update.add(updateShortNameText);
+
+		JLabel updateDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
+		update.add(updateDateConqueredYearLabel);
+		JTextField updateDateConqueredYearText = new JTextField();
+		update.add(updateDateConqueredYearText);
+
+		JLabel updateDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
+		update.add(updateDateConqueredMonthLabel);
+		JTextField updateDateConqueredMonthText = new JTextField();
+		update.add(updateDateConqueredMonthText);
+
+		JLabel updateDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
+		update.add(updateDateConqueredDayLabel);
+		JTextField updateDateConqueredDayText = new JTextField();
+		update.add(updateDateConqueredDayText);
+
+		JLabel updateGdpLabel = new JLabel("GDP: ");
+		update.add(updateGdpLabel);
+		JTextField updateGdpText = new JTextField();
+		update.add(updateGdpText);
+
+		JLabel updateSuccessionLabel = new JLabel("Succession: ");
+		update.add(updateSuccessionLabel);
+		JTextField updateSuccessionText = new JTextField();
+		update.add(updateSuccessionText);
+
+		JLabel updateTypeLabel = new JLabel("Type: ");
+		update.add(updateTypeLabel);
+		JTextField updateTypeText = new JTextField();
+		update.add(updateTypeText);
+
+		JButton updateButton = new JButton("Update");
+		updateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				Kingdom k = new Kingdom();
+				try {
+					k.ID = Integer.parseInt(updateIDText.getText());
+				} catch (NumberFormatException e) {
+
+				}
+				k.Name = updateNameText.getText();
+				k.ShortName = updateShortNameText.getText();
+
+				try {
+					k.DateConquered = java.sql.Date.valueOf(updateDateConqueredYearText.getText() + "-"
+							+ updateDateConqueredMonthText.getText() + "-" + updateDateConqueredDayText.getText());
+				} catch (IllegalArgumentException e) {
+
+				}
+				try {
+					k.GDP = Integer.parseInt(updateGdpText.getText());
+				} catch (NumberFormatException e) {
+
+				}
+				k.Succession = updateSuccessionText.getText();
+				k.Type = updateTypeText.getText();
+				updateKingdom(k);
+
+				updateNameText.setText("");
+				updateShortNameText.setText("");
+				updateDateConqueredYearText.setText("");
+				updateDateConqueredDayText.setText("");
+				updateDateConqueredMonthText.setText("");
+				updateGdpText.setText("");
+				updateSuccessionText.setText("");
+				updateTypeText.setText("");
+
+				tabbedPane.remove(view);
+				view = getScrollableTable();
+				tabbedPane.insertTab("View", null, view, "View", 0);
+			}
+		});
+
+		update.add(updateButton);
+		tabbedPane.addTab("Update", update);
 
 		panel.add(tabbedPane);
 		return panel;
@@ -156,20 +278,18 @@ public class KingdomService {
 		return false;
 	}
 
-
-	public boolean updateKingdom(int id, String KingdomName, String ShortName, Date DateConquered, long GDP,
-			String Succession, String Type) {
+	public boolean updateKingdom(Kingdom k) {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
 					.prepareCall("{ ? = call dbo.Update_Kingdom(?,?,?,?,?,?,?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
-			cs.setInt(2, id);
-			cs.setString(3, KingdomName);
-			cs.setString(4, ShortName);
-			cs.setDate(5, DateConquered);
-			cs.setLong(6, GDP);
-			cs.setString(7, Succession);
-			cs.setString(8, Type);
+			cs.setInt(2, k.ID);
+			cs.setString(3, k.Name);
+			cs.setString(4, k.ShortName);
+			cs.setDate(5, k.DateConquered);
+			cs.setLong(6, k.GDP);
+			cs.setString(7, k.Succession);
+			cs.setString(8, k.Type);
 
 			cs.execute();
 			int returnVal = cs.getInt(1);
