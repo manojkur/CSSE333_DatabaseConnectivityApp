@@ -3,6 +3,7 @@ package services;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
 import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -12,16 +13,21 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import tables.Kingdom;
 
@@ -110,6 +116,7 @@ public class KingdomService {
 		return scrollPane;
 	}
 
+
 	public boolean addKingdom(Kingdom k) {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
@@ -149,6 +156,7 @@ public class KingdomService {
 		return false;
 	}
 
+
 	public boolean updateKingdom(int id, String KingdomName, String ShortName, Date DateConquered, long GDP,
 			String Succession, String Type) {
 		try {
@@ -181,6 +189,7 @@ public class KingdomService {
 		}
 		return false;
 	}
+
 
 	public ArrayList<String> getKingdomNames() {
 		Statement stmt;

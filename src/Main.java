@@ -29,22 +29,10 @@ public class Main {
 			KingdomService ks = new KingdomService(dbcs);
 			ArrayList<Kingdom> kingdoms = ks.getKingdoms();
 
-			JFrame tableFrame = new JFrame();
-			tableFrame.add(ks.getJPanel());
-//			tableFrame.remove(scrollPane);
-			tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			tableFrame.pack();
-			tableFrame.setVisible(true);
-			tableFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-				@Override
-				public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-					dbcs.closeConnection();
-				}
-			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		dbcs.closeConnection();
 	}
 
 }
