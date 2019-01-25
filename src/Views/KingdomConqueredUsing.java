@@ -12,7 +12,7 @@ public class KingdomConqueredUsing {
 	public String ConqueredMethodName;
 	public String effectiveness;
 	
-	public Object[] getKingdomConqueredUsing() {
+	public Object[] getRow() {
 		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, ConqueredMethodName, effectiveness};
 		return o;
 	}

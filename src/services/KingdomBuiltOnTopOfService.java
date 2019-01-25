@@ -3,11 +3,16 @@ package services;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import Views.KingdomBuiltOnTopOf;
+import tables.Kingdom;
 
 public class KingdomBuiltOnTopOfService {
 	private DatabaseConnectionService dbService = null;
@@ -31,6 +36,21 @@ public class KingdomBuiltOnTopOfService {
 
 	}
 
+	public JComponent getScrollableTable() {
+		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,TerrainName,TraverseDifficulty".split(",");
+		ArrayList<KingdomBuiltOnTopOf> kingdoms = getKingdomBuiltOnTopOfView();
+		Object[][] data = new Object[kingdoms.size()][5];
+		for (int i = 0; i < kingdoms.size(); i++) {
+			KingdomBuiltOnTopOf k = kingdoms.get(i);
+			data[i] = k.getRow();
+		}
+		JTable table = new JTable(data, columnNames);
+		table.setAutoCreateRowSorter(true);
+		JScrollPane scrollPane = new JScrollPane(table);
+
+		return scrollPane;
+	}
+	
 	private ArrayList<KingdomBuiltOnTopOf> parseResults(ResultSet rs) {
 		try {
 			ArrayList<KingdomBuiltOnTopOf> kingdoms = new ArrayList<KingdomBuiltOnTopOf>();

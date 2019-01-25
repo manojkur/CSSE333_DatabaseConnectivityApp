@@ -14,7 +14,7 @@ public class KingdomCity {
 	public int longitude;
 	public int population;
 	
-	public Object[] getKingdomCity() {
+	public Object[] getRow() {
 		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, cityName, latitude, longitude, population};
 		return o;
 	}
