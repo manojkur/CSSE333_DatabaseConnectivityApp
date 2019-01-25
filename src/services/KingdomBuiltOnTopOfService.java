@@ -54,14 +54,6 @@ public class KingdomBuiltOnTopOfService {
 	private ArrayList<KingdomBuiltOnTopOf> parseResults(ResultSet rs) {
 		try {
 			ArrayList<KingdomBuiltOnTopOf> kingdoms = new ArrayList<KingdomBuiltOnTopOf>();
-//			int NameIndex = rs.findColumn("Name");
-//			int ShortNameIndex = rs.findColumn("ShortName");
-//			int DateConqueredIndex = rs.findColumn("DateConquered");
-//			int GDPIndex = rs.findColumn("GDP");
-//			int SuccessionIndex = rs.findColumn("Succession");
-//			int TypeIndex = rs.findColumn("Type");
-//			int terrainNameIndex = rs.findColumn("TerrainName");
-//			int traverseDifficultyIndex = rs.findColumn("TraverseDifficulty");
 			while (rs.next()) {
 				KingdomBuiltOnTopOf kingdom = new KingdomBuiltOnTopOf();
 				kingdom.Name = rs.getString("Name");
