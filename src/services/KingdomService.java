@@ -395,13 +395,6 @@ public class KingdomService {
 	private ArrayList<Kingdom> parseResults(ResultSet rs) {
 		try {
 			ArrayList<Kingdom> kingdoms = new ArrayList<Kingdom>();
-			// int IDIndex = rs.findColumn("ID");
-			// int NameIndex = rs.findColumn("Name");
-			// int ShortNameIndex = rs.findColumn("ShortName");
-			// int DateConqueredIndex = rs.findColumn("DateConquered");
-			// int GDPIndex = rs.findColumn("GDP");
-			// int SuccessionIndex = rs.findColumn("Succession");
-			// int TypeIndex = rs.findColumn("Type");
 			while (rs.next()) {
 				Kingdom kingdom = new Kingdom();
 				kingdom.ID = rs.getInt("ID");
