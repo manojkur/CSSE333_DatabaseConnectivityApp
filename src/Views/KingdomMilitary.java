@@ -12,7 +12,7 @@ public class KingdomMilitary {
 	public String MilitaryName;
 	public int budget;
 	
-	public Object[] getRow() {
+	public Object[] getKingdomMilitary() {
 		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, MilitaryName, budget};
 		return o;
 	}
