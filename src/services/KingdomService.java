@@ -12,7 +12,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -219,6 +218,35 @@ public class KingdomService {
 		update.add(updateButton);
 		tabbedPane.addTab("Update", update);
 
+		JPanel delete = new JPanel();
+		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+
+		JLabel deleteIDLabel = new JLabel("ID: ");
+		delete.add(deleteIDLabel);
+		JTextField deleteIDText = new JTextField();
+		delete.add(deleteIDText);
+
+		JButton deleteButton = new JButton("Delete");
+		deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					int id = Integer.parseInt(deleteIDText.getText());
+					deleteKingdom(id);
+				} catch (NumberFormatException e) {
+
+				}
+
+				deleteIDText.setText("");
+
+				tabbedPane.remove(view);
+				view = getScrollableTable();
+				tabbedPane.insertTab("View", null, view, "View", 0);
+			}
+		});
+
+		delete.add(deleteButton);
+		tabbedPane.addTab("Delete", delete);
+
 		panel.add(tabbedPane);
 		return panel;
 	}
@@ -237,7 +265,6 @@ public class KingdomService {
 
 		return scrollPane;
 	}
-
 
 	public boolean addKingdom(Kingdom k) {
 		try {
@@ -310,6 +337,27 @@ public class KingdomService {
 		return false;
 	}
 
+	public boolean deleteKingdom(int ID) {
+		try {
+			CallableStatement cs = this.dbService.getConnection().prepareCall("{ ? = call dbo.Delete_Kingdom(?) }");
+			cs.registerOutParameter(1, Types.INTEGER);
+			cs.setInt(2, ID);
+
+			cs.execute();
+			int returnVal = cs.getInt(1);
+			switch (returnVal) {
+			case 1:
+				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			default:
+				break;
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
 	public ArrayList<String> getKingdomNames() {
 		Statement stmt;
@@ -346,13 +394,13 @@ public class KingdomService {
 	private ArrayList<Kingdom> parseResults(ResultSet rs) {
 		try {
 			ArrayList<Kingdom> kingdoms = new ArrayList<Kingdom>();
-//			int IDIndex = rs.findColumn("ID");
-//			int NameIndex = rs.findColumn("Name");
-//			int ShortNameIndex = rs.findColumn("ShortName");
-//			int DateConqueredIndex = rs.findColumn("DateConquered");
-//			int GDPIndex = rs.findColumn("GDP");
-//			int SuccessionIndex = rs.findColumn("Succession");
-//			int TypeIndex = rs.findColumn("Type");
+			// int IDIndex = rs.findColumn("ID");
+			// int NameIndex = rs.findColumn("Name");
+			// int ShortNameIndex = rs.findColumn("ShortName");
+			// int DateConqueredIndex = rs.findColumn("DateConquered");
+			// int GDPIndex = rs.findColumn("GDP");
+			// int SuccessionIndex = rs.findColumn("Succession");
+			// int TypeIndex = rs.findColumn("Type");
 			while (rs.next()) {
 				Kingdom kingdom = new Kingdom();
 				kingdom.ID = rs.getInt("ID");
