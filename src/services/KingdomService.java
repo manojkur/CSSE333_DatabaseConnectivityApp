@@ -224,7 +224,7 @@ public class KingdomService {
 			ResultSet rs = stmt.getResultSet();
 			return parseResults(rs);
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "Failed to retrieve sodas by restaurant.");
+			JOptionPane.showMessageDialog(null, "Failed to retrieve kingdoms.");
 			ex.printStackTrace();
 			return new ArrayList<Kingdom>();
 		}
@@ -234,29 +234,29 @@ public class KingdomService {
 	private ArrayList<Kingdom> parseResults(ResultSet rs) {
 		try {
 			ArrayList<Kingdom> kingdoms = new ArrayList<Kingdom>();
-			int IDIndex = rs.findColumn("ID");
-			int NameIndex = rs.findColumn("Name");
-			int ShortNameIndex = rs.findColumn("ShortName");
-			int DateConqueredIndex = rs.findColumn("DateConquered");
-			int GDPIndex = rs.findColumn("GDP");
-			int SuccessionIndex = rs.findColumn("Succession");
-			int TypeIndex = rs.findColumn("Type");
+//			int IDIndex = rs.findColumn("ID");
+//			int NameIndex = rs.findColumn("Name");
+//			int ShortNameIndex = rs.findColumn("ShortName");
+//			int DateConqueredIndex = rs.findColumn("DateConquered");
+//			int GDPIndex = rs.findColumn("GDP");
+//			int SuccessionIndex = rs.findColumn("Succession");
+//			int TypeIndex = rs.findColumn("Type");
 			while (rs.next()) {
 				Kingdom kingdom = new Kingdom();
-				kingdom.ID = rs.getInt(IDIndex);
-				kingdom.Name = rs.getString(NameIndex);
-				kingdom.ShortName = rs.getString(ShortNameIndex);
-				kingdom.DateConquered = rs.getDate(DateConqueredIndex);
-				kingdom.GDP = rs.getLong(GDPIndex);
-				kingdom.Succession = rs.getString(SuccessionIndex);
-				kingdom.Type = rs.getString(TypeIndex);
+				kingdom.ID = rs.getInt("ID");
+				kingdom.Name = rs.getString("Name");
+				kingdom.ShortName = rs.getString("ShortName");
+				kingdom.DateConquered = rs.getDate("DateConquered");
+				kingdom.GDP = rs.getLong("GDP");
+				kingdom.Succession = rs.getString("Succession");
+				kingdom.Type = rs.getString("Type");
 
 				kingdoms.add(kingdom);
 			}
 			return kingdoms;
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(null,
-					"An error ocurred while retrieving sodas by restaurants. See printed stack trace.");
+					"An error ocurred while retrieving kingdoms. See printed stack trace.");
 			ex.printStackTrace();
 			return new ArrayList<Kingdom>();
 		}
