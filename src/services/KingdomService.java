@@ -3,7 +3,6 @@ package services;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.BorderLayout;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,21 +10,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import tables.Kingdom;
 
@@ -172,6 +171,74 @@ public class KingdomService {
 		update.add(updateTypeLabel);
 		JTextField updateTypeText = new JTextField();
 		update.add(updateTypeText);
+
+		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				modifyText();
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				modifyText();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				modifyText();
+			}
+
+			private void modifyText() {
+				try {
+					int ID = Integer.parseInt(updateIDText.getText());
+					List<Kingdom> kingdoms = getKingdoms();
+					Kingdom k = null;
+					for (Kingdom kingdom : kingdoms) {
+						if (kingdom.ID == ID)
+							k = kingdom;
+					}
+					if (k != null) {
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(k.DateConquered);
+						Integer month = cal.get(Calendar.MONTH);
+						Integer day = cal.get(Calendar.DAY_OF_MONTH);
+						Integer year = cal.get(Calendar.YEAR);
+						Long gdp = k.GDP;
+
+						updateNameText.setText(k.Name);
+						updateShortNameText.setText(k.ShortName);
+						updateDateConqueredYearText.setText(year.toString());
+						updateDateConqueredDayText.setText(day.toString());
+						updateDateConqueredMonthText.setText(month.toString());
+						updateGdpText.setText(gdp.toString());
+						updateSuccessionText.setText(k.Succession);
+						updateTypeText.setText(k.Type);
+					} else {
+						updateNameText.setText("");
+						updateShortNameText.setText("");
+						updateDateConqueredYearText.setText("");
+						updateDateConqueredDayText.setText("");
+						updateDateConqueredMonthText.setText("");
+						updateGdpText.setText("");
+						updateSuccessionText.setText("");
+						updateTypeText.setText("");
+					}
+				} catch (NumberFormatException e) {
+					updateNameText.setText("");
+					updateShortNameText.setText("");
+					updateDateConqueredYearText.setText("");
+					updateDateConqueredDayText.setText("");
+					updateDateConqueredMonthText.setText("");
+					updateGdpText.setText("");
+					updateSuccessionText.setText("");
+					updateTypeText.setText("");
+				}
+			}
+		});
 
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {

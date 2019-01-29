@@ -3,7 +3,6 @@ import java.awt.CardLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Statement;
-import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -11,11 +10,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-import Views.KingdomBuiltOnTopOf;
-import Views.KingdomCity;
-import Views.KingdomConqueredUsing;
-import Views.KingdomMilitary;
-import Views.KingdomRuler;
 import services.DatabaseConnectionService;
 import services.KingdomBuiltOnTopOfService;
 import services.KingdomCityService;
@@ -23,7 +17,8 @@ import services.KingdomConqueredUsingService;
 import services.KingdomMilitaryService;
 import services.KingdomRulerService;
 import services.KingdomService;
-import tables.Kingdom;
+import services.PersonService;
+import services.RulerService;
 
 public class Main {
 
@@ -43,44 +38,52 @@ public class Main {
 
 		try {
 			Boolean connectionBool = dbcs.connect(user, password);
-			
+
 			KingdomService ks = new KingdomService(dbcs);
-			
+
+			PersonService person = new PersonService(dbcs);
+
+			RulerService ruler = new RulerService(dbcs);
+
 			KingdomBuiltOnTopOfService kingdomBuiltOnTopOfService = new KingdomBuiltOnTopOfService(dbcs);
-			
+
 			KingdomCityService kingdomCityService = new KingdomCityService(dbcs);
-			
+
 			KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
-			
+
 			KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
-			
+
 			KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
-			
+
 			JFrame tableFrame = new JFrame();
-			
-			
+
 			JPanel kingdomCards = new JPanel(new BorderLayout());
-			
-			JPanel comboBoxPane = new JPanel(); //use FlowLayout
-	        String comboBoxItems[] = { "Kingdom", "KingdomBuiltOnTopOfView","KingdomCityView","KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView"};
-	        JComboBox cb = new JComboBox(comboBoxItems);
-	        cb.setEditable(false);
-	        
-	        JPanel cards = new JPanel(new CardLayout());
+
+			JPanel comboBoxPane = new JPanel(); // use FlowLayout
+			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "KingdomBuiltOnTopOfView", "KingdomCityView",
+					"KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
+			JComboBox cb = new JComboBox(comboBoxItems);
+			cb.setEditable(false);
+
+			JPanel cards = new JPanel(new CardLayout());
 			cards.add(ks.getJPanel(), comboBoxItems[0]);
-			cards.add(kingdomBuiltOnTopOfService.getScrollableTable(), comboBoxItems[1]);
-			cards.add(kingdomCityService.getScrollableTable(), comboBoxItems[2]);
-			cards.add(kingdomConqueredUsingService.getScrollableTable(), comboBoxItems[3]);
-			cards.add(kingdomMilitaryService.getScrollableTable(), comboBoxItems[4]);
-			cards.add(kingdomRulerService.getScrollableTable(), comboBoxItems[5]);
-			
-	        cb.addItemListener(new ItemListener() {public void itemStateChanged(ItemEvent evt) {
-	            CardLayout cl = (CardLayout)(cards.getLayout());
-	            cl.show(cards, (String)evt.getItem());}
-	        });
-	        comboBoxPane.add(cb);
-	        kingdomCards.add(comboBoxPane, BorderLayout.PAGE_START);
-	        kingdomCards.add(cards, BorderLayout.CENTER);
+			cards.add(person.getJPanel(), comboBoxItems[1]);
+			cards.add(ruler.getJPanel(), comboBoxItems[2]);
+			cards.add(kingdomBuiltOnTopOfService.getScrollableTable(), comboBoxItems[3]);
+			cards.add(kingdomCityService.getScrollableTable(), comboBoxItems[4]);
+			cards.add(kingdomConqueredUsingService.getScrollableTable(), comboBoxItems[5]);
+			cards.add(kingdomMilitaryService.getScrollableTable(), comboBoxItems[6]);
+			cards.add(kingdomRulerService.getScrollableTable(), comboBoxItems[7]);
+
+			cb.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent evt) {
+					CardLayout cl = (CardLayout) (cards.getLayout());
+					cl.show(cards, (String) evt.getItem());
+				}
+			});
+			comboBoxPane.add(cb);
+			kingdomCards.add(comboBoxPane, BorderLayout.PAGE_START);
+			kingdomCards.add(cards, BorderLayout.CENTER);
 
 			tableFrame.add(kingdomCards);
 //			tableFrame.add(ks.getJPanel());
@@ -88,7 +91,7 @@ public class Main {
 			tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			tableFrame.pack();
 			tableFrame.setVisible(true);
-			
+
 			tableFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				@Override
 				public void windowClosing(java.awt.event.WindowEvent windowEvent) {
