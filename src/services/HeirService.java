@@ -163,25 +163,24 @@ public class HeirService {
 							k = heir;
 					}
 					if (k != null) {
-
-						updatePIDLabel.setText(Integer.toString(k.PID));
-						updateKIDLabel.setText(Integer.toString(k.KID));
-						updateTitleStartLabel.setText(k.TitleStart);
-						updateTitleEndLabel.setText(k.TitleEnd);
-						updateShortTitleLabel.setText(k.ShortTitle);
+						updatePIDText.setText(Integer.toString(k.PID));
+						updateKIDText.setText(Integer.toString(k.KID));
+						updateTitleStartText.setText(k.TitleStart);
+						updateTitleEndText.setText(k.TitleEnd);
+						updateShortTitleText.setText(k.ShortTitle);
 					} else {
-						updatePIDLabel.setText("");
-						updateKIDLabel.setText("");
-						updateTitleStartLabel.setText("");
-						updateTitleEndLabel.setText("");
-						updateShortTitleLabel.setText("");
+						updatePIDText.setText("");
+						updateKIDText.setText("");
+						updateTitleStartText.setText("");
+						updateTitleEndText.setText("");
+						updateShortTitleText.setText("");
 					}
 				} catch (NumberFormatException e) {
-					updatePIDLabel.setText("");
-					updateKIDLabel.setText("");
-					updateTitleStartLabel.setText("");
-					updateTitleEndLabel.setText("");
-					updateShortTitleLabel.setText("");
+					updatePIDText.setText("");
+					updateKIDText.setText("");
+					updateTitleStartText.setText("");
+					updateTitleEndText.setText("");
+					updateShortTitleText.setText("");
 				}
 			}
 		});
@@ -191,37 +190,25 @@ public class HeirService {
 			public void actionPerformed(ActionEvent ae) {
 				Heir k = new Heir();
 				try {
-					k.ID = Integer.parseInt(updateIDText.getText());
+					k.PID = Integer.parseInt(updatePIDText.getText());
 				} catch (NumberFormatException e) {
 
 				}
-				k.Name = updateNameText.getText();
-				k.ShortName = updateShortNameText.getText();
-
 				try {
-					k.DateConquered = java.sql.Date.valueOf(updateDateConqueredYearText.getText() + "-"
-							+ updateDateConqueredMonthText.getText() + "-" + updateDateConqueredDayText.getText());
-				} catch (IllegalArgumentException e) {
-
-				}
-				try {
-					k.GDP = Integer.parseInt(updateGdpText.getText());
+					k.KID = Integer.parseInt(updateKIDText.getText());
 				} catch (NumberFormatException e) {
 
 				}
-				k.Succession = updateSuccessionText.getText();
-				k.Type = updateTypeText.getText();
-				updateHeir(k);
+				k.TitleStart = updateTitleStartText.getText();
+				k.TitleEnd = updateTitleEndText.getText();
+				k.ShortTitle= updateShortTitleText.getText();
+				addHeir(k);
 
-				updateIDLabel.setText("");
-				updateNameText.setText("");
-				updateShortNameText.setText("");
-				updateDateConqueredYearText.setText("");
-				updateDateConqueredDayText.setText("");
-				updateDateConqueredMonthText.setText("");
-				updateGdpText.setText("");
-				updateSuccessionText.setText("");
-				updateTypeText.setText("");
+				updatePIDText.setText("");
+				updateKIDText.setText("");
+				updateTitleEndText.setText("");
+				updateTitleStartText.setText("");
+				updateShortTitleText.setText("");
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
@@ -266,7 +253,7 @@ public class HeirService {
 	}
 
 	public JComponent getScrollableTable() {
-		String[] columnNames = { "ID", "Name", "ShortName", "DateConquered", "GDP", "Succession", "Type" };
+		String[] columnNames = { "ID","PID","KID","TitleStart","TitleEnd","ShortTitle"};
 		ArrayList<Heir> heirs = getHeirs();
 		Object[][] data = new Object[heirs.size()][5];
 		for (int i = 0; i < heirs.size(); i++) {
@@ -283,14 +270,13 @@ public class HeirService {
 	public boolean addHeir(Heir k) {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
-					.prepareCall("{ ? = call dbo.Insert_Heir(?, ?, ?, ?, ?, ?) }");
+					.prepareCall("{ ? = call dbo.Insert_Heir(?, ?, ?, ?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
-			cs.setString(2, k.Name);
-			cs.setString(3, k.ShortName);
-			cs.setDate(4, k.DateConquered);
-			cs.setLong(5, k.GDP);
-			cs.setString(6, k.Succession);
-			cs.setString(7, k.Type);
+			cs.setInt(2, k.PID);
+			cs.setInt(3, k.KID);
+			cs.setString(4, k.TitleStart);
+			cs.setString(5, k.TitleEnd);
+			cs.setString(6, k.ShortTitle);
 			cs.execute();
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
@@ -322,17 +308,15 @@ public class HeirService {
 	public boolean updateHeir(Heir k) {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
-					.prepareCall("{ ? = call dbo.Update_Heir(?,?,?,?,?,?,?) }");
+					.prepareCall("{ ? = call dbo.Insert_Heir(?, ?, ?, ?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
-			cs.setInt(2, k.ID);
-			cs.setString(3, k.Name);
-			cs.setString(4, k.ShortName);
-			cs.setDate(5, k.DateConquered);
-			cs.setLong(6, k.GDP);
-			cs.setString(7, k.Succession);
-			cs.setString(8, k.Type);
-
+			cs.setInt(2, k.PID);
+			cs.setInt(3, k.KID);
+			cs.setString(4, k.TitleStart);
+			cs.setString(5, k.TitleEnd);
+			cs.setString(6, k.ShortTitle);
 			cs.execute();
+			
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
@@ -392,7 +376,7 @@ public class HeirService {
 
 	public ArrayList<Heir> getHeirs() {
 		try {
-			String query = "SELECT ID, Name, ShortName, DateConquered, GDP, Succession, Type \nFROM Heir\n";
+			String query = "SELECT ID, PID, KID, TitleStart, TitleEnd, ShortTitle \nFROM Heir\n";
 			PreparedStatement stmt = this.dbService.getConnection().prepareStatement(query);
 			stmt.executeQuery();
 			ResultSet rs = stmt.getResultSet();
@@ -411,12 +395,11 @@ public class HeirService {
 			while (rs.next()) {
 				Heir heir = new Heir();
 				heir.ID = rs.getInt("ID");
-				heir.Name = rs.getString("Name");
-				heir.ShortName = rs.getString("ShortName");
-				heir.DateConquered = rs.getDate("DateConquered");
-				heir.GDP = rs.getLong("GDP");
-				heir.Succession = rs.getString("Succession");
-				heir.Type = rs.getString("Type");
+				heir.PID = rs.getInt("PID");
+				heir.KID = rs.getInt("KID");
+				heir.TitleStart = rs.getString("TitleStart");
+				heir.TitleEnd = rs.getString("TitleEnd");
+				heir.ShortTitle = rs.getString("ShortTitle");
 
 				heirs.add(heir);
 			}

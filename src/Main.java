@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 import services.DatabaseConnectionService;
+import services.HeirService;
 import services.KingdomBuiltOnTopOfService;
 import services.KingdomCityService;
 import services.KingdomConqueredUsingService;
@@ -19,6 +20,7 @@ import services.KingdomRulerService;
 import services.KingdomService;
 import services.PersonService;
 import services.RulerService;
+import tables.Heir;
 
 public class Main {
 
@@ -54,13 +56,15 @@ public class Main {
 			KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
 
 			KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
+			
+			HeirService heir = new HeirService(dbcs);
 
 			JFrame tableFrame = new JFrame();
 
 			JPanel kingdomCards = new JPanel(new BorderLayout());
 
 			JPanel comboBoxPane = new JPanel(); // use FlowLayout
-			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "KingdomBuiltOnTopOfView", "KingdomCityView",
+			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "KingdomBuiltOnTopOfView", "KingdomCityView",
 					"KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
 			JComboBox cb = new JComboBox(comboBoxItems);
 			cb.setEditable(false);
@@ -69,11 +73,12 @@ public class Main {
 			cards.add(ks.getJPanel(), comboBoxItems[0]);
 			cards.add(person.getJPanel(), comboBoxItems[1]);
 			cards.add(ruler.getJPanel(), comboBoxItems[2]);
-			cards.add(kingdomBuiltOnTopOfService.getScrollableTable(), comboBoxItems[3]);
-			cards.add(kingdomCityService.getScrollableTable(), comboBoxItems[4]);
-			cards.add(kingdomConqueredUsingService.getScrollableTable(), comboBoxItems[5]);
-			cards.add(kingdomMilitaryService.getScrollableTable(), comboBoxItems[6]);
-			cards.add(kingdomRulerService.getScrollableTable(), comboBoxItems[7]);
+			cards.add(heir.getJPanel(), comboBoxItems[3]);
+			cards.add(kingdomBuiltOnTopOfService.getScrollableTable(), comboBoxItems[4]);
+			cards.add(kingdomCityService.getScrollableTable(), comboBoxItems[5]);
+			cards.add(kingdomConqueredUsingService.getScrollableTable(), comboBoxItems[6]);
+			cards.add(kingdomMilitaryService.getScrollableTable(), comboBoxItems[7]);
+			cards.add(kingdomRulerService.getScrollableTable(), comboBoxItems[8]);
 
 			cb.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent evt) {
