@@ -28,7 +28,7 @@ import tables.Person;
 
 public class PersonService {
 	private DatabaseConnectionService dbService = null;
-	private static JComponent view;
+	private JComponent view;
 
 	public PersonService(DatabaseConnectionService dbService) {
 		this.dbService = dbService;

@@ -30,7 +30,7 @@ import tables.Kingdom;
 
 public class KingdomService {
 	private DatabaseConnectionService dbService = null;
-	private static JComponent view;
+	private JComponent view;
 
 	public KingdomService(DatabaseConnectionService dbService) {
 		this.dbService = dbService;
