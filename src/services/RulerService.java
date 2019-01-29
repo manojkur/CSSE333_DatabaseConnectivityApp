@@ -28,7 +28,7 @@ import tables.Ruler;
 
 public class RulerService {
 	private DatabaseConnectionService dbService = null;
-	private static JComponent view;
+	private JComponent view;
 
 	public RulerService(DatabaseConnectionService dbService) {
 		this.dbService = dbService;
