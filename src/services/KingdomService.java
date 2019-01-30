@@ -1,6 +1,7 @@
 package services;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -42,46 +44,92 @@ public class KingdomService {
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
 
+		int width = 500;
+		int height = 20;
+
 		JPanel insert = new JPanel();
+		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		// insert.setMaximumSize(new Dimension(200, 200));
 		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+		// insert.setLayout(new FlowLayout());
 		JLabel insertNameLabel = new JLabel("Name: ");
 		insert.add(insertNameLabel);
-		JTextField insertNameText = new JTextField();
+		JTextField insertNameText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertNameText);
 
 		JLabel insertShortNameLabel = new JLabel("ShortName: ");
 		insert.add(insertShortNameLabel);
-		JTextField insertShortNameText = new JTextField();
+		JTextField insertShortNameText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertShortNameText);
 
 		JLabel insertDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
 		insert.add(insertDateConqueredYearLabel);
-		JTextField insertDateConqueredYearText = new JTextField();
+		JTextField insertDateConqueredYearText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertDateConqueredYearText);
 
 		JLabel insertDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
 		insert.add(insertDateConqueredMonthLabel);
-		JTextField insertDateConqueredMonthText = new JTextField();
+		JTextField insertDateConqueredMonthText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertDateConqueredMonthText);
 
 		JLabel insertDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
 		insert.add(insertDateConqueredDayLabel);
-		JTextField insertDateConqueredDayText = new JTextField();
+		JTextField insertDateConqueredDayText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertDateConqueredDayText);
 
 		JLabel insertGdpLabel = new JLabel("GDP: ");
 		insert.add(insertGdpLabel);
-		JTextField insertGdpText = new JTextField();
+		JTextField insertGdpText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertGdpText);
 
 		JLabel insertSuccessionLabel = new JLabel("Succession: ");
 		insert.add(insertSuccessionLabel);
-		JTextField insertSuccessionText = new JTextField();
+		JTextField insertSuccessionText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertSuccessionText);
 
 		JLabel insertTypeLabel = new JLabel("Type: ");
 		insert.add(insertTypeLabel);
-		JTextField insertTypeText = new JTextField();
+		JTextField insertTypeText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertTypeText);
 
 		JButton insertButton = new JButton("Insert");
@@ -122,54 +170,101 @@ public class KingdomService {
 		});
 
 		insert.add(insertButton);
+
 		tabbedPane.addTab("Insert", insert);
 
 		JPanel update = new JPanel();
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JLabel updateIDLabel = new JLabel("ID: ");
 		update.add(updateIDLabel);
-		JTextField updateIDText = new JTextField();
+		JTextField updateIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateIDText);
 
 		JLabel updateNameLabel = new JLabel("Name: ");
 		update.add(updateNameLabel);
-		JTextField updateNameText = new JTextField();
+		JTextField updateNameText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateNameText);
 
 		JLabel updateShortNameLabel = new JLabel("ShortName: ");
 		update.add(updateShortNameLabel);
-		JTextField updateShortNameText = new JTextField();
+		JTextField updateShortNameText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateShortNameText);
 
 		JLabel updateDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
 		update.add(updateDateConqueredYearLabel);
-		JTextField updateDateConqueredYearText = new JTextField();
+		JTextField updateDateConqueredYearText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateDateConqueredYearText);
 
 		JLabel updateDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
 		update.add(updateDateConqueredMonthLabel);
-		JTextField updateDateConqueredMonthText = new JTextField();
+		JTextField updateDateConqueredMonthText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateDateConqueredMonthText);
 
 		JLabel updateDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
 		update.add(updateDateConqueredDayLabel);
-		JTextField updateDateConqueredDayText = new JTextField();
+		JTextField updateDateConqueredDayText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateDateConqueredDayText);
 
 		JLabel updateGdpLabel = new JLabel("GDP: ");
 		update.add(updateGdpLabel);
-		JTextField updateGdpText = new JTextField();
+		JTextField updateGdpText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateGdpText);
 
 		JLabel updateSuccessionLabel = new JLabel("Succession: ");
 		update.add(updateSuccessionLabel);
-		JTextField updateSuccessionText = new JTextField();
+		JTextField updateSuccessionText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateSuccessionText);
 
 		JLabel updateTypeLabel = new JLabel("Type: ");
 		update.add(updateTypeLabel);
-		JTextField updateTypeText = new JTextField();
+		JTextField updateTypeText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateTypeText);
 
 		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
@@ -288,10 +383,16 @@ public class KingdomService {
 
 		JPanel delete = new JPanel();
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JLabel deleteIDLabel = new JLabel("ID: ");
 		delete.add(deleteIDLabel);
-		JTextField deleteIDText = new JTextField();
+		JTextField deleteIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		delete.add(deleteIDText);
 
 		JButton deleteButton = new JButton("Delete");

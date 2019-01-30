@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Statement;
@@ -20,7 +22,6 @@ import services.KingdomRulerService;
 import services.KingdomService;
 import services.PersonService;
 import services.RulerService;
-import tables.Heir;
 
 public class Main {
 
@@ -42,30 +43,32 @@ public class Main {
 			Boolean connectionBool = dbcs.connect(user, password);
 
 			KingdomService ks = new KingdomService(dbcs);
-
 			PersonService person = new PersonService(dbcs);
-
 			RulerService ruler = new RulerService(dbcs);
-
 			KingdomBuiltOnTopOfService kingdomBuiltOnTopOfService = new KingdomBuiltOnTopOfService(dbcs);
-
 			KingdomCityService kingdomCityService = new KingdomCityService(dbcs);
-
 			KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
-
 			KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
 
 			KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
-			
+
 			HeirService heir = new HeirService(dbcs);
 
 			JFrame tableFrame = new JFrame();
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+			// get 2/3 of the height, and 2/3 of the width
+			int height = screenSize.height * 2 / 3;
+			int width = screenSize.width * 2 / 3;
+
+			// set the jframe height and width
+			tableFrame.setPreferredSize(new Dimension(width, height));
 
 			JPanel kingdomCards = new JPanel(new BorderLayout());
 
 			JPanel comboBoxPane = new JPanel(); // use FlowLayout
-			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "KingdomBuiltOnTopOfView", "KingdomCityView",
-					"KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
+			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "KingdomBuiltOnTopOfView",
+					"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
 			JComboBox cb = new JComboBox(comboBoxItems);
 			cb.setEditable(false);
 
@@ -91,8 +94,6 @@ public class Main {
 			kingdomCards.add(cards, BorderLayout.CENTER);
 
 			tableFrame.add(kingdomCards);
-//			tableFrame.add(ks.getJPanel());
-//			tableFrame.remove(scrollPane);
 			tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			tableFrame.pack();
 			tableFrame.setVisible(true);

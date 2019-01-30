@@ -1,6 +1,7 @@
 package services;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -11,6 +12,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -40,36 +42,71 @@ public class RulerService {
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
 
+		int width = 500;
+		int height = 20;
+
 		JPanel insert = new JPanel();
 		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
 		JLabel insertPIDLabel = new JLabel("PID: ");
 		insert.add(insertPIDLabel);
-		JTextField insertPIDText = new JTextField();
+		JTextField insertPIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertPIDText);
 
 		JLabel insertKIDLabel = new JLabel("KID: ");
 		insert.add(insertKIDLabel);
-		JTextField insertKIDText = new JTextField();
+		JTextField insertKIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertKIDText);
 
 		JLabel insertHIDLabel = new JLabel("HID: ");
 		insert.add(insertHIDLabel);
-		JTextField insertHIDText = new JTextField();
+		JTextField insertHIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertHIDText);
 
 		JLabel insertYearsOfExperienceLabel = new JLabel("YearsOfExperience: ");
 		insert.add(insertYearsOfExperienceLabel);
-		JTextField insertYearsOfExperienceText = new JTextField();
+		JTextField insertYearsOfExperienceText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertYearsOfExperienceText);
 
 		JLabel insertTitleLabel = new JLabel("Title: ");
 		insert.add(insertTitleLabel);
-		JTextField insertTitleText = new JTextField();
+		JTextField insertTitleText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertTitleText);
 
 		JLabel insertDynastyLabel = new JLabel("Dynasty: ");
 		insert.add(insertDynastyLabel);
-		JTextField insertDynastyText = new JTextField();
+		JTextField insertDynastyText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertDynastyText);
 
 		JButton insertButton = new JButton("Insert");
@@ -120,40 +157,76 @@ public class RulerService {
 
 		JPanel update = new JPanel();
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JLabel updateIDLabel = new JLabel("ID: ");
 		update.add(updateIDLabel);
-		JTextField updateIDText = new JTextField();
+		JTextField updateIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateIDText);
 
 		JLabel updatePIDLabel = new JLabel("PID: ");
 		update.add(updatePIDLabel);
-		JTextField updatePIDText = new JTextField();
+		JTextField updatePIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updatePIDText);
 
 		JLabel updateKIDLabel = new JLabel("KID: ");
 		update.add(updateKIDLabel);
-		JTextField updateKIDText = new JTextField();
+		JTextField updateKIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateKIDText);
 
 		JLabel updateHIDLabel = new JLabel("HID: ");
 		update.add(updateHIDLabel);
-		JTextField updateHIDText = new JTextField();
+		JTextField updateHIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateHIDText);
 
 		JLabel updateYearsOfExperienceLabel = new JLabel("YearsOfExperience: ");
 		update.add(updateYearsOfExperienceLabel);
-		JTextField updateYearsOfExperienceText = new JTextField();
+		JTextField updateYearsOfExperienceText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateYearsOfExperienceText);
 
 		JLabel updateTitleLabel = new JLabel("Title: ");
 		update.add(updateTitleLabel);
-		JTextField updateTitleText = new JTextField();
+		JTextField updateTitleText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateTitleText);
 
 		JLabel updateDynastyLabel = new JLabel("Dynasty: ");
 		update.add(updateDynastyLabel);
-		JTextField updateDynastyText = new JTextField();
+		JTextField updateDynastyText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateDynastyText);
 
 		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
@@ -272,10 +345,16 @@ public class RulerService {
 
 		JPanel delete = new JPanel();
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JLabel deleteIDLabel = new JLabel("ID: ");
 		delete.add(deleteIDLabel);
-		JTextField deleteIDText = new JTextField();
+		JTextField deleteIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		delete.add(deleteIDText);
 
 		JButton deleteButton = new JButton("Delete");
@@ -333,10 +412,16 @@ public class RulerService {
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a First Name");
+				JOptionPane.showMessageDialog(null, "Please provide a Person ID");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Gender markers include: M F X. Please choose one");
+				JOptionPane.showMessageDialog(null, "Please provide a Kingdom ID");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null, "Please provide a Years Of Experience of at least 0");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null, "Please provide a Title");
 				break;
 			default:
 				break;
@@ -368,7 +453,7 @@ public class RulerService {
 				JOptionPane.showMessageDialog(null, "The ID " + p.ID + " does not exist");
 				break;
 			case 5:
-				JOptionPane.showMessageDialog(null, "Gender markers include: M F X. Please choose one");
+				JOptionPane.showMessageDialog(null, "Please provide Years Of Experience of at least 0");
 				break;
 			default:
 				break;

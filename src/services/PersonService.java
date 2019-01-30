@@ -1,6 +1,7 @@
 package services;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -11,6 +12,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -40,31 +42,60 @@ public class PersonService {
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
 
+		int width = 500;
+		int height = 20;
+
 		JPanel insert = new JPanel();
 		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JLabel insertFirstNameLabel = new JLabel("FirstName: ");
 		insert.add(insertFirstNameLabel);
-		JTextField insertFirstNameText = new JTextField();
+		JTextField insertFirstNameText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertFirstNameText);
 
 		JLabel insertLastNameLabel = new JLabel("LastName: ");
 		insert.add(insertLastNameLabel);
-		JTextField insertLastNameText = new JTextField();
+		JTextField insertLastNameText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertLastNameText);
 
 		JLabel insertOtherNamesLabel = new JLabel("OtherNames: ");
 		insert.add(insertOtherNamesLabel);
-		JTextField insertOtherNamesText = new JTextField();
+		JTextField insertOtherNamesText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertOtherNamesText);
 
 		JLabel insertSuffixLabel = new JLabel("Suffix: ");
 		insert.add(insertSuffixLabel);
-		JTextField insertSuffixText = new JTextField();
+		JTextField insertSuffixText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertSuffixText);
 
 		JLabel insertGenderLabel = new JLabel("Gender: ");
 		insert.add(insertGenderLabel);
-		JTextField insertGenderText = new JTextField();
+		JTextField insertGenderText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertGenderText);
 
 		JButton insertButton = new JButton("Insert");
@@ -96,35 +127,66 @@ public class PersonService {
 
 		JPanel update = new JPanel();
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JLabel updateIDLabel = new JLabel("ID: ");
 		update.add(updateIDLabel);
-		JTextField updateIDText = new JTextField();
+		JTextField updateIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateIDText);
 
 		JLabel updateFirstNameLabel = new JLabel("FirstName: ");
 		update.add(updateFirstNameLabel);
-		JTextField updateFirstNameText = new JTextField();
+		JTextField updateFirstNameText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateFirstNameText);
 
 		JLabel updateLastNameLabel = new JLabel("LastName: ");
 		update.add(updateLastNameLabel);
-		JTextField updateLastNameText = new JTextField();
+		JTextField updateLastNameText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateLastNameText);
 
 		JLabel updateOtherNamesLabel = new JLabel("OtherNames: ");
 		update.add(updateOtherNamesLabel);
-		JTextField updateOtherNamesText = new JTextField();
+		JTextField updateOtherNamesText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateOtherNamesText);
 
 		JLabel updateSuffixLabel = new JLabel("Suffix: ");
 		update.add(updateSuffixLabel);
-		JTextField updateSuffixText = new JTextField();
+		JTextField updateSuffixText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateSuffixText);
 
 		JLabel updateGenderLabel = new JLabel("Gender: ");
 		update.add(updateGenderLabel);
-		JTextField updateGenderText = new JTextField();
+		JTextField updateGenderText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateGenderText);
 
 		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
@@ -215,10 +277,16 @@ public class PersonService {
 
 		JPanel delete = new JPanel();
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JLabel deleteIDLabel = new JLabel("ID: ");
 		delete.add(deleteIDLabel);
-		JTextField deleteIDText = new JTextField();
+		JTextField deleteIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		delete.add(deleteIDText);
 
 		JButton deleteButton = new JButton("Delete");

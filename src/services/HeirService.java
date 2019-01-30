@@ -1,6 +1,7 @@
 package services;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -10,9 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -26,7 +27,6 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import tables.Heir;
 import tables.Heir;
 
 public class HeirService {
@@ -43,32 +43,60 @@ public class HeirService {
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
 
+		int width = 500;
+		int height = 20;
+
 		JPanel insert = new JPanel();
 		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-
+		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JLabel insertPIDLabel = new JLabel("PID: ");
 		insert.add(insertPIDLabel);
-		JTextField insertPIDText = new JTextField();
+		JTextField insertPIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertPIDText);
 
 		JLabel insertKIDLabel = new JLabel("KID: ");
 		insert.add(insertKIDLabel);
-		JTextField insertKIDText = new JTextField();
+		JTextField insertKIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertKIDText);
 
 		JLabel insertTitleStartLabel = new JLabel("TitleStart: ");
 		insert.add(insertTitleStartLabel);
-		JTextField insertTitleStartText = new JTextField();
+		JTextField insertTitleStartText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertTitleStartText);
 
 		JLabel insertTitleEndLabel = new JLabel("TitleEnd: ");
 		insert.add(insertTitleEndLabel);
-		JTextField insertTitleEndText = new JTextField();
+		JTextField insertTitleEndText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertTitleEndText);
 
 		JLabel insertShortTitleLabel = new JLabel("ShortTitle: ");
 		insert.add(insertShortTitleLabel);
-		JTextField insertShortTitleText = new JTextField();
+		JTextField insertShortTitleText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertShortTitleText);
 
 		JButton insertButton = new JButton("Insert");
@@ -83,7 +111,7 @@ public class HeirService {
 				}
 				k.TitleStart = insertTitleStartText.getText();
 				k.TitleEnd = insertTitleEndText.getText();
-				k.ShortTitle= insertShortTitleText.getText();
+				k.ShortTitle = insertShortTitleText.getText();
 				addHeir(k);
 
 				insertPIDText.setText("");
@@ -103,34 +131,66 @@ public class HeirService {
 
 		JPanel update = new JPanel();
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
 		JLabel updateIDLabel = new JLabel("ID: ");
 		update.add(updateIDLabel);
-		JTextField updateIDText = new JTextField();
+		JTextField updateIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateIDText);
 
 		JLabel updatePIDLabel = new JLabel("PID: ");
 		update.add(updatePIDLabel);
-		JTextField updatePIDText = new JTextField();
+		JTextField updatePIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updatePIDText);
 
 		JLabel updateKIDLabel = new JLabel("KID: ");
 		update.add(updateKIDLabel);
-		JTextField updateKIDText = new JTextField();
+		JTextField updateKIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateKIDText);
 
 		JLabel updateTitleStartLabel = new JLabel("TitleStart: ");
 		update.add(updateTitleStartLabel);
-		JTextField updateTitleStartText = new JTextField();
+		JTextField updateTitleStartText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateTitleStartText);
 
 		JLabel updateTitleEndLabel = new JLabel("TitleEnd: ");
 		update.add(updateTitleEndLabel);
-		JTextField updateTitleEndText = new JTextField();
+		JTextField updateTitleEndText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateTitleEndText);
 
 		JLabel updateShortTitleLabel = new JLabel("ShortTitle: ");
 		update.add(updateShortTitleLabel);
-		JTextField updateShortTitleText = new JTextField();
+		JTextField updateShortTitleText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		update.add(updateShortTitleText);
 
 		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
@@ -201,7 +261,7 @@ public class HeirService {
 				}
 				k.TitleStart = updateTitleStartText.getText();
 				k.TitleEnd = updateTitleEndText.getText();
-				k.ShortTitle= updateShortTitleText.getText();
+				k.ShortTitle = updateShortTitleText.getText();
 				addHeir(k);
 
 				updatePIDText.setText("");
@@ -221,10 +281,15 @@ public class HeirService {
 
 		JPanel delete = new JPanel();
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-
+		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JLabel deleteIDLabel = new JLabel("ID: ");
 		delete.add(deleteIDLabel);
-		JTextField deleteIDText = new JTextField();
+		JTextField deleteIDText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
 		delete.add(deleteIDText);
 
 		JButton deleteButton = new JButton("Delete");
@@ -253,7 +318,7 @@ public class HeirService {
 	}
 
 	public JComponent getScrollableTable() {
-		String[] columnNames = { "ID","PID","KID","TitleStart","TitleEnd","ShortTitle"};
+		String[] columnNames = { "ID", "PID", "KID", "TitleStart", "TitleEnd", "ShortTitle" };
 		ArrayList<Heir> heirs = getHeirs();
 		Object[][] data = new Object[heirs.size()][5];
 		for (int i = 0; i < heirs.size(); i++) {
@@ -281,19 +346,16 @@ public class HeirService {
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a Name");
+				JOptionPane.showMessageDialog(null, "Please provide a Person ID");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a ShortName");
+				JOptionPane.showMessageDialog(null, "Please provide a Kingdom ID");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null, "The Person ID " + k.PID + " does not exist");
 				break;
 			case 4:
-				JOptionPane.showMessageDialog(null, "Please provide a GDP");
-				break;
-			case 5:
-				JOptionPane.showMessageDialog(null, "Please provide a Date that has happened");
-				break;
-			case 6:
-				JOptionPane.showMessageDialog(null, "Please provide the Heir Type");
+				JOptionPane.showMessageDialog(null, "The Kingdom ID " + k.KID + " does not exist");
 				break;
 			default:
 				break;
@@ -316,14 +378,14 @@ public class HeirService {
 			cs.setString(5, k.TitleEnd);
 			cs.setString(6, k.ShortTitle);
 			cs.execute();
-			
+
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				JOptionPane.showMessageDialog(null, "Please provide a valid ID");
 				break;
 			case 5:
-				JOptionPane.showMessageDialog(null, "Please provide a Date that has happened");
+				JOptionPane.showMessageDialog(null, "Please provide a valid Kingdom ID");
 				break;
 			default:
 				break;
