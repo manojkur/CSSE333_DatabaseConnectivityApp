@@ -54,7 +54,7 @@ public class Main {
 
 			HeirService heir = new HeirService(dbcs);
 
-			JFrame tableFrame = new JFrame();
+			JFrame tableFrame = new JFrame("Kingdom Database entries");
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 			// get 2/3 of the height, and 2/3 of the width
