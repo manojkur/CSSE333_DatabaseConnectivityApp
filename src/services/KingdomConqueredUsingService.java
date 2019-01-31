@@ -7,12 +7,13 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import Views.KingdomConqueredUsing;
 
-public class KingdomConqueredUsingService {
+public class KingdomConqueredUsingService implements ViewServices {
 	private DatabaseConnectionService dbService = null;
 
 	public KingdomConqueredUsingService(DatabaseConnectionService dbService) {
@@ -35,7 +36,8 @@ public class KingdomConqueredUsingService {
 	}
 
 	public JComponent getScrollableTable() {
-		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,ConqueredMethodName,Effectiveness".split(",");
+		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,ConqueredMethodName,Effectiveness"
+				.split(",");
 		ArrayList<KingdomConqueredUsing> kingdoms = getKingdomConqueredWith();
 		Object[][] data = new Object[kingdoms.size()][5];
 		for (int i = 0; i < kingdoms.size(); i++) {
@@ -48,7 +50,7 @@ public class KingdomConqueredUsingService {
 
 		return scrollPane;
 	}
-	
+
 	private ArrayList<KingdomConqueredUsing> parseResults(ResultSet rs) {
 		try {
 			ArrayList<KingdomConqueredUsing> kingdoms = new ArrayList<>();

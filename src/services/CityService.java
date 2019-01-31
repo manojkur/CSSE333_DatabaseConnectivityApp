@@ -27,13 +27,13 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import tables.Heir;
+import tables.City;
 
-public class HeirService implements Services {
+public class CityService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
 
-	public HeirService(DatabaseConnectionService dbService) {
+	public CityService(DatabaseConnectionService dbService) {
 		this.dbService = dbService;
 	}
 
@@ -49,16 +49,6 @@ public class HeirService implements Services {
 		JPanel insert = new JPanel();
 		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
 		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		JLabel insertPIDLabel = new JLabel("PID: ");
-		insert.add(insertPIDLabel);
-		JTextField insertPIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertPIDText);
-
 		JLabel insertKIDLabel = new JLabel("KID: ");
 		insert.add(insertKIDLabel);
 		JTextField insertKIDText = (new JTextField() {
@@ -69,56 +59,74 @@ public class HeirService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertKIDText);
 
-		JLabel insertTitleStartLabel = new JLabel("TitleStart: ");
-		insert.add(insertTitleStartLabel);
-		JTextField insertTitleStartText = (new JTextField() {
+		JLabel insertTIDLabel = new JLabel("TID: ");
+		insert.add(insertTIDLabel);
+		JTextField insertTIDText = (new JTextField() {
 			public JTextField setMaxSize(Dimension d) {
 				setMaximumSize(d);
 				return this;
 			}
 		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertTitleStartText);
+		insert.add(insertTIDText);
 
-		JLabel insertTitleEndLabel = new JLabel("TitleEnd: ");
-		insert.add(insertTitleEndLabel);
-		JTextField insertTitleEndText = (new JTextField() {
+		JLabel insertNameLabel = new JLabel("Name: ");
+		insert.add(insertNameLabel);
+		JTextField insertNameText = (new JTextField() {
 			public JTextField setMaxSize(Dimension d) {
 				setMaximumSize(d);
 				return this;
 			}
 		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertTitleEndText);
+		insert.add(insertNameText);
 
-		JLabel insertShortTitleLabel = new JLabel("ShortTitle: ");
-		insert.add(insertShortTitleLabel);
-		JTextField insertShortTitleText = (new JTextField() {
+		JLabel insertPopulationLabel = new JLabel("Population: ");
+		insert.add(insertPopulationLabel);
+		JTextField insertPopulationText = (new JTextField() {
 			public JTextField setMaxSize(Dimension d) {
 				setMaximumSize(d);
 				return this;
 			}
 		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertShortTitleText);
+		insert.add(insertPopulationText);
+
+		JLabel insertCoordinatesLabel = new JLabel("Coordinates: ");
+		insert.add(insertCoordinatesLabel);
+		JTextField insertCoordinatesText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
+		insert.add(insertCoordinatesText);
 
 		JButton insertButton = new JButton("Insert");
 		insertButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				Heir k = new Heir();
+				City k = new City();
 				try {
-					k.PID = Integer.parseInt(insertPIDText.getText());
 					k.KID = Integer.parseInt(insertKIDText.getText());
 				} catch (NumberFormatException e) {
 
 				}
-				k.TitleStart = insertTitleStartText.getText();
-				k.TitleEnd = insertTitleEndText.getText();
-				k.ShortTitle = insertShortTitleText.getText();
-				addHeir(k);
+				try {
+					k.TID = Integer.parseInt(insertTIDText.getText());
+				} catch (NumberFormatException e) {
 
-				insertPIDText.setText("");
+				}
+				try {
+					k.Population = Integer.parseInt(insertPopulationText.getText());
+				} catch (NumberFormatException e) {
+
+				}
+				k.Coordinates = insertCoordinatesText.getText();
+				k.Name = insertNameText.getText();
+				addCity(k);
+
 				insertKIDText.setText("");
-				insertTitleEndText.setText("");
-				insertTitleStartText.setText("");
-				insertShortTitleText.setText("");
+				insertTIDText.setText("");
+				insertPopulationText.setText("");
+				insertNameText.setText("");
+				insertCoordinatesText.setText("");
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
@@ -143,16 +151,6 @@ public class HeirService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateIDText);
 
-		JLabel updatePIDLabel = new JLabel("PID: ");
-		update.add(updatePIDLabel);
-		JTextField updatePIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updatePIDText);
-
 		JLabel updateKIDLabel = new JLabel("KID: ");
 		update.add(updateKIDLabel);
 		JTextField updateKIDText = (new JTextField() {
@@ -163,35 +161,45 @@ public class HeirService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateKIDText);
 
-		JLabel updateTitleStartLabel = new JLabel("TitleStart: ");
-		update.add(updateTitleStartLabel);
-		JTextField updateTitleStartText = (new JTextField() {
+		JLabel updateTIDLabel = new JLabel("TID: ");
+		update.add(updateTIDLabel);
+		JTextField updateTIDText = (new JTextField() {
 			public JTextField setMaxSize(Dimension d) {
 				setMaximumSize(d);
 				return this;
 			}
 		}).setMaxSize(new Dimension(width, height));
-		update.add(updateTitleStartText);
+		update.add(updateTIDText);
 
-		JLabel updateTitleEndLabel = new JLabel("TitleEnd: ");
-		update.add(updateTitleEndLabel);
-		JTextField updateTitleEndText = (new JTextField() {
+		JLabel updateNameLabel = new JLabel("Name: ");
+		update.add(updateNameLabel);
+		JTextField updateNameText = (new JTextField() {
 			public JTextField setMaxSize(Dimension d) {
 				setMaximumSize(d);
 				return this;
 			}
 		}).setMaxSize(new Dimension(width, height));
-		update.add(updateTitleEndText);
+		update.add(updateNameText);
 
-		JLabel updateShortTitleLabel = new JLabel("ShortTitle: ");
-		update.add(updateShortTitleLabel);
-		JTextField updateShortTitleText = (new JTextField() {
+		JLabel updatePopulationLabel = new JLabel("Population: ");
+		update.add(updatePopulationLabel);
+		JTextField updatePopulationText = (new JTextField() {
 			public JTextField setMaxSize(Dimension d) {
 				setMaximumSize(d);
 				return this;
 			}
 		}).setMaxSize(new Dimension(width, height));
-		update.add(updateShortTitleText);
+		update.add(updatePopulationText);
+
+		JLabel updateCoordinatesLabel = new JLabel("Coordinates: ");
+		update.add(updateCoordinatesLabel);
+		JTextField updateCoordinatesText = (new JTextField() {
+			public JTextField setMaxSize(Dimension d) {
+				setMaximumSize(d);
+				return this;
+			}
+		}).setMaxSize(new Dimension(width, height));
+		update.add(updateCoordinatesText);
 
 		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -216,31 +224,31 @@ public class HeirService implements Services {
 			private void modifyText() {
 				try {
 					int ID = Integer.parseInt(updateIDText.getText());
-					List<Heir> heirs = getHeirs();
-					Heir k = null;
-					for (Heir heir : heirs) {
-						if (heir.ID == ID)
-							k = heir;
+					List<City> citys = getCitys();
+					City k = null;
+					for (City city : citys) {
+						if (city.ID == ID)
+							k = city;
 					}
 					if (k != null) {
-						updatePIDText.setText(Integer.toString(k.PID));
+						updateTIDText.setText(Integer.toString(k.TID));
 						updateKIDText.setText(Integer.toString(k.KID));
-						updateTitleStartText.setText(k.TitleStart);
-						updateTitleEndText.setText(k.TitleEnd);
-						updateShortTitleText.setText(k.ShortTitle);
+						updateNameText.setText(k.Name);
+						updateCoordinatesText.setText(k.Coordinates);
+						updatePopulationText.setText(Integer.toString(k.Population));
 					} else {
-						updatePIDText.setText("");
+						updateTIDText.setText("");
 						updateKIDText.setText("");
-						updateTitleStartText.setText("");
-						updateTitleEndText.setText("");
-						updateShortTitleText.setText("");
+						updateNameText.setText("");
+						updateCoordinatesText.setText("");
+						updatePopulationText.setText("");
 					}
 				} catch (NumberFormatException e) {
-					updatePIDText.setText("");
+					updateTIDText.setText("");
 					updateKIDText.setText("");
-					updateTitleStartText.setText("");
-					updateTitleEndText.setText("");
-					updateShortTitleText.setText("");
+					updateNameText.setText("");
+					updateCoordinatesText.setText("");
+					updatePopulationText.setText("");
 				}
 			}
 		});
@@ -248,14 +256,14 @@ public class HeirService implements Services {
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				Heir k = new Heir();
+				City k = new City();
 				try {
 					k.ID = Integer.parseInt(updateIDText.getText());
 				} catch (NumberFormatException e) {
 
 				}
 				try {
-					k.PID = Integer.parseInt(updatePIDText.getText());
+					k.TID = Integer.parseInt(updateTIDText.getText());
 				} catch (NumberFormatException e) {
 
 				}
@@ -264,16 +272,20 @@ public class HeirService implements Services {
 				} catch (NumberFormatException e) {
 
 				}
-				k.TitleStart = updateTitleStartText.getText();
-				k.TitleEnd = updateTitleEndText.getText();
-				k.ShortTitle = updateShortTitleText.getText();
-				updateHeir(k);
+				try {
+					k.Population = Integer.parseInt(updatePopulationText.getText());
+				} catch (NumberFormatException e) {
 
-				updatePIDText.setText("");
+				}
+				k.Name = updateNameText.getText();
+				k.Coordinates = updateCoordinatesText.getText();
+				updateCity(k);
+
+				updateTIDText.setText("");
 				updateKIDText.setText("");
-				updateTitleEndText.setText("");
-				updateTitleStartText.setText("");
-				updateShortTitleText.setText("");
+				updateNameText.setText("");
+				updateCoordinatesText.setText("");
+				updatePopulationText.setText("");
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
@@ -302,7 +314,7 @@ public class HeirService implements Services {
 			public void actionPerformed(ActionEvent ae) {
 				try {
 					int id = Integer.parseInt(deleteIDText.getText());
-					deleteHeir(id);
+					deleteCity(id);
 				} catch (NumberFormatException e) {
 
 				}
@@ -323,11 +335,11 @@ public class HeirService implements Services {
 	}
 
 	public JComponent getScrollableTable() {
-		String[] columnNames = { "ID", "PID", "KID", "TitleStart", "TitleEnd", "ShortTitle" };
-		ArrayList<Heir> heirs = getHeirs();
-		Object[][] data = new Object[heirs.size()][5];
-		for (int i = 0; i < heirs.size(); i++) {
-			Heir k = heirs.get(i);
+		String[] columnNames = { "ID", "KID", "TID", "Name", "Population", "Coordinates" };
+		ArrayList<City> citys = getCitys();
+		Object[][] data = new Object[citys.size()][5];
+		for (int i = 0; i < citys.size(); i++) {
+			City k = citys.get(i);
 			data[i] = k.getRow();
 		}
 		JTable table = new JTable(data, columnNames);
@@ -337,30 +349,39 @@ public class HeirService implements Services {
 		return scrollPane;
 	}
 
-	public boolean addHeir(Heir k) {
+	public boolean addCity(City k) {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
-					.prepareCall("{ ? = call dbo.Insert_Heir(?, ?, ?, ?, ?) }");
+					.prepareCall("{ ? = call dbo.Insert_City(?, ?, ?, ?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
-			cs.setInt(2, k.PID);
-			cs.setInt(3, k.KID);
-			cs.setString(4, k.TitleStart);
-			cs.setString(5, k.TitleEnd);
-			cs.setString(6, k.ShortTitle);
+			cs.setInt(2, k.KID);
+			cs.setInt(3, k.TID);
+			cs.setString(4, k.Name);
+			cs.setString(5, k.Coordinates);
+			cs.setInt(6, k.Population);
 			cs.execute();
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a Person ID");
+				JOptionPane.showMessageDialog(null, "Please provide a name");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a Kingdom ID");
+				JOptionPane.showMessageDialog(null, "Please provide a Coordinates");
 				break;
 			case 3:
-				JOptionPane.showMessageDialog(null, "The Person ID " + k.PID + " does not exist");
+				JOptionPane.showMessageDialog(null, "Please provide a Kingdom ID");
 				break;
 			case 4:
-				JOptionPane.showMessageDialog(null, "The Kingdom ID " + k.KID + " does not exist");
+				JOptionPane.showMessageDialog(null, "Please provide a Terrain ID");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null, "Please provide a population greater than or equal to 10");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null, "The kingdom ID " + k.KID + " does not exist");
+				break;
+			case 7:
+				JOptionPane.showMessageDialog(null, "The terrain ID " + k.TID + " does not exist");
 				break;
 			default:
 				break;
@@ -372,17 +393,17 @@ public class HeirService implements Services {
 		return false;
 	}
 
-	public boolean updateHeir(Heir k) {
+	public boolean updateCity(City k) {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
-					.prepareCall("{ ? = call dbo.Update_Heir(?, ?, ?, ?, ?, ?) }");
+					.prepareCall("{ ? = call dbo.Update_City(?, ?, ?, ?, ?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setInt(2, k.ID);
-			cs.setInt(3, k.PID);
-			cs.setInt(4, k.KID);
-			cs.setString(5, k.TitleStart);
-			cs.setString(6, k.TitleEnd);
-			cs.setString(7, k.ShortTitle);
+			cs.setInt(3, k.KID);
+			cs.setInt(4, k.TID);
+			cs.setString(5, k.Name);
+			cs.setString(6, k.Coordinates);
+			cs.setInt(7, k.Population);
 			cs.execute();
 
 			int returnVal = cs.getInt(1);
@@ -391,10 +412,13 @@ public class HeirService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a valid ID");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a valid Person ID");
+				JOptionPane.showMessageDialog(null, "Please provide a valid Kingdom ID");
 				break;
 			case 3:
-				JOptionPane.showMessageDialog(null, "Please provide a valid Kingdom ID");
+				JOptionPane.showMessageDialog(null, "Please provide a valid Terrain ID");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null, "Please provide a population greater than or equalt to 10");
 				break;
 			default:
 				break;
@@ -406,9 +430,9 @@ public class HeirService implements Services {
 		return false;
 	}
 
-	public boolean deleteHeir(int ID) {
+	public boolean deleteCity(int ID) {
 		try {
-			CallableStatement cs = this.dbService.getConnection().prepareCall("{ ? = call dbo.Delete_Heir(?) }");
+			CallableStatement cs = this.dbService.getConnection().prepareCall("{ ? = call dbo.Delete_City(?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setInt(2, ID);
 
@@ -428,13 +452,13 @@ public class HeirService implements Services {
 		return false;
 	}
 
-	public ArrayList<String> getHeirNames() {
+	public ArrayList<String> getCityNames() {
 		Statement stmt;
 		ResultSet rs;
 		ArrayList<String> sodas = new ArrayList<String>();
 		try {
 			stmt = dbService.getConnection().createStatement();
-			stmt.execute("select distinct name from Heir");
+			stmt.execute("select distinct name from City");
 			rs = stmt.getResultSet();
 			while (rs.next()) {
 				sodas.add(rs.getString("name"));
@@ -445,40 +469,40 @@ public class HeirService implements Services {
 		return sodas;
 	}
 
-	public ArrayList<Heir> getHeirs() {
+	public ArrayList<City> getCitys() {
 		try {
-			String query = "SELECT ID, PID, KID, TitleStart, TitleEnd, ShortTitle \nFROM Heir\n";
+			String query = "SELECT ID, KID, TID, Name, Population, Coordinates \nFROM City\n";
 			PreparedStatement stmt = this.dbService.getConnection().prepareStatement(query);
 			stmt.executeQuery();
 			ResultSet rs = stmt.getResultSet();
 			return parseResults(rs);
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "Failed to retrieve heirs.");
+			JOptionPane.showMessageDialog(null, "Failed to retrieve cities.");
 			ex.printStackTrace();
-			return new ArrayList<Heir>();
+			return new ArrayList<City>();
 		}
 
 	}
 
-	private ArrayList<Heir> parseResults(ResultSet rs) {
+	private ArrayList<City> parseResults(ResultSet rs) {
 		try {
-			ArrayList<Heir> heirs = new ArrayList<Heir>();
+			ArrayList<City> citys = new ArrayList<City>();
 			while (rs.next()) {
-				Heir heir = new Heir();
-				heir.ID = rs.getInt("ID");
-				heir.PID = rs.getInt("PID");
-				heir.KID = rs.getInt("KID");
-				heir.TitleStart = rs.getString("TitleStart");
-				heir.TitleEnd = rs.getString("TitleEnd");
-				heir.ShortTitle = rs.getString("ShortTitle");
+				City city = new City();
+				city.ID = rs.getInt("ID");
+				city.KID = rs.getInt("KID");
+				city.TID = rs.getInt("TID");
+				city.Name = rs.getString("Name");
+				city.Population = rs.getInt("Population");
+				city.Coordinates = rs.getString("Coordinates");
 
-				heirs.add(heir);
+				citys.add(city);
 			}
-			return heirs;
+			return citys;
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "An error ocurred while retrieving heirs. See printed stack trace.");
+			JOptionPane.showMessageDialog(null, "An error ocurred while retrieving citys. See printed stack trace.");
 			ex.printStackTrace();
-			return new ArrayList<Heir>();
+			return new ArrayList<City>();
 		}
 
 	}

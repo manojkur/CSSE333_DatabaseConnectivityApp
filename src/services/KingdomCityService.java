@@ -12,7 +12,7 @@ import javax.swing.JTable;
 
 import Views.KingdomCity;
 
-public class KingdomCityService {
+public class KingdomCityService implements ViewServices {
 	private DatabaseConnectionService dbService = null;
 
 	public KingdomCityService(DatabaseConnectionService dbService) {
@@ -33,9 +33,10 @@ public class KingdomCityService {
 		}
 
 	}
-	
+
 	public JComponent getScrollableTable() {
-		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,CityName,Coordinates,Population".split(",");
+		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,CityName,Coordinates,Population"
+				.split(",");
 		ArrayList<KingdomCity> kingdoms = getKingdomWithCity();
 		Object[][] data = new Object[kingdoms.size()][5];
 		for (int i = 0; i < kingdoms.size(); i++) {

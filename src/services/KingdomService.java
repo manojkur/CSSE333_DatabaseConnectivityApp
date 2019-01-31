@@ -30,7 +30,7 @@ import javax.swing.event.DocumentListener;
 
 import tables.Kingdom;
 
-public class KingdomService {
+public class KingdomService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
 

@@ -13,7 +13,7 @@ import javax.swing.JTable;
 import Views.KingdomBuiltOnTopOf;
 import Views.KingdomRuler;
 
-public class KingdomRulerService {
+public class KingdomRulerService implements ViewServices {
 	private DatabaseConnectionService dbService = null;
 
 	public KingdomRulerService(DatabaseConnectionService dbService) {
@@ -34,9 +34,10 @@ public class KingdomRulerService {
 		}
 
 	}
-	
+
 	public JComponent getScrollableTable() {
-		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,YearsOfExperience,Title,Dynasty,FirstName,LastName,Gender,OtherNames,Suffix".split(",");
+		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,YearsOfExperience,Title,Dynasty,FirstName,LastName,Gender,OtherNames,Suffix"
+				.split(",");
 		ArrayList<KingdomRuler> kingdoms = getKingdomWithRuler();
 		Object[][] data = new Object[kingdoms.size()][5];
 		for (int i = 0; i < kingdoms.size(); i++) {
@@ -53,13 +54,13 @@ public class KingdomRulerService {
 	private ArrayList<KingdomRuler> parseResults(ResultSet rs) {
 		try {
 			ArrayList<KingdomRuler> kingdoms = new ArrayList<>();
-//			int NameIndex = rs.findColumn("Name");
-//			int ShortNameIndex = rs.findColumn("ShortName");
-//			int DateConqueredIndex = rs.findColumn("DateConquered");
-//			int GDPIndex = rs.findColumn("GDP");
-//			int SuccessionIndex = rs.findColumn("Succession");
-//			int TypeIndex = rs.findColumn("Type");
-//			int yearsOfExperienceIndex = rs.findColumn("YearsOfExperience");
+			// int NameIndex = rs.findColumn("Name");
+			// int ShortNameIndex = rs.findColumn("ShortName");
+			// int DateConqueredIndex = rs.findColumn("DateConquered");
+			// int GDPIndex = rs.findColumn("GDP");
+			// int SuccessionIndex = rs.findColumn("Succession");
+			// int TypeIndex = rs.findColumn("Type");
+			// int yearsOfExperienceIndex = rs.findColumn("YearsOfExperience");
 			while (rs.next()) {
 				KingdomRuler kingdom = new KingdomRuler();
 				kingdom.Name = rs.getString("Name");

@@ -28,7 +28,7 @@ import javax.swing.event.DocumentListener;
 
 import tables.Ruler;
 
-public class RulerService {
+public class RulerService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
 

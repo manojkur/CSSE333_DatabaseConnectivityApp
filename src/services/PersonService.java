@@ -28,7 +28,7 @@ import javax.swing.event.DocumentListener;
 
 import tables.Person;
 
-public class PersonService {
+public class PersonService implements Services{
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
 

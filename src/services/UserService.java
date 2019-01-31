@@ -16,8 +16,9 @@ import java.util.Random;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
-public class UserService {
+public class UserService implements Services{
 	private static final Random RANDOM = new SecureRandom();
 	private static final Base64.Encoder enc = Base64.getEncoder();
 	private static final Base64.Decoder dec = Base64.getDecoder();
@@ -107,6 +108,12 @@ public class UserService {
 			e.printStackTrace();
 		}
 		return getStringFromBytes(hash);
+	}
+
+	@Override
+	public JPanel getJPanel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -12,7 +12,7 @@ import javax.swing.JTable;
 
 import Views.KingdomMilitary;
 
-public class KingdomMilitaryService {
+public class KingdomMilitaryService implements ViewServices {
 	private DatabaseConnectionService dbService = null;
 
 	public KingdomMilitaryService(DatabaseConnectionService dbService) {
@@ -33,7 +33,7 @@ public class KingdomMilitaryService {
 		}
 
 	}
-	
+
 	public JComponent getScrollableTable() {
 		String[] columnNames = "Name,ShortName,DateConquered,GDP,Succession,Type,MilitaryName,Budget".split(",");
 		ArrayList<KingdomMilitary> kingdoms = getKingdomWithMilitary();

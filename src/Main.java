@@ -5,6 +5,8 @@ import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -12,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
+import services.CityService;
 import services.DatabaseConnectionService;
 import services.HeirService;
 import services.KingdomBuiltOnTopOfService;
@@ -22,6 +25,8 @@ import services.KingdomRulerService;
 import services.KingdomService;
 import services.PersonService;
 import services.RulerService;
+import services.Services;
+import services.ViewServices;
 
 public class Main {
 
@@ -45,17 +50,32 @@ public class Main {
 			KingdomService ks = new KingdomService(dbcs);
 			PersonService person = new PersonService(dbcs);
 			RulerService ruler = new RulerService(dbcs);
+
 			KingdomBuiltOnTopOfService kingdomBuiltOnTopOfService = new KingdomBuiltOnTopOfService(dbcs);
 			KingdomCityService kingdomCityService = new KingdomCityService(dbcs);
 			KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
 			KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
-
 			KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
 
 			HeirService heir = new HeirService(dbcs);
+			CityService city = new CityService(dbcs);
 
 			JFrame tableFrame = new JFrame("Kingdom Database entries");
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+			Map<Services, String> services = new HashMap<>();
+			services.put(ks, "Kingdom");
+			services.put(person, "Person");
+			services.put(ruler, "Ruler");
+			services.put(heir, "Heir");
+			services.put(city, "City");
+
+			Map<ViewServices, String> viewServices = new HashMap<>();
+			viewServices.put(kingdomBuiltOnTopOfService, "KingdomBuiltOnTopOfView");
+			viewServices.put(kingdomCityService, "KingdomCityView");
+			viewServices.put(kingdomConqueredUsingService, "KingdomConqueredUsingView");
+			viewServices.put(kingdomMilitaryService, "KingdomMilitaryView");
+			viewServices.put(kingdomRulerService, "KingdomRulerView");
 
 			// get 2/3 of the height, and 2/3 of the width
 			int height = screenSize.height * 2 / 3;
@@ -67,21 +87,19 @@ public class Main {
 			JPanel kingdomCards = new JPanel(new BorderLayout());
 
 			JPanel comboBoxPane = new JPanel(); // use FlowLayout
-			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "KingdomBuiltOnTopOfView",
+			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "KingdomBuiltOnTopOfView",
 					"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
 			JComboBox cb = new JComboBox(comboBoxItems);
 			cb.setEditable(false);
 
 			JPanel cards = new JPanel(new CardLayout());
-			cards.add(ks.getJPanel(), comboBoxItems[0]);
-			cards.add(person.getJPanel(), comboBoxItems[1]);
-			cards.add(ruler.getJPanel(), comboBoxItems[2]);
-			cards.add(heir.getJPanel(), comboBoxItems[3]);
-			cards.add(kingdomBuiltOnTopOfService.getScrollableTable(), comboBoxItems[4]);
-			cards.add(kingdomCityService.getScrollableTable(), comboBoxItems[5]);
-			cards.add(kingdomConqueredUsingService.getScrollableTable(), comboBoxItems[6]);
-			cards.add(kingdomMilitaryService.getScrollableTable(), comboBoxItems[7]);
-			cards.add(kingdomRulerService.getScrollableTable(), comboBoxItems[8]);
+			for (Services service : services.keySet()) {
+				cards.add(service.getJPanel(), services.get(service));
+			}
+
+			for (ViewServices service : viewServices.keySet()) {
+				cards.add(service.getScrollableTable(), viewServices.get(service));
+			}
 
 			cb.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent evt) {
