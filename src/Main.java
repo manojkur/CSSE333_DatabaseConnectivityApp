@@ -24,6 +24,7 @@ import services.KingdomMilitaryService;
 import services.KingdomRulerService;
 import services.KingdomService;
 import services.KnightService;
+import services.MilitaryService;
 import services.PersonService;
 import services.RulerService;
 import services.Services;
@@ -63,6 +64,7 @@ public class Main {
 			CityService city = new CityService(dbcs);
 			TerrainService terrainService = new TerrainService(dbcs);
 			KnightService knight = new KnightService(dbcs);
+			MilitaryService military = new MilitaryService(dbcs);
 
 			JFrame tableFrame = new JFrame("Kingdom Database entries");
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -75,6 +77,7 @@ public class Main {
 			services.put(city, "City");
 			services.put(terrainService, "Terrain");
 			services.put(knight, "Knight");
+			services.put(military, "Military");
 
 			Map<ViewServices, String> viewServices = new HashMap<>();
 			viewServices.put(kingdomBuiltOnTopOfService, "KingdomBuiltOnTopOfView");
@@ -93,7 +96,7 @@ public class Main {
 			JPanel kingdomCards = new JPanel(new BorderLayout());
 
 			JPanel comboBoxPane = new JPanel(); // use FlowLayout
-			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight",  "KingdomBuiltOnTopOfView",
+			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight", "Military", "KingdomBuiltOnTopOfView",
 					"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
 			JComboBox cb = new JComboBox(comboBoxItems);
 			cb.setEditable(false);
