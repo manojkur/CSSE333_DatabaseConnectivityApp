@@ -15,7 +15,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 import services.CityService;
+import services.ConqueredMethodService;
+import services.ConqueredUsingService;
 import services.DatabaseConnectionService;
+import services.FunctionsUsingService;
 import services.HeirService;
 import services.KingdomBuiltOnTopOfService;
 import services.KingdomCityService;
@@ -31,6 +34,7 @@ import services.RulerService;
 import services.Services;
 import services.TerrainService;
 import services.ViewServices;
+import tables.FunctionsUsing;
 import tables.Resource;
 
 public class Main {
@@ -55,19 +59,21 @@ public class Main {
 			KingdomService ks = new KingdomService(dbcs);
 			PersonService person = new PersonService(dbcs);
 			RulerService ruler = new RulerService(dbcs);
-
-			KingdomBuiltOnTopOfService kingdomBuiltOnTopOfService = new KingdomBuiltOnTopOfService(dbcs);
-			KingdomCityService kingdomCityService = new KingdomCityService(dbcs);
-			KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
-			KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
-			KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
-
 			HeirService heir = new HeirService(dbcs);
 			CityService city = new CityService(dbcs);
 			TerrainService terrainService = new TerrainService(dbcs);
 			KnightService knight = new KnightService(dbcs);
 			MilitaryService military = new MilitaryService(dbcs);
 			ResourceService resource = new ResourceService(dbcs);
+			ConqueredUsingService conqueredUsing = new ConqueredUsingService(dbcs);
+			ConqueredMethodService conquerMethod = new ConqueredMethodService(dbcs);
+			FunctionsUsingService functionsUsing = new FunctionsUsingService(dbcs);
+
+			KingdomBuiltOnTopOfService kingdomBuiltOnTopOfService = new KingdomBuiltOnTopOfService(dbcs);
+			KingdomCityService kingdomCityService = new KingdomCityService(dbcs);
+			KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
+			KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
+			KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
 
 			JFrame tableFrame = new JFrame("Kingdom Database entries");
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -82,6 +88,9 @@ public class Main {
 			services.put(knight, "Knight");
 			services.put(military, "Military");
 			services.put(resource, "Resource");
+			services.put(conqueredUsing, "ConqueredUsing");
+			services.put(conquerMethod, "ConquerMethod");
+			services.put(functionsUsing, "FunctionsUsing");
 
 			Map<ViewServices, String> viewServices = new HashMap<>();
 			viewServices.put(kingdomBuiltOnTopOfService, "KingdomBuiltOnTopOfView");
@@ -100,7 +109,8 @@ public class Main {
 			JPanel kingdomCards = new JPanel(new BorderLayout());
 
 			JPanel comboBoxPane = new JPanel(); // use FlowLayout
-			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight", "Military", "Resource","KingdomBuiltOnTopOfView",
+			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight", "Military",
+					"Resource", "ConqueredUsing", "ConquerMethod", "FunctionsUsing", "KingdomBuiltOnTopOfView",
 					"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
 			JComboBox cb = new JComboBox(comboBoxItems);
 			cb.setEditable(false);
