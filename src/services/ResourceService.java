@@ -47,8 +47,8 @@ public class ResourceService implements Services {
 		int height = 20;
 
 		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
 		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
 		
 		JLabel insertNameLabel = new JLabel("Name: ");
 		insert.add(insertNameLabel);
@@ -305,10 +305,11 @@ public class ResourceService implements Services {
 
 	public ArrayList<Resource> getResources() {
 		try {
-			String query = "SELECT ID, Name \nFROM Resource\n ";
+			String query = "SELECT ID, Name \nFROM Resource\n";
 			PreparedStatement stmt = this.dbService.getConnection().prepareStatement(query);
 			stmt.executeQuery();
 			ResultSet rs = stmt.getResultSet();
+			System.out.println(rs.toString());
 			return parseResults(rs);
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(null, "Failed to retrieve Resources.");
