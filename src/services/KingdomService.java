@@ -1,5 +1,6 @@
 package services;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -27,7 +28,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import tables.Kingdom;
 
@@ -283,7 +289,7 @@ public class KingdomService implements Services {
 				}
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(kingdom.DateConquered);
-				Integer month = cal.get(Calendar.MONTH);
+				Integer month = cal.get(Calendar.MONTH) + 1;
 				Integer day = cal.get(Calendar.DAY_OF_MONTH);
 				Integer year = cal.get(Calendar.YEAR);
 				Long gdp = kingdom.GDP;
@@ -411,7 +417,54 @@ public class KingdomService implements Services {
 		};
 		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
-		JScrollPane scrollPane = new JScrollPane(table);
+		table.setColumnSelectionAllowed(true);
+		table.setRowSelectionAllowed(true);
+
+		TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(table.getModel());
+		JTextField jtfFilter = new JTextField();
+		JButton jbtFilter = new JButton("Filter");
+
+		table.setRowSorter(rowSorter);
+
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(new JLabel("Search:"), BorderLayout.WEST);
+		panel.add(jtfFilter, BorderLayout.CENTER);
+
+		JPanel scrollPane = new JPanel();
+		scrollPane.setLayout(new BorderLayout());
+		scrollPane.add(panel, BorderLayout.SOUTH);
+		scrollPane.add(new JScrollPane(table), BorderLayout.CENTER);
+
+		jtfFilter.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				String text = jtfFilter.getText();
+
+				if (text.trim().length() == 0) {
+					rowSorter.setRowFilter(null);
+				} else {
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				String text = jtfFilter.getText();
+
+				if (text.trim().length() == 0) {
+					rowSorter.setRowFilter(null);
+				} else {
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				throw new UnsupportedOperationException();
+			}
+
+		});
 
 		return scrollPane;
 	}
