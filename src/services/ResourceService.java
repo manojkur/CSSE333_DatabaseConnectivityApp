@@ -1,5 +1,6 @@
 package services;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -12,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -27,11 +27,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
-import tables.Kingdom;
 import tables.Resource;
 
 public class ResourceService implements Services {
@@ -96,7 +98,7 @@ public class ResourceService implements Services {
 		innerPanel.setMaximumSize(new Dimension(width, height + 20));
 		innerPanel.add(dropDown);
 		update.add(innerPanel);
-		
+
 		JLabel updateNameLabel = new JLabel("Name: ");
 		update.add(updateNameLabel);
 		JTextField updateNameText = (new JTextField() {
@@ -123,7 +125,7 @@ public class ResourceService implements Services {
 				updateNameText.setText(resource.Name);
 			}
 		});
-		
+
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -204,7 +206,54 @@ public class ResourceService implements Services {
 		};
 		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
-		JScrollPane scrollPane = new JScrollPane(table);
+		table.setColumnSelectionAllowed(true);
+		table.setRowSelectionAllowed(true);
+
+		TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(table.getModel());
+		JTextField jtfFilter = new JTextField();
+		JButton jbtFilter = new JButton("Filter");
+
+		table.setRowSorter(rowSorter);
+
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(new JLabel("Search:"), BorderLayout.WEST);
+		panel.add(jtfFilter, BorderLayout.CENTER);
+
+		JPanel scrollPane = new JPanel();
+		scrollPane.setLayout(new BorderLayout());
+		scrollPane.add(panel, BorderLayout.SOUTH);
+		scrollPane.add(new JScrollPane(table), BorderLayout.CENTER);
+
+		jtfFilter.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				String text = jtfFilter.getText();
+
+				if (text.trim().length() == 0) {
+					rowSorter.setRowFilter(null);
+				} else {
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				String text = jtfFilter.getText();
+
+				if (text.trim().length() == 0) {
+					rowSorter.setRowFilter(null);
+				} else {
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				throw new UnsupportedOperationException();
+			}
+
+		});
 
 		return scrollPane;
 	}
@@ -232,8 +281,7 @@ public class ResourceService implements Services {
 
 	public boolean updateResource(Resource k) {
 		try {
-			CallableStatement cs = this.dbService.getConnection()
-					.prepareCall("{ ? = call dbo.Update_Resource(?, ?) }");
+			CallableStatement cs = this.dbService.getConnection().prepareCall("{ ? = call dbo.Update_Resource(?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setInt(2, k.ID);
 			cs.setString(3, k.Name);
