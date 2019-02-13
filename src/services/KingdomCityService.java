@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import Views.KingdomCity;
 
@@ -43,7 +44,22 @@ public class KingdomCityService implements ViewServices {
 			KingdomCity k = kingdoms.get(i);
 			data[i] = k.getRow();
 		}
-		JTable table = new JTable(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 2:
+					return java.sql.Date.class;
+				case 3:
+					return Long.class;
+				case 8:
+					return Integer.class;
+				default:
+					return String.class;
+				}
+			}
+		};
+		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 

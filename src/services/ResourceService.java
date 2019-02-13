@@ -26,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 
 import tables.Resource;
 
@@ -49,7 +50,7 @@ public class ResourceService implements Services {
 		JPanel insert = new JPanel();
 		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		
+
 		JLabel insertNameLabel = new JLabel("Name: ");
 		insert.add(insertNameLabel);
 		JTextField insertNameText = (new JTextField() {
@@ -211,7 +212,20 @@ public class ResourceService implements Services {
 			Resource k = resources.get(i);
 			data[i] = k.getRow();
 		}
-		JTable table = new JTable(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return String.class;
+				default:
+					return String.class;
+				}
+			}
+		};
+		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 
@@ -220,8 +234,7 @@ public class ResourceService implements Services {
 
 	public boolean addResource(Resource k) {
 		try {
-			CallableStatement cs = this.dbService.getConnection()
-					.prepareCall("{ ? = call dbo.Insert_Resource(?) }");
+			CallableStatement cs = this.dbService.getConnection().prepareCall("{ ? = call dbo.Insert_Resource(?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setString(2, k.Name);
 			cs.execute();
@@ -331,7 +344,8 @@ public class ResourceService implements Services {
 			}
 			return resources;
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "An error ocurred while retrieving resources. See printed stack trace.");
+			JOptionPane.showMessageDialog(null,
+					"An error ocurred while retrieving resources. See printed stack trace.");
 			ex.printStackTrace();
 			return new ArrayList<Resource>();
 		}

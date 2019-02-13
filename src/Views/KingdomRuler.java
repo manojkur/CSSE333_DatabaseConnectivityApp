@@ -17,9 +17,10 @@ public class KingdomRuler {
 	public char gender;
 	public String otherNames;
 	public String suffix;
-	
+
 	public Object[] getRow() {
-		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, YearsOfExperience, title, dynasty, firstName, lastName, gender, otherNames, suffix};
+		Object[] o = { Name, ShortName, DateConquered, new Long(GDP), Succession, Type, new Integer(YearsOfExperience),
+				title, dynasty, firstName, lastName, new Character(gender), otherNames, suffix };
 		return o;
 	}
 }

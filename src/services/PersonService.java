@@ -25,10 +25,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 
 import tables.Person;
 
-public class PersonService implements Services{
+public class PersonService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
 
@@ -322,7 +323,18 @@ public class PersonService implements Services{
 			Person k = persons.get(i);
 			data[i] = k.getRow();
 		}
-		JTable table = new JTable(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				default:
+					return String.class;
+				}
+			}
+		};
+		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 

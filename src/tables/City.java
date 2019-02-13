@@ -9,7 +9,8 @@ public class City {
 	public String Coordinates;
 
 	public Object[] getRow() {
-		Object[] o = { ID, KID, TID, Name, Population, Coordinates };
+		Object[] o = { new Integer(ID), new Integer(KID), new Integer(TID), Name, new Integer(Population),
+				Coordinates };
 		return o;
 	}
 }

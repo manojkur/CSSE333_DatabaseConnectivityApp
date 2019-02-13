@@ -9,7 +9,7 @@ public class Person {
 	public String Gender;
 
 	public Object[] getRow() {
-		Object[] o = { ID, FirstName, LastName, OtherNames, Suffix, Gender };
+		Object[] o = { new Integer(ID), FirstName, LastName, OtherNames, Suffix, Gender };
 		return o;
 	}
 }

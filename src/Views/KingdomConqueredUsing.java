@@ -11,9 +11,10 @@ public class KingdomConqueredUsing {
 	public String Type;
 	public String ConqueredMethodName;
 	public String effectiveness;
-	
+
 	public Object[] getRow() {
-		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, ConqueredMethodName, effectiveness};
+		Object[] o = { Name, ShortName, DateConquered, new Long(GDP), Succession, Type, ConqueredMethodName,
+				effectiveness };
 		return o;
 	}
 }

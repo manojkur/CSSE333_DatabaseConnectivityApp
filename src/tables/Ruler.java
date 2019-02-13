@@ -10,7 +10,8 @@ public class Ruler {
 	public String Dynasty;
 
 	public Object[] getRow() {
-		Object[] o = { ID, PID, KID, HID, YearsOfExperience, Title, Dynasty };
+		Object[] o = { new Integer(ID), new Integer(PID), new Integer(KID), new Integer(HID),
+				new Integer(YearsOfExperience), Title, Dynasty };
 		return o;
 	}
 }

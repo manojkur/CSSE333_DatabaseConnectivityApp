@@ -6,7 +6,7 @@ public class Terrain {
 	public String Name;
 
 	public Object[] getRow() {
-		Object[] o = { ID, TraverseDifficulty, Name };
+		Object[] o = { new Integer(ID), Name, TraverseDifficulty };
 		return o;
 	}
 }

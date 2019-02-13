@@ -26,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 
 import tables.Terrain;
 
@@ -49,7 +50,7 @@ public class TerrainService implements Services {
 		JPanel insert = new JPanel();
 		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
 		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
+
 		JLabel insertNameLabel = new JLabel("Name: ");
 		insert.add(insertNameLabel);
 		JTextField insertNameText = (new JTextField() {
@@ -60,7 +61,8 @@ public class TerrainService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		insert.add(insertNameText);
 
-		JLabel insertTraverseDifficultyLabel = new JLabel("TraverseDifficulty (VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW): ");
+		JLabel insertTraverseDifficultyLabel = new JLabel(
+				"TraverseDifficulty (VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW): ");
 		insert.add(insertTraverseDifficultyLabel);
 		JTextField insertTraverseDifficultyText = (new JTextField() {
 			public JTextField setMaxSize(Dimension d) {
@@ -238,7 +240,22 @@ public class TerrainService implements Services {
 			Terrain k = terrains.get(i);
 			data[i] = k.getRow();
 		}
-		JTable table = new JTable(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return String.class;
+				case 2:
+					return String.class;
+				default:
+					return String.class;
+				}
+			}
+		};
+		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 
@@ -247,8 +264,7 @@ public class TerrainService implements Services {
 
 	public boolean addTerrain(Terrain k) {
 		try {
-			CallableStatement cs = this.dbService.getConnection()
-					.prepareCall("{ ? = call dbo.Insert_Terrain(?, ?) }");
+			CallableStatement cs = this.dbService.getConnection().prepareCall("{ ? = call dbo.Insert_Terrain(?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setString(2, k.Name);
 			cs.setString(3, k.TraverseDifficulty);
@@ -259,7 +275,8 @@ public class TerrainService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a name");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a TraverseDifficulty from the following: VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW");
+				JOptionPane.showMessageDialog(null,
+						"Please provide a TraverseDifficulty from the following: VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW");
 				break;
 			default:
 				break;
@@ -287,7 +304,8 @@ public class TerrainService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a valid ID");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a TraverseDifficulty from the following: VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW");
+				JOptionPane.showMessageDialog(null,
+						"Please provide a TraverseDifficulty from the following: VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW");
 				break;
 			default:
 				break;

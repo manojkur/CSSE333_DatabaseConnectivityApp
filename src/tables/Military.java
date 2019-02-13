@@ -1,7 +1,5 @@
 package tables;
 
-import java.sql.Date;
-
 public class Military {
 	public int ID;
 	public int KID;
@@ -9,7 +7,7 @@ public class Military {
 	public long Budget;
 
 	public Object[] getRow() {
-		Object[] o = { ID, KID, Name, Budget };
+		Object[] o = { new Integer(ID), new Integer(KID), Name, new Long(Budget) };
 		return o;
 	}
 }

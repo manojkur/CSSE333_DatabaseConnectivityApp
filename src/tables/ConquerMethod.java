@@ -6,7 +6,7 @@ public class ConquerMethod {
 	public String Name;
 
 	public Object[] getRow() {
-		Object[] o = { ID, Effectiveness, Name };
+		Object[] o = { new Integer(ID), Name, Effectiveness };
 		return o;
 	}
 }

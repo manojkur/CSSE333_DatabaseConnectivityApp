@@ -11,9 +11,10 @@ public class KingdomMilitary {
 	public String Type;
 	public String MilitaryName;
 	public int budget;
-	
+
 	public Object[] getRow() {
-		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, MilitaryName, budget};
+		Object[] o = { Name, ShortName, DateConquered, new Long(GDP), Succession, Type, MilitaryName,
+				new Integer(budget) };
 		return o;
 	}
 }

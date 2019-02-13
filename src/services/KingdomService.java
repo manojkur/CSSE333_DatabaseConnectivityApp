@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,8 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 
 import tables.Kingdom;
 
@@ -181,7 +178,6 @@ public class KingdomService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		
 		JComboBox<String> dropDown = new JComboBox<>();
 		List<Kingdom> kingdoms = getKingdoms();
 		for (Kingdom kingdom : kingdoms) {
@@ -190,7 +186,7 @@ public class KingdomService implements Services {
 		JPanel innerPanel = new JPanel(new FlowLayout());
 		innerPanel.setMaximumSize(new Dimension(width, height + 20));
 		innerPanel.add(dropDown);
-		update.add(innerPanel);		
+		update.add(innerPanel);
 
 		JLabel updateNameLabel = new JLabel("Name: ");
 		update.add(updateNameLabel);
@@ -273,14 +269,14 @@ public class KingdomService implements Services {
 		update.add(updateTypeText);
 
 		dropDown.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]; 
+
+				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
 				Kingdom kingdom = null;
-				for(Kingdom k : kingdoms){
-					if(Integer.toString(k.ID).equals(id)){
+				for (Kingdom k : kingdoms) {
+					if (Integer.toString(k.ID).equals(id)) {
 						kingdom = k;
 						break;
 					}
@@ -390,7 +386,30 @@ public class KingdomService implements Services {
 			Kingdom k = kingdoms.get(i);
 			data[i] = k.getRow();
 		}
-		JTable table = new JTable(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return String.class;
+				case 2:
+					return String.class;
+				case 3:
+					return java.sql.Date.class;
+				case 4:
+					return Long.class;
+				case 5:
+					return String.class;
+				case 6:
+					return String.class;
+				default:
+					return String.class;
+				}
+			}
+		};
+		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 

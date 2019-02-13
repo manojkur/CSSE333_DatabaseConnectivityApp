@@ -12,9 +12,10 @@ public class KingdomBuiltOnTopOf {
 	public String Type;
 	public String terrainName;
 	public String traverseDifficulty;
-	
+
 	public Object[] getRow() {
-		Object[] o = { Name, ShortName, DateConquered, GDP, Succession, Type, cityName, terrainName, traverseDifficulty};
+		Object[] o = { Name, ShortName, DateConquered, new Long(GDP), Succession, Type, cityName, terrainName,
+				traverseDifficulty };
 		return o;
 	}
 }

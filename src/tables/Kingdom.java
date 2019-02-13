@@ -12,7 +12,7 @@ public class Kingdom {
 	public String Type;
 
 	public Object[] getRow() {
-		Object[] o = { ID, Name, ShortName, DateConquered, GDP, Succession, Type };
+		Object[] o = { new Integer(ID), Name, ShortName, DateConquered, new Long(GDP), Succession, Type };
 		return o;
 	}
 }

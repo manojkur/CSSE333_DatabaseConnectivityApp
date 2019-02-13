@@ -7,7 +7,7 @@ public class FunctionsUsing {
 	public int Quantity;
 
 	public Object[] getRow() {
-		Object[] o = { ID, RID, CID, Quantity };
+		Object[] o = { new Integer(ID), new Integer(RID), new Integer(CID), new Integer(Quantity) };
 		return o;
 	}
 }

@@ -1,7 +1,5 @@
 package tables;
 
-import java.sql.Date;
-
 public class Heir {
 	public int ID;
 	public int PID;
@@ -11,7 +9,7 @@ public class Heir {
 	public String ShortTitle;
 
 	public Object[] getRow() {
-		Object[] o = { ID,PID,KID,TitleStart,TitleEnd,ShortTitle };
+		Object[] o = { new Integer(ID), new Integer(PID), new Integer(KID), TitleStart, TitleEnd, ShortTitle };
 		return o;
 	}
 }

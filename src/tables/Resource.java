@@ -5,7 +5,7 @@ public class Resource {
 	public String Name;
 
 	public Object[] getRow() {
-		Object[] o = { ID, Name };
+		Object[] o = { new Integer(ID), Name };
 		return o;
 	}
 }

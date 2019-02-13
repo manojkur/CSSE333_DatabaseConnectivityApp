@@ -26,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 
 import tables.Military;
 
@@ -49,7 +50,7 @@ public class MilitaryService implements Services {
 		JPanel insert = new JPanel();
 		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
 		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
+
 		JLabel insertKIDLabel = new JLabel("KID: ");
 		insert.add(insertKIDLabel);
 		JTextField insertKIDText = (new JTextField() {
@@ -282,7 +283,24 @@ public class MilitaryService implements Services {
 			Military k = militarys.get(i);
 			data[i] = k.getRow();
 		}
-		JTable table = new JTable(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return Integer.class;
+				case 2:
+					return String.class;
+				case 3:
+					return Long.class;
+				default:
+					return String.class;
+				}
+			}
+		};
+		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 
@@ -413,13 +431,14 @@ public class MilitaryService implements Services {
 				military.ID = rs.getInt("ID");
 				military.KID = rs.getInt("KID");
 				military.Name = rs.getString("Name");
-				military.Budget= rs.getLong("Budget");
+				military.Budget = rs.getLong("Budget");
 
 				militarys.add(military);
 			}
 			return militarys;
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "An error ocurred while retrieving militarys. See printed stack trace.");
+			JOptionPane.showMessageDialog(null,
+					"An error ocurred while retrieving militarys. See printed stack trace.");
 			ex.printStackTrace();
 			return new ArrayList<Military>();
 		}

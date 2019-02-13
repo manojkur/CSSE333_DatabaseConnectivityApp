@@ -9,8 +9,8 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
-import Views.KingdomBuiltOnTopOf;
 import Views.KingdomRuler;
 
 public class KingdomRulerService implements ViewServices {
@@ -44,7 +44,24 @@ public class KingdomRulerService implements ViewServices {
 			KingdomRuler k = kingdoms.get(i);
 			data[i] = k.getRow();
 		}
-		JTable table = new JTable(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 2:
+					return java.sql.Date.class;
+				case 3:
+					return Long.class;
+				case 6:
+					return Integer.class;
+				case 11:
+					return Character.class;
+				default:
+					return String.class;
+				}
+			}
+		};
+		JTable table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 

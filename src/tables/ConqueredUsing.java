@@ -6,7 +6,7 @@ public class ConqueredUsing {
 	public int CMID;
 
 	public Object[] getRow() {
-		Object[] o = { ID, KID, CMID };
+		Object[] o = { new Integer(ID), new Integer(KID), new Integer(CMID) };
 		return o;
 	}
 }
