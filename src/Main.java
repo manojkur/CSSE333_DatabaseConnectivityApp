@@ -8,9 +8,13 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 
 import services.CityService;
 import services.ConqueredMethodService;
@@ -39,18 +43,31 @@ public class Main {
 		DatabaseConnectionService dbcs = new DatabaseConnectionService("golem.csse.rose-hulman.edu", "KingdomDB");
 		Statement stmt;
 
-//		JFrame frame = new JFrame("Credentials");
-//		String user = JOptionPane.showInputDialog(frame, "Please enter your username");
-//		String password = "";
-//		JPasswordField pf = new JPasswordField();
-//		int pass = JOptionPane.showConfirmDialog(null, pf, "Please enter your password", JOptionPane.OK_CANCEL_OPTION,
-//				JOptionPane.PLAIN_MESSAGE);
-//		if (pass == JOptionPane.OK_OPTION) {
-//			password = new String(pf.getPassword());
-//		}
+		JFrame frame = new JFrame("Credentials");
+		String user = JOptionPane.showInputDialog(frame, "Please enter your username");
+		String password = "";
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		JPasswordField pf = new JPasswordField();
+		panel.add(new JLabel("Please enter your password"));
+		panel.add(pf);
+		JOptionPane pane = new JOptionPane(panel, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION) {
+			@Override
+			public void selectInitialValue() {
+				pf.requestFocusInWindow();
+			}
+		};
+
+		pane.createDialog(null, "Please enter your password").setVisible(true);
+		// int pass = JOptionPane.showConfirmDialog(null, pf, "Please enter your
+		// password", JOptionPane.OK_CANCEL_OPTION,
+		// JOptionPane.PLAIN_MESSAGE);
+//		 if (pass == JOptionPane.OK_OPTION) {
+		password = pf.getPassword().length == 0 ? null : new String(pf.getPassword());
+//		 }
 
 		try {
-			Boolean connectionBool = dbcs.connect("kurapam", "csse333pass");
+			Boolean connectionBool = dbcs.connect(user, password);
 
 			KingdomService ks = new KingdomService(dbcs);
 			PersonService person = new PersonService(dbcs);
@@ -126,6 +143,8 @@ public class Main {
 					cl.show(cards, (String) evt.getItem());
 				}
 			});
+			CardLayout cl = (CardLayout) cards.getLayout();
+			cl.show(cards, "Kingdom");
 			comboBoxPane.add(cb);
 			kingdomCards.add(comboBoxPane, BorderLayout.PAGE_START);
 			kingdomCards.add(cards, BorderLayout.CENTER);
