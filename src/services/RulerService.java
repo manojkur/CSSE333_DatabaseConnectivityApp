@@ -33,7 +33,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import tables.Kingdom;
 import tables.Ruler;
 
 public class RulerService implements Services {
@@ -49,6 +48,8 @@ public class RulerService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -157,6 +158,14 @@ public class RulerService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Ruler ruler : getRulers()) {
+					dropDown.addItem("ID: " + ruler.ID);
+				}
+				dropDown2.removeAllItems();
+				for (Ruler ruler : getRulers()) {
+					dropDown2.addItem("ID: " + ruler.ID);
+				}
 			}
 		});
 
@@ -167,9 +176,7 @@ public class RulerService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<Ruler> rulers = getRulers();
-		for (Ruler ruler : rulers) {
+		for (Ruler ruler : getRulers()) {
 			dropDown.addItem("ID: " + ruler.ID);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -241,26 +248,35 @@ public class RulerService implements Services {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String id = dropDown.getSelectedItem().toString().split(" ")[1];
-				List<Ruler> rulers = getRulers();
-				Ruler p = null;
-				for (Ruler ruler : rulers) {
-					if (Integer.toString(ruler.ID).equals(id)) {
-						p = ruler;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split(" ")[1];
+					List<Ruler> rulers = getRulers();
+					Ruler p = null;
+					for (Ruler ruler : rulers) {
+						if (Integer.toString(ruler.ID).equals(id)) {
+							p = ruler;
+							break;
+						}
 					}
-				}
-				Integer PID = p.PID;
-				Integer KID = p.KID;
-				Integer HID = p.HID;
-				Integer YearsOfExperience = p.YearsOfExperience;
+					Integer PID = p.PID;
+					Integer KID = p.KID;
+					Integer HID = p.HID;
+					Integer YearsOfExperience = p.YearsOfExperience;
 
-				updatePIDText.setText(PID.toString());
-				updateKIDText.setText(KID.toString());
-				updateHIDText.setText(HID.toString());
-				updateYearsOfExperienceText.setText(YearsOfExperience.toString());
-				updateTitleText.setText(p.Title);
-				updateDynastyText.setText(p.Dynasty);
+					updatePIDText.setText(PID.toString());
+					updateKIDText.setText(KID.toString());
+					updateHIDText.setText(HID.toString());
+					updateYearsOfExperienceText.setText(YearsOfExperience.toString());
+					updateTitleText.setText(p.Title);
+					updateDynastyText.setText(p.Dynasty);
+				} catch (Exception e1) {
+					updatePIDText.setText("");
+					updateKIDText.setText("");
+					updateHIDText.setText("");
+					updateYearsOfExperienceText.setText("");
+					updateTitleText.setText("");
+					updateDynastyText.setText("");
+				}
 			}
 		});
 
@@ -307,6 +323,14 @@ public class RulerService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Ruler ruler : getRulers()) {
+					dropDown.addItem("ID: " + ruler.ID);
+				}
+				dropDown2.removeAllItems();
+				for (Ruler ruler : getRulers()) {
+					dropDown2.addItem("ID: " + ruler.ID);
+				}
 			}
 		});
 
@@ -317,9 +341,7 @@ public class RulerService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		
-		JComboBox<String> dropDown2 = new JComboBox<>();
-		for (Ruler ruler : rulers) {
+		for (Ruler ruler : getRulers()) {
 			dropDown2.addItem("ID: " + ruler.ID);
 		}
 		JPanel innerPanel2 = new JPanel(new FlowLayout());
@@ -330,15 +352,21 @@ public class RulerService implements Services {
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				
+
 				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
 				deleteRuler(id);
-
-				
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Ruler ruler : getRulers()) {
+					dropDown.addItem("ID: " + ruler.ID);
+				}
+				dropDown2.removeAllItems();
+				for (Ruler ruler : getRulers()) {
+					dropDown2.addItem("ID: " + ruler.ID);
+				}
 			}
 		});
 
@@ -474,7 +502,6 @@ public class RulerService implements Services {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
 					.prepareCall("{ ? = call dbo.Update_Ruler(?,?,?,?,?,?,?) }");
-			System.out.println(p.YearsOfExperience);
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setInt(2, p.ID);
 			cs.setInt(3, p.PID);
@@ -483,7 +510,6 @@ public class RulerService implements Services {
 			cs.setInt(6, p.YearsOfExperience);
 			cs.setString(7, p.Title);
 			cs.setString(8, p.Dynasty);
-//			System.out.println(p.PID +" " + p.KID + " " + p.ID + " " + p.HID);
 			cs.execute();
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
@@ -494,7 +520,6 @@ public class RulerService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide Years Of Experience of at least 0");
 				break;
 			default:
-				System.out.println(returnVal);
 				break;
 			}
 			return true;

@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -49,6 +48,8 @@ public class MilitaryService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -111,6 +112,14 @@ public class MilitaryService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Military military : getMilitarys()) {
+					dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Military military : getMilitarys()) {
+					dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+				}
 			}
 		});
 
@@ -121,9 +130,7 @@ public class MilitaryService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<Military> militarys = getMilitarys();
-		for (Military military : militarys) {
+		for (Military military : getMilitarys()) {
 			dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -166,18 +173,24 @@ public class MilitaryService implements Services {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-				Military military = null;
-				for (Military k : militarys) {
-					if (Integer.toString(k.ID).equals(id)) {
-						military = k;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+					Military military = null;
+					for (Military k : getMilitarys()) {
+						if (Integer.toString(k.ID).equals(id)) {
+							military = k;
+							break;
+						}
 					}
+					Long budget = military.Budget;
+					updateKIDText.setText(Integer.toString(military.KID));
+					updateNameText.setText(military.Name);
+					updateBudgetText.setText(budget.toString());
+				} catch (Exception e1) {
+					updateKIDText.setText("");
+					updateNameText.setText("");
+					updateBudgetText.setText("");
 				}
-				Long budget = military.Budget;
-				updateKIDText.setText(Integer.toString(military.KID));
-				updateNameText.setText(military.Name);
-				updateBudgetText.setText(budget.toString());
 			}
 		});
 
@@ -199,13 +212,21 @@ public class MilitaryService implements Services {
 				k.Name = updateNameText.getText();
 				updateMilitary(k);
 
-				insertKIDText.setText("");
-				insertNameText.setText("");
-				insertBudgetText.setText("");
+				updateKIDText.setText("");
+				updateNameText.setText("");
+				updateBudgetText.setText("");
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Military military : getMilitarys()) {
+					dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Military military : getMilitarys()) {
+					dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+				}
 			}
 		});
 
@@ -215,18 +236,32 @@ public class MilitaryService implements Services {
 		JPanel delete = new JPanel();
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
-		delete.add(innerPanel);
+
+		for (Military military : getMilitarys()) {
+			dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				deleteMilitary(id);
-				
+
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Military military : getMilitarys()) {
+					dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Military military : getMilitarys()) {
+					dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+				}
 			}
 		});
 

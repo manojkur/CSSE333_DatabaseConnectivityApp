@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -50,6 +49,9 @@ public class ResourceService implements Services {
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
 
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
+
 		int width = 500;
 		int height = 20;
 
@@ -79,6 +81,15 @@ public class ResourceService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Resource resource : getResources()) {
+					dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Resource resource : getResources()) {
+					dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+				}
+
 			}
 		});
 
@@ -89,9 +100,7 @@ public class ResourceService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<Resource> resources = getResources();
-		for (Resource resource : resources) {
+		for (Resource resource : getResources()) {
 			dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -114,15 +123,19 @@ public class ResourceService implements Services {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-				Resource resource = null;
-				for (Resource k : resources) {
-					if (Integer.toString(k.ID).equals(id)) {
-						resource = k;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+					Resource resource = null;
+					for (Resource k : getResources()) {
+						if (Integer.toString(k.ID).equals(id)) {
+							resource = k;
+							break;
+						}
 					}
+					updateNameText.setText(resource.Name);
+				} catch (Exception e1) {
+					updateNameText.setText("");
 				}
-				updateNameText.setText(resource.Name);
 			}
 		});
 
@@ -139,6 +152,14 @@ public class ResourceService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Resource resource : getResources()) {
+					dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Resource resource : getResources()) {
+					dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+				}
 			}
 		});
 
@@ -149,18 +170,32 @@ public class ResourceService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		delete.add(innerPanel);
+		for (Resource resource : getResources()) {
+			dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				deleteResource(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Resource resource : getResources()) {
+					dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Resource resource : getResources()) {
+					dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+				}
 			}
 		});
 

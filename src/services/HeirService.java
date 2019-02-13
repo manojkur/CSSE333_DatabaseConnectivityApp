@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -49,6 +48,8 @@ public class HeirService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -130,6 +131,14 @@ public class HeirService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Heir heir : getHeirs()) {
+					dropDown.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
+				}
+				dropDown2.removeAllItems();
+				for (Heir heir : getHeirs()) {
+					dropDown2.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
+				}
 			}
 		});
 
@@ -140,9 +149,7 @@ public class HeirService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<Heir> heirs = getHeirs();
-		for (Heir heir : heirs) {
+		for (Heir heir : getHeirs()) {
 			dropDown.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -205,19 +212,27 @@ public class HeirService implements Services {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-				Heir heir = null;
-				for (Heir k : heirs) {
-					if (Integer.toString(k.ID).equals(id)) {
-						heir = k;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+					Heir heir = null;
+					for (Heir k : getHeirs()) {
+						if (Integer.toString(k.ID).equals(id)) {
+							heir = k;
+							break;
+						}
 					}
+					updatePIDText.setText(Integer.toString(heir.PID));
+					updateKIDText.setText(Integer.toString(heir.KID));
+					updateTitleStartText.setText(heir.TitleStart);
+					updateTitleEndText.setText(heir.TitleEnd);
+					updateShortTitleText.setText(heir.ShortTitle);
+				} catch (Exception e1) {
+					updatePIDText.setText("");
+					updateKIDText.setText("");
+					updateTitleEndText.setText("");
+					updateTitleStartText.setText("");
+					updateShortTitleText.setText("");
 				}
-				updatePIDText.setText(Integer.toString(heir.PID));
-				updateKIDText.setText(Integer.toString(heir.KID));
-				updateTitleStartText.setText(heir.TitleStart);
-				updateTitleEndText.setText(heir.TitleEnd);
-				updateShortTitleText.setText(heir.ShortTitle);
 			}
 		});
 
@@ -250,6 +265,14 @@ public class HeirService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Heir heir : getHeirs()) {
+					dropDown.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
+				}
+				dropDown2.removeAllItems();
+				for (Heir heir : getHeirs()) {
+					dropDown2.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
+				}
 			}
 		});
 
@@ -260,18 +283,32 @@ public class HeirService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		delete.add(innerPanel);
+		for (Heir heir : getHeirs()) {
+			dropDown2.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				deleteHeir(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Heir heir : getHeirs()) {
+					dropDown.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
+				}
+				dropDown2.removeAllItems();
+				for (Heir heir : getHeirs()) {
+					dropDown2.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
+				}
 			}
 		});
 

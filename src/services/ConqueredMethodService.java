@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -49,6 +48,8 @@ public class ConqueredMethodService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown2 = new JComboBox<>();
+		JComboBox<String> dropDown = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -91,6 +92,15 @@ public class ConqueredMethodService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+
+				dropDown.removeAllItems();
+				for (ConquerMethod conqueredMethod : getConquerMethods()) {
+					dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+				}
+				dropDown2.removeAllItems();
+				for (ConquerMethod conqueredMethod : getConquerMethods()) {
+					dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+				}
 			}
 		});
 
@@ -101,9 +111,7 @@ public class ConqueredMethodService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<ConquerMethod> conqueredMethods = getConquerMethods();
-		for (ConquerMethod conqueredMethod : conqueredMethods) {
+		for (ConquerMethod conqueredMethod : getConquerMethods()) {
 			dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -135,16 +143,21 @@ public class ConqueredMethodService implements Services {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-				ConquerMethod conquerMethod = null;
-				for (ConquerMethod k : conqueredMethods) {
-					if (Integer.toString(k.ID).equals(id)) {
-						conquerMethod = k;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+					ConquerMethod conquerMethod = null;
+					for (ConquerMethod k : getConquerMethods()) {
+						if (Integer.toString(k.ID).equals(id)) {
+							conquerMethod = k;
+							break;
+						}
 					}
+					updateNameText.setText(conquerMethod.Name);
+					updateEffectivenessText.setText(conquerMethod.Effectiveness);
+				} catch (Exception e1) {
+					updateNameText.setText("");
+					updateEffectivenessText.setText("");
 				}
-				updateNameText.setText(conquerMethod.Name);
-				updateEffectivenessText.setText(conquerMethod.Effectiveness);
 			}
 		});
 
@@ -164,6 +177,15 @@ public class ConqueredMethodService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+
+				dropDown.removeAllItems();
+				for (ConquerMethod conqueredMethod : getConquerMethods()) {
+					dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+				}
+				dropDown2.removeAllItems();
+				for (ConquerMethod conqueredMethod : getConquerMethods()) {
+					dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+				}
 			}
 		});
 
@@ -174,18 +196,32 @@ public class ConqueredMethodService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		delete.add(innerPanel);
+		for (ConquerMethod conqueredMethod : getConquerMethods()) {
+			dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				deleteConquerMethod(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (ConquerMethod conqueredMethod : getConquerMethods()) {
+					dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+				}
+				dropDown2.removeAllItems();
+				for (ConquerMethod conqueredMethod : getConquerMethods()) {
+					dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+				}
 			}
 		});
 

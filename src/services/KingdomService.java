@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -50,6 +49,8 @@ public class KingdomService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -173,6 +174,14 @@ public class KingdomService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Kingdom kingdom : getKingdoms()) {
+					dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Kingdom kingdom : getKingdoms()) {
+					dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+				}
 			}
 		});
 
@@ -184,9 +193,7 @@ public class KingdomService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<Kingdom> kingdoms = getKingdoms();
-		for (Kingdom kingdom : kingdoms) {
+		for (Kingdom kingdom : getKingdoms()) {
 			dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -279,29 +286,40 @@ public class KingdomService implements Services {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-				Kingdom kingdom = null;
-				for (Kingdom k : kingdoms) {
-					if (Integer.toString(k.ID).equals(id)) {
-						kingdom = k;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+					Kingdom kingdom = null;
+					for (Kingdom k : getKingdoms()) {
+						if (Integer.toString(k.ID).equals(id)) {
+							kingdom = k;
+							break;
+						}
 					}
-				}
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(kingdom.DateConquered);
-				Integer month = cal.get(Calendar.MONTH) + 1;
-				Integer day = cal.get(Calendar.DAY_OF_MONTH);
-				Integer year = cal.get(Calendar.YEAR);
-				Long gdp = kingdom.GDP;
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(kingdom.DateConquered);
+					Integer month = cal.get(Calendar.MONTH) + 1;
+					Integer day = cal.get(Calendar.DAY_OF_MONTH);
+					Integer year = cal.get(Calendar.YEAR);
+					Long gdp = kingdom.GDP;
 
-				updateNameText.setText(kingdom.Name);
-				updateShortNameText.setText(kingdom.ShortName);
-				updateDateConqueredYearText.setText(year.toString());
-				updateDateConqueredDayText.setText(day.toString());
-				updateDateConqueredMonthText.setText(month.toString());
-				updateGdpText.setText(gdp.toString());
-				updateSuccessionText.setText(kingdom.Succession);
-				updateTypeText.setText(kingdom.Type);
+					updateNameText.setText(kingdom.Name);
+					updateShortNameText.setText(kingdom.ShortName);
+					updateDateConqueredYearText.setText(year.toString());
+					updateDateConqueredDayText.setText(day.toString());
+					updateDateConqueredMonthText.setText(month.toString());
+					updateGdpText.setText(gdp.toString());
+					updateSuccessionText.setText(kingdom.Succession);
+					updateTypeText.setText(kingdom.Type);
+				} catch (Exception e1) {
+					updateNameText.setText("");
+					updateShortNameText.setText("");
+					updateDateConqueredYearText.setText("");
+					updateDateConqueredDayText.setText("");
+					updateDateConqueredMonthText.setText("");
+					updateGdpText.setText("");
+					updateSuccessionText.setText("");
+					updateTypeText.setText("");
+				}
 			}
 		});
 
@@ -340,6 +358,14 @@ public class KingdomService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Kingdom kingdom : getKingdoms()) {
+					dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Kingdom kingdom : getKingdoms()) {
+					dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+				}
 			}
 		});
 
@@ -349,9 +375,8 @@ public class KingdomService implements Services {
 		JPanel delete = new JPanel();
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
-		JComboBox<String> dropDown2 = new JComboBox<>();
-		for (Kingdom kingdom : kingdoms) {
+
+		for (Kingdom kingdom : getKingdoms()) {
 			dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
 		}
 		JPanel innerPanel2 = new JPanel(new FlowLayout());
@@ -360,16 +385,24 @@ public class KingdomService implements Services {
 		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
-		
+
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				
+
 				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				deleteKingdom(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Kingdom kingdom : getKingdoms()) {
+					dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+				}
+				dropDown2.removeAllItems();
+				for (Kingdom kingdom : getKingdoms()) {
+					dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+				}
 			}
 		});
 

@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -48,6 +47,8 @@ public class PersonService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -126,6 +127,15 @@ public class PersonService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Person person : getPersons()) {
+					dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+				}
+				dropDown2.removeAllItems();
+				for (Person person : getPersons()) {
+					dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+				}
+
 			}
 		});
 
@@ -136,9 +146,7 @@ public class PersonService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<Person> persons = getPersons();
-		for (Person person : persons) {
+		for (Person person : getPersons()) {
 			dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -200,19 +208,27 @@ public class PersonService implements Services {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-				Person person = null;
-				for (Person k : persons) {
-					if (Integer.toString(k.ID).equals(id)) {
-						person = k;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+					Person person = null;
+					for (Person k : getPersons()) {
+						if (Integer.toString(k.ID).equals(id)) {
+							person = k;
+							break;
+						}
 					}
+					updateFirstNameText.setText(person.FirstName);
+					updateLastNameText.setText(person.LastName);
+					updateOtherNamesText.setText(person.OtherNames);
+					updateSuffixText.setText(person.Suffix);
+					updateGenderText.setText(person.Gender);
+				} catch (Exception e1) {
+					updateFirstNameText.setText("");
+					updateLastNameText.setText("");
+					updateOtherNamesText.setText("");
+					updateSuffixText.setText("");
+					updateGenderText.setText("");
 				}
-				updateFirstNameText.setText(person.FirstName);
-				updateLastNameText.setText(person.LastName);
-				updateOtherNamesText.setText(person.OtherNames);
-				updateSuffixText.setText(person.Suffix);
-				updateGenderText.setText(person.Gender);
 			}
 		});
 
@@ -237,6 +253,14 @@ public class PersonService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Person person : getPersons()) {
+					dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+				}
+				dropDown2.removeAllItems();
+				for (Person person : getPersons()) {
+					dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+				}
 			}
 		});
 
@@ -247,21 +271,32 @@ public class PersonService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		delete.add(innerPanel);
-		
+		for (Person person : getPersons()) {
+			dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
+
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				deletePerson(id);
-				
 
-				
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				deletePerson(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Person person : getPersons()) {
+					dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+				}
+				dropDown2.removeAllItems();
+				for (Person person : getPersons()) {
+					dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+				}
 			}
 		});
 

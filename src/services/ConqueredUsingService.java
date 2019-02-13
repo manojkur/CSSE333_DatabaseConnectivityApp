@@ -48,6 +48,8 @@ public class ConqueredUsingService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -99,6 +101,15 @@ public class ConqueredUsingService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+
+				dropDown.removeAllItems();
+				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+					dropDown.addItem("ID: " + conqueredUsing.ID);
+				}
+				dropDown2.removeAllItems();
+				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+					dropDown2.addItem("ID: " + conqueredUsing.ID);
+				}
 			}
 		});
 
@@ -109,9 +120,7 @@ public class ConqueredUsingService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<ConqueredUsing> conqueredUsings = getConqueredUsings();
-		for (ConqueredUsing conqueredUsing : conqueredUsings) {
+		for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
 			dropDown.addItem("ID: " + conqueredUsing.ID);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -143,19 +152,24 @@ public class ConqueredUsingService implements Services {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String id = dropDown.getSelectedItem().toString().split(" ")[1];
-				List<ConqueredUsing> conqueredUsings = getConqueredUsings();
-				ConqueredUsing k = null;
-				for (ConqueredUsing conqueredUsing : conqueredUsings) {
-					if (Integer.toString(conqueredUsing.ID).equals(id)) {
-						k = conqueredUsing;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split(" ")[1];
+					List<ConqueredUsing> conqueredUsings = getConqueredUsings();
+					ConqueredUsing k = null;
+					for (ConqueredUsing conqueredUsing : conqueredUsings) {
+						if (Integer.toString(conqueredUsing.ID).equals(id)) {
+							k = conqueredUsing;
+							break;
+						}
 					}
+					Integer KID = k.KID;
+					Integer CMID = k.CMID;
+					updateKIDText.setText(KID.toString());
+					updateCMIDText.setText(CMID.toString());
+				} catch (Exception e1) {
+					updateKIDText.setText("");
+					updateCMIDText.setText("");
 				}
-				Integer KID = k.KID;
-				Integer CMID = k.CMID;
-				updateKIDText.setText(KID.toString());
-				updateCMIDText.setText(CMID.toString());
 			}
 		});
 
@@ -183,6 +197,14 @@ public class ConqueredUsingService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+					dropDown.addItem("ID: " + conqueredUsing.ID);
+				}
+				dropDown2.removeAllItems();
+				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+					dropDown2.addItem("ID: " + conqueredUsing.ID);
+				}
 			}
 		});
 
@@ -193,18 +215,32 @@ public class ConqueredUsingService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		delete.add(innerPanel);
+		for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+			dropDown2.addItem("ID: " + conqueredUsing.ID);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
 				deleteConqueredUsing(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+					dropDown.addItem("ID: " + conqueredUsing.ID);
+				}
+				dropDown2.removeAllItems();
+				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+					dropDown2.addItem("ID: " + conqueredUsing.ID);
+				}
 			}
 		});
 

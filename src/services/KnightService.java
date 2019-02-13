@@ -49,6 +49,8 @@ public class KnightService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -115,6 +117,14 @@ public class KnightService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Knight knight : getKnights()) {
+					dropDown.addItem("ID: " + knight.ID);
+				}
+				dropDown2.removeAllItems();
+				for (Knight knight : getKnights()) {
+					dropDown2.addItem("ID: " + knight.ID);
+				}
 			}
 		});
 
@@ -125,11 +135,8 @@ public class KnightService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<Knight> knights = getKnights();
-		for (Knight knight : knights) {
+		for (Knight knight : getKnights()) {
 			dropDown.addItem("ID: " + knight.ID);
-//			dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
 		innerPanel.setMaximumSize(new Dimension(width, height + 20));
@@ -170,18 +177,24 @@ public class KnightService implements Services {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String id = dropDown.getSelectedItem().toString().split(" ")[1];
-				List<Knight> knights = getKnights();
-				Knight k = null;
-				for (Knight knight : knights) {
-					if (Integer.toString(knight.ID).equals(id)) {
-						k = knight;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split(" ")[1];
+					List<Knight> knights = getKnights();
+					Knight k = null;
+					for (Knight knight : knights) {
+						if (Integer.toString(knight.ID).equals(id)) {
+							k = knight;
+							break;
+						}
 					}
+					updatePIDText.setText(Integer.toString(k.PID));
+					updateMIDText.setText(Integer.toString(k.MID));
+					updateKillCountText.setText(Integer.toString(k.KillCount));
+				} catch (Exception e1) {
+					updatePIDText.setText("");
+					updateMIDText.setText("");
+					updateKillCountText.setText("");
 				}
-				updatePIDText.setText(Integer.toString(k.PID));
-				updateMIDText.setText(Integer.toString(k.MID));
-				updateKillCountText.setText(Integer.toString(k.KillCount));
 			}
 		});
 
@@ -214,6 +227,14 @@ public class KnightService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Knight knight : getKnights()) {
+					dropDown.addItem("ID: " + knight.ID);
+				}
+				dropDown2.removeAllItems();
+				for (Knight knight : getKnights()) {
+					dropDown2.addItem("ID: " + knight.ID);
+				}
 			}
 		});
 
@@ -223,18 +244,32 @@ public class KnightService implements Services {
 		JPanel delete = new JPanel();
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
-		delete.add(innerPanel);
-		
+
+		for (Knight knight : getKnights()) {
+			dropDown2.addItem("ID: " + knight.ID);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
+
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
 				deleteKnight(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (Knight knight : getKnights()) {
+					dropDown.addItem("ID: " + knight.ID);
+				}
+				dropDown2.removeAllItems();
+				for (Knight knight : getKnights()) {
+					dropDown2.addItem("ID: " + knight.ID);
+				}
 			}
 		});
 

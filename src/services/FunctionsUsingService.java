@@ -49,6 +49,8 @@ public class FunctionsUsingService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -115,6 +117,15 @@ public class FunctionsUsingService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+					dropDown.addItem("ID: " + functionsUsing.ID);
+				}
+				dropDown2.removeAllItems();
+				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+					dropDown2.addItem("ID: " + functionsUsing.ID);
+				}
+
 			}
 		});
 
@@ -125,9 +136,7 @@ public class FunctionsUsingService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<FunctionsUsing> functionsUsings = getFunctionsUsings();
-		for (FunctionsUsing functionsUsing : functionsUsings) {
+		for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
 			dropDown.addItem("ID: " + functionsUsing.ID);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -169,18 +178,24 @@ public class FunctionsUsingService implements Services {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String id = dropDown.getSelectedItem().toString().split(" ")[1];
-				List<FunctionsUsing> functionsUsings = getFunctionsUsings();
-				FunctionsUsing k = null;
-				for (FunctionsUsing functionsUsing : functionsUsings) {
-					if (Integer.toString(functionsUsing.ID).equals(id)) {
-						k = functionsUsing;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split(" ")[1];
+					List<FunctionsUsing> functionsUsings = getFunctionsUsings();
+					FunctionsUsing k = null;
+					for (FunctionsUsing functionsUsing : functionsUsings) {
+						if (Integer.toString(functionsUsing.ID).equals(id)) {
+							k = functionsUsing;
+							break;
+						}
 					}
+					updateRIDText.setText(Integer.toString(k.RID));
+					updateCIDText.setText(Integer.toString(k.CID));
+					updateQuantityText.setText(Integer.toString(k.Quantity));
+				} catch (Exception e1) {
+					updateRIDText.setText("");
+					updateCIDText.setText("");
+					updateQuantityText.setText("");
 				}
-				updateRIDText.setText(Integer.toString(k.RID));
-				updateCIDText.setText(Integer.toString(k.CID));
-				updateQuantityText.setText(Integer.toString(k.Quantity));
 			}
 		});
 
@@ -213,6 +228,14 @@ public class FunctionsUsingService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+					dropDown.addItem("ID: " + functionsUsing.ID);
+				}
+				dropDown2.removeAllItems();
+				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+					dropDown2.addItem("ID: " + functionsUsing.ID);
+				}
 			}
 		});
 
@@ -223,18 +246,32 @@ public class FunctionsUsingService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		delete.add(innerPanel);
+		for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+			dropDown2.addItem("ID: " + functionsUsing.ID);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
 				deleteFunctionsUsing(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+				dropDown.removeAllItems();
+				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+					dropDown.addItem("ID: " + functionsUsing.ID);
+				}
+				dropDown2.removeAllItems();
+				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+					dropDown2.addItem("ID: " + functionsUsing.ID);
+				}
 			}
 		});
 

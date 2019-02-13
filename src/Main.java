@@ -10,9 +10,7 @@ import java.util.Map;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 
 import services.CityService;
 import services.ConqueredMethodService;
@@ -34,8 +32,6 @@ import services.RulerService;
 import services.Services;
 import services.TerrainService;
 import services.ViewServices;
-import tables.FunctionsUsing;
-import tables.Resource;
 
 public class Main {
 
@@ -43,18 +39,18 @@ public class Main {
 		DatabaseConnectionService dbcs = new DatabaseConnectionService("golem.csse.rose-hulman.edu", "KingdomDB");
 		Statement stmt;
 
-		JFrame frame = new JFrame("Credentials");
-		String user = JOptionPane.showInputDialog(frame, "Please enter your username");
-		String password = "";
-		JPasswordField pf = new JPasswordField();
-		int pass = JOptionPane.showConfirmDialog(null, pf, "Please enter your password", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.PLAIN_MESSAGE);
-		if (pass == JOptionPane.OK_OPTION) {
-			password = new String(pf.getPassword());
-		}
+//		JFrame frame = new JFrame("Credentials");
+//		String user = JOptionPane.showInputDialog(frame, "Please enter your username");
+//		String password = "";
+//		JPasswordField pf = new JPasswordField();
+//		int pass = JOptionPane.showConfirmDialog(null, pf, "Please enter your password", JOptionPane.OK_CANCEL_OPTION,
+//				JOptionPane.PLAIN_MESSAGE);
+//		if (pass == JOptionPane.OK_OPTION) {
+//			password = new String(pf.getPassword());
+//		}
 
 		try {
-			Boolean connectionBool = dbcs.connect(user, password);
+			Boolean connectionBool = dbcs.connect("kurapam", "csse333pass");
 
 			KingdomService ks = new KingdomService(dbcs);
 			PersonService person = new PersonService(dbcs);

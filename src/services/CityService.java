@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -35,7 +34,6 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import tables.City;
-import tables.Ruler;
 
 public class CityService implements Services {
 	private DatabaseConnectionService dbService = null;
@@ -50,6 +48,8 @@ public class CityService implements Services {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		view = getScrollableTable();
 		tabbedPane.addTab("View", view);
+		JComboBox<String> dropDown = new JComboBox<>();
+		JComboBox<String> dropDown2 = new JComboBox<>();
 
 		int width = 500;
 		int height = 20;
@@ -139,6 +139,15 @@ public class CityService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+
+				dropDown.removeAllItems();
+				for (City city : getCitys()) {
+					dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+				}
+				dropDown2.removeAllItems();
+				for (City city : getCitys()) {
+					dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+				}
 			}
 		});
 
@@ -149,9 +158,7 @@ public class CityService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<City> citys = getCitys();
-		for (City city : citys) {
+		for (City city : getCitys()) {
 			dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
 		}
 		JPanel innerPanel = new JPanel(new FlowLayout());
@@ -214,19 +221,28 @@ public class CityService implements Services {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-				City city = null;
-				for (City k : citys) {
-					if (Integer.toString(k.ID).equals(id)) {
-						city = k;
-						break;
+				try {
+					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+
+					City city = null;
+					for (City k : getCitys()) {
+						if (Integer.toString(k.ID).equals(id)) {
+							city = k;
+							break;
+						}
 					}
+					updateTIDText.setText(Integer.toString(city.TID));
+					updateKIDText.setText(Integer.toString(city.KID));
+					updateNameText.setText(city.Name);
+					updateCoordinatesText.setText(city.Coordinates);
+					updatePopulationText.setText(Integer.toString(city.Population));
+				} catch (Exception e1) {
+					updateTIDText.setText("");
+					updateKIDText.setText("");
+					updateNameText.setText("");
+					updateCoordinatesText.setText("");
+					updatePopulationText.setText("");
 				}
-				updateTIDText.setText(Integer.toString(city.TID));
-				updateKIDText.setText(Integer.toString(city.KID));
-				updateNameText.setText(city.Name);
-				updateCoordinatesText.setText(city.Coordinates);
-				updatePopulationText.setText(Integer.toString(city.Population));
 			}
 		});
 
@@ -263,6 +279,15 @@ public class CityService implements Services {
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+
+				dropDown.removeAllItems();
+				for (City city : getCitys()) {
+					dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+				}
+				dropDown2.removeAllItems();
+				for (City city : getCitys()) {
+					dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+				}
 			}
 		});
 
@@ -273,27 +298,40 @@ public class CityService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+		// added this wth changing tables names
 
-		JComboBox<String> dropDown2 = new JComboBox<>();
-		for (City city : citys) {
+		for (City city : getCitys()) {
 			dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
 		}
 		JPanel innerPanel2 = new JPanel(new FlowLayout());
 		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
 		innerPanel2.add(dropDown2);
 		delete.add(innerPanel2);
-		
-		
+
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				int id;
+				try {
+					id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				} catch (NumberFormatException e) {
+					id = 0;
+				}
 				deleteCity(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
 				tabbedPane.insertTab("View", null, view, "View", 0);
+
+				dropDown.removeAllItems();
+				for (City city : getCitys()) {
+					dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+				}
+				dropDown2.removeAllItems();
+				for (City city : getCitys()) {
+					dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+				}
 			}
 		});
 
@@ -399,25 +437,20 @@ public class CityService implements Services {
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a name");
-				break;
-			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a Coordinates");
-				break;
-			case 3:
-				JOptionPane.showMessageDialog(null, "Please provide a Kingdom ID");
-				break;
-			case 4:
-				JOptionPane.showMessageDialog(null, "Please provide a Terrain ID");
-				break;
-			case 5:
-				JOptionPane.showMessageDialog(null, "Please provide a population greater than or equal to 10");
-				break;
-			case 6:
 				JOptionPane.showMessageDialog(null, "The kingdom ID " + k.KID + " does not exist");
 				break;
-			case 7:
+			case 2:
 				JOptionPane.showMessageDialog(null, "The terrain ID " + k.TID + " does not exist");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null, "The City Name must be unique and non-null");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null,
+						"Name can only include alphabetical characters, dashes, and apostrophes");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null, "The population must be greater than 10");
 				break;
 			default:
 				break;
