@@ -4,6 +4,8 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +19,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -267,6 +270,43 @@ public class KingdomService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateTypeText);
 
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<Kingdom> kingdoms = getKingdoms();
+		for (Kingdom kingdom : kingdoms) {
+			dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+		}
+		
+		dropDown.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]; 
+				Kingdom kingdom = null;
+				for(Kingdom k : kingdoms){
+					if(Integer.toString(k.ID).equals(id)){
+						kingdom = k;
+						break;
+					}
+				}
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(kingdom.DateConquered);
+				Integer month = cal.get(Calendar.MONTH);
+				Integer day = cal.get(Calendar.DAY_OF_MONTH);
+				Integer year = cal.get(Calendar.YEAR);
+				Long gdp = kingdom.GDP;
+
+				updateNameText.setText(kingdom.Name);
+				updateShortNameText.setText(kingdom.ShortName);
+				updateDateConqueredYearText.setText(year.toString());
+				updateDateConqueredDayText.setText(day.toString());
+				updateDateConqueredMonthText.setText(month.toString());
+				updateGdpText.setText(gdp.toString());
+				updateSuccessionText.setText(kingdom.Succession);
+				updateTypeText.setText(kingdom.Type);
+			}
+		});
+		update.add(dropDown);
 		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
 
 			@Override
@@ -288,13 +328,14 @@ public class KingdomService implements Services {
 			}
 
 			private void modifyText() {
-				try {
+				try {				
 					int ID = Integer.parseInt(updateIDText.getText());
 					List<Kingdom> kingdoms = getKingdoms();
 					Kingdom k = null;
 					for (Kingdom kingdom : kingdoms) {
 						if (kingdom.ID == ID)
 							k = kingdom;
+							
 					}
 					if (k != null) {
 						Calendar cal = Calendar.getInstance();
