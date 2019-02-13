@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -180,15 +181,16 @@ public class KingdomService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
+		
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<Kingdom> kingdoms = getKingdoms();
+		for (Kingdom kingdom : kingdoms) {
+			dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);		
 
 		JLabel updateNameLabel = new JLabel("Name: ");
 		update.add(updateNameLabel);
@@ -270,12 +272,6 @@ public class KingdomService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateTypeText);
 
-		JComboBox<String> dropDown = new JComboBox<>();
-		List<Kingdom> kingdoms = getKingdoms();
-		for (Kingdom kingdom : kingdoms) {
-			dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
-		}
-		
 		dropDown.addActionListener(new ActionListener() {
 			
 			@Override
@@ -306,85 +302,11 @@ public class KingdomService implements Services {
 				updateTypeText.setText(kingdom.Type);
 			}
 		});
-		update.add(dropDown);
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {				
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<Kingdom> kingdoms = getKingdoms();
-					Kingdom k = null;
-					for (Kingdom kingdom : kingdoms) {
-						if (kingdom.ID == ID)
-							k = kingdom;
-							
-					}
-					if (k != null) {
-						Calendar cal = Calendar.getInstance();
-						cal.setTime(k.DateConquered);
-						Integer month = cal.get(Calendar.MONTH);
-						Integer day = cal.get(Calendar.DAY_OF_MONTH);
-						Integer year = cal.get(Calendar.YEAR);
-						Long gdp = k.GDP;
-
-						updateNameText.setText(k.Name);
-						updateShortNameText.setText(k.ShortName);
-						updateDateConqueredYearText.setText(year.toString());
-						updateDateConqueredDayText.setText(day.toString());
-						updateDateConqueredMonthText.setText(month.toString());
-						updateGdpText.setText(gdp.toString());
-						updateSuccessionText.setText(k.Succession);
-						updateTypeText.setText(k.Type);
-					} else {
-						updateNameText.setText("");
-						updateShortNameText.setText("");
-						updateDateConqueredYearText.setText("");
-						updateDateConqueredDayText.setText("");
-						updateDateConqueredMonthText.setText("");
-						updateGdpText.setText("");
-						updateSuccessionText.setText("");
-						updateTypeText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updateNameText.setText("");
-					updateShortNameText.setText("");
-					updateDateConqueredYearText.setText("");
-					updateDateConqueredDayText.setText("");
-					updateDateConqueredMonthText.setText("");
-					updateGdpText.setText("");
-					updateSuccessionText.setText("");
-					updateTypeText.setText("");
-				}
-			}
-		});
 
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Kingdom k = new Kingdom();
-				try {
-					k.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
 				k.Name = updateNameText.getText();
 				k.ShortName = updateShortNameText.getText();
 
@@ -403,7 +325,6 @@ public class KingdomService implements Services {
 				k.Type = updateTypeText.getText();
 				updateKingdom(k);
 
-				updateIDLabel.setText("");
 				updateNameText.setText("");
 				updateShortNameText.setText("");
 				updateDateConqueredYearText.setText("");
