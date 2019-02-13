@@ -223,27 +223,14 @@ public class KnightService implements Services {
 		JPanel delete = new JPanel();
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		JLabel deleteIDLabel = new JLabel("ID: ");
-		delete.add(deleteIDLabel);
-		JTextField deleteIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		delete.add(deleteIDText);
-
+		
+		delete.add(innerPanel);
+		
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				try {
-					int id = Integer.parseInt(deleteIDText.getText());
-					deleteKnight(id);
-				} catch (NumberFormatException e) {
-
-				}
-
-				deleteIDText.setText("");
+				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+				deleteKnight(id);
 
 				tabbedPane.remove(view);
 				view = getScrollableTable();
