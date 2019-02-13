@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -11,11 +12,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,6 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import tables.Kingdom;
 import tables.Knight;
 
 public class KnightService implements Services {
@@ -119,15 +123,16 @@ public class KnightService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<Knight> knights = getKnights();
+		for (Knight knight : knights) {
+			dropDown.addItem("ID: " + knight.ID);
+//			dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
 
 		JLabel updatePIDLabel = new JLabel("PID: ");
 		update.add(updatePIDLabel);
@@ -158,50 +163,23 @@ public class KnightService implements Services {
 			}
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateKillCountText);
-
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
+		
+		dropDown.addActionListener(new ActionListener() {
 
 			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<Knight> knights = getKnights();
-					Knight k = null;
-					for (Knight knight : knights) {
-						if (knight.ID == ID)
-							k = knight;
+			public void actionPerformed(ActionEvent e) {
+				String id = dropDown.getSelectedItem().toString().split(" ")[1];
+				List<Knight> knights = getKnights();
+				Knight k = null;
+				for (Knight knight : knights) {
+					if (Integer.toString(knight.ID).equals(id)){
+						k = knight;
+						break;
 					}
-					if (k != null) {
-						updatePIDText.setText(Integer.toString(k.PID));
-						updateMIDText.setText(Integer.toString(k.MID));
-						updateKillCountText.setText(Integer.toString(k.KillCount));
-					} else {
-						updatePIDText.setText("");
-						updateMIDText.setText("");
-						updateKillCountText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updatePIDText.setText("");
-					updateMIDText.setText("");
-					updateKillCountText.setText("");
 				}
+				updatePIDText.setText(Integer.toString(k.PID));
+				updateMIDText.setText(Integer.toString(k.MID));
+				updateKillCountText.setText(Integer.toString(k.KillCount));
 			}
 		});
 
@@ -209,11 +187,7 @@ public class KnightService implements Services {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Knight k = new Knight();
-				try {
-					k.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
+				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(":")[1].substring(1));
 				try {
 					k.PID = Integer.parseInt(updatePIDText.getText());
 				} catch (NumberFormatException e) {

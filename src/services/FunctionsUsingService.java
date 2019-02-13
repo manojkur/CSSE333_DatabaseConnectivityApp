@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -16,6 +17,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,6 +30,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import tables.FunctionsUsing;
+import tables.Knight;
 import tables.FunctionsUsing;
 
 public class FunctionsUsingService implements Services {
@@ -119,15 +123,15 @@ public class FunctionsUsingService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<FunctionsUsing> functionsUsings = getFunctionsUsings();
+		for (FunctionsUsing functionsUsing : functionsUsings) {
+			dropDown.addItem("ID: " + functionsUsing.ID);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
 
 		JLabel updateRIDLabel = new JLabel("RID: ");
 		update.add(updateRIDLabel);
@@ -158,50 +162,23 @@ public class FunctionsUsingService implements Services {
 			}
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateQuantityText);
-
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
+	
+		dropDown.addActionListener(new ActionListener() {
 
 			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<FunctionsUsing> functionsUsings = getFunctionsUsings();
-					FunctionsUsing k = null;
-					for (FunctionsUsing functionsUsing : functionsUsings) {
-						if (functionsUsing.ID == ID)
-							k = functionsUsing;
+			public void actionPerformed(ActionEvent e) {
+				String id = dropDown.getSelectedItem().toString().split(" ")[1];
+				List<FunctionsUsing> functionsUsings = getFunctionsUsings();
+				FunctionsUsing k = null;
+				for (FunctionsUsing functionsUsing : functionsUsings) {
+					if (Integer.toString(functionsUsing.ID).equals(id)){
+						k = functionsUsing;
+						break;
 					}
-					if (k != null) {
-						updateRIDText.setText(Integer.toString(k.RID));
-						updateCIDText.setText(Integer.toString(k.CID));
-						updateQuantityText.setText(Integer.toString(k.Quantity));
-					} else {
-						updateRIDText.setText("");
-						updateCIDText.setText("");
-						updateQuantityText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updateRIDText.setText("");
-					updateCIDText.setText("");
-					updateQuantityText.setText("");
 				}
+				updateRIDText.setText(Integer.toString(k.RID));
+				updateCIDText.setText(Integer.toString(k.CID));
+				updateQuantityText.setText(Integer.toString(k.Quantity));
 			}
 		});
 
@@ -209,11 +186,7 @@ public class FunctionsUsingService implements Services {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				FunctionsUsing k = new FunctionsUsing();
-				try {
-					k.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
+				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
 				try {
 					k.RID = Integer.parseInt(updateRIDText.getText());
 				} catch (NumberFormatException e) {

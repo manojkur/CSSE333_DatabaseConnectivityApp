@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -15,6 +16,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,6 +30,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import tables.ConqueredUsing;
+import tables.Kingdom;
+import tables.Knight;
 
 public class ConqueredUsingService implements Services {
 	private DatabaseConnectionService dbService = null;
@@ -103,15 +107,15 @@ public class ConqueredUsingService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<ConqueredUsing> conqueredUsings = getConqueredUsings();
+		for (ConqueredUsing conqueredUsing : conqueredUsings) {
+			dropDown.addItem("ID: " + conqueredUsing.ID);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
 
 		JLabel updateKIDLabel = new JLabel("KID: ");
 		update.add(updateKIDLabel);
@@ -132,50 +136,24 @@ public class ConqueredUsingService implements Services {
 			}
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateCMIDText);
-
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
+		
+		dropDown.addActionListener(new ActionListener() {
 
 			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<ConqueredUsing> conqueredUsings = getConqueredUsings();
-					ConqueredUsing p = null;
-					for (ConqueredUsing conqueredUsing : conqueredUsings) {
-						if (conqueredUsing.ID == ID)
-							p = conqueredUsing;
+			public void actionPerformed(ActionEvent e) {
+				String id = dropDown.getSelectedItem().toString().split(" ")[1];
+				List<ConqueredUsing> conqueredUsings = getConqueredUsings();
+				ConqueredUsing k = null;
+				for (ConqueredUsing conqueredUsing : conqueredUsings) {
+					if (Integer.toString(conqueredUsing.ID).equals(id)){
+						k = conqueredUsing;
+						break;
 					}
-					if (p != null) {
-						Integer KID = p.KID;
-						Integer CMID = p.CMID;
-
-						updateKIDText.setText(KID.toString());
-						updateCMIDText.setText(CMID.toString());
-					} else {
-						updateKIDText.setText("");
-						updateCMIDText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updateKIDText.setText("");
-					updateCMIDText.setText("");
 				}
+				Integer KID = k.KID;
+				Integer CMID = k.CMID;
+				updateKIDText.setText(KID.toString());
+				updateCMIDText.setText(CMID.toString());
 			}
 		});
 
@@ -183,11 +161,7 @@ public class ConqueredUsingService implements Services {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				ConqueredUsing p = new ConqueredUsing();
-				try {
-					p.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
+				p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
 
 				try {
 					p.KID = Integer.parseInt(updateKIDText.getText());
@@ -201,8 +175,6 @@ public class ConqueredUsingService implements Services {
 				}
 
 				updateConqueredUsing(p);
-
-				updateIDText.setText("");
 				updateKIDText.setText("");
 				updateCMIDText.setText("");
 

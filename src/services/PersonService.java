@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -10,11 +11,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,6 +30,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import tables.Kingdom;
+import tables.Knight;
 import tables.Person;
 
 public class PersonService implements Services {
@@ -130,15 +135,15 @@ public class PersonService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<Person> persons = getPersons();
+		for (Person person : persons) {
+			dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
 
 		JLabel updateFirstNameLabel = new JLabel("FirstName: ");
 		update.add(updateFirstNameLabel);
@@ -189,56 +194,24 @@ public class PersonService implements Services {
 			}
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateGenderText);
-
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
+		
+		dropDown.addActionListener(new ActionListener() {
 
 			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<Person> persons = getPersons();
-					Person p = null;
-					for (Person person : persons) {
-						if (person.ID == ID)
-							p = person;
+			public void actionPerformed(ActionEvent e) {
+				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+				Person person = null;
+				for (Person k : persons) {
+					if (Integer.toString(k.ID).equals(id)) {
+						person = k;
+						break;
 					}
-					if (p != null) {
-						updateFirstNameText.setText(p.FirstName);
-						updateLastNameText.setText(p.LastName);
-						updateOtherNamesText.setText(p.OtherNames);
-						updateSuffixText.setText(p.Suffix);
-						updateGenderText.setText(p.Gender);
-					} else {
-						updateFirstNameText.setText("");
-						updateLastNameText.setText("");
-						updateOtherNamesText.setText("");
-						updateSuffixText.setText("");
-						updateGenderText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updateFirstNameText.setText("");
-					updateLastNameText.setText("");
-					updateOtherNamesText.setText("");
-					updateSuffixText.setText("");
-					updateGenderText.setText("");
 				}
+				updateFirstNameText.setText(person.FirstName);
+				updateLastNameText.setText(person.LastName);
+				updateOtherNamesText.setText(person.OtherNames);
+				updateSuffixText.setText(person.Suffix);
+				updateGenderText.setText(person.Gender);
 			}
 		});
 
@@ -246,12 +219,7 @@ public class PersonService implements Services {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Person p = new Person();
-				try {
-					p.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
-
+				p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				p.FirstName = updateFirstNameText.getText();
 				p.LastName = updateLastNameText.getText();
 				p.OtherNames = updateOtherNamesText.getText();
@@ -259,8 +227,6 @@ public class PersonService implements Services {
 				p.Gender = updateGenderText.getText();
 
 				updatePerson(p);
-
-				updateIDText.setText("");
 				updateFirstNameText.setText("");
 				updateLastNameText.setText("");
 				updateOtherNamesText.setText("");

@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -15,6 +16,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,6 +29,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import tables.Knight;
 import tables.Ruler;
 
 public class RulerService implements Services {
@@ -160,15 +163,15 @@ public class RulerService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<Ruler> rulers = getRulers();
+		for (Ruler ruler : rulers) {
+			dropDown.addItem("ID: " + ruler.ID);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
 
 		JLabel updatePIDLabel = new JLabel("PID: ");
 		update.add(updatePIDLabel);
@@ -230,76 +233,39 @@ public class RulerService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateDynastyText);
 
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
+		dropDown.addActionListener(new ActionListener() {
 
 			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<Ruler> rulers = getRulers();
-					Ruler p = null;
-					for (Ruler ruler : rulers) {
-						if (ruler.ID == ID)
-							p = ruler;
+			public void actionPerformed(ActionEvent e) {
+				String id = dropDown.getSelectedItem().toString().split(" ")[1];
+				List<Ruler> rulers = getRulers();
+				Ruler p = null;
+				for (Ruler ruler : rulers) {
+					if (Integer.toString(ruler.ID).equals(id)){
+						p = ruler;
+						break;
 					}
-					if (p != null) {
-						Integer PID = p.PID;
-						Integer KID = p.KID;
-						Integer HID = p.HID;
-						Integer YearsOfExperience = p.YearsOfExperience;
-
-						updatePIDText.setText(PID.toString());
-						updateKIDText.setText(KID.toString());
-						updateHIDText.setText(HID.toString());
-						updateYearsOfExperienceText.setText(YearsOfExperience.toString());
-						updateTitleText.setText(p.Title);
-						updateDynastyText.setText(p.Dynasty);
-					} else {
-						updatePIDText.setText("");
-						updateKIDText.setText("");
-						updateHIDText.setText("");
-						updateYearsOfExperienceText.setText("");
-						updateTitleText.setText("");
-						updateDynastyText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updatePIDText.setText("");
-					updateKIDText.setText("");
-					updateHIDText.setText("");
-					updateYearsOfExperienceText.setText("");
-					updateTitleText.setText("");
-					updateDynastyText.setText("");
 				}
+				Integer PID = p.PID;
+				Integer KID = p.KID;
+				Integer HID = p.HID;
+				Integer YearsOfExperience = p.YearsOfExperience;
+
+				updatePIDText.setText(PID.toString());
+				updateKIDText.setText(KID.toString());
+				updateHIDText.setText(HID.toString());
+				updateYearsOfExperienceText.setText(YearsOfExperience.toString());
+				updateTitleText.setText(p.Title);
+				updateDynastyText.setText(p.Dynasty);
 			}
 		});
-
+		
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Ruler p = new Ruler();
-				try {
-					p.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
-
+				p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+				
 				try {
 					p.PID = Integer.parseInt(updatePIDText.getText());
 				} catch (NumberFormatException e) {
@@ -327,7 +293,6 @@ public class RulerService implements Services {
 
 				updateRuler(p);
 
-				updateIDText.setText("");
 				updatePIDText.setText("");
 				updateKIDText.setText("");
 				updateHIDText.setText("");
@@ -461,6 +426,7 @@ public class RulerService implements Services {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
 					.prepareCall("{ ? = call dbo.Update_Ruler(?,?,?,?,?,?,?) }");
+			System.out.println(p.YearsOfExperience);
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setInt(2, p.ID);
 			cs.setInt(3, p.PID);
@@ -469,7 +435,7 @@ public class RulerService implements Services {
 			cs.setInt(6, p.YearsOfExperience);
 			cs.setString(7, p.Title);
 			cs.setString(8, p.Dynasty);
-
+//			System.out.println(p.PID +" " + p.KID + " " + p.ID + " " + p.HID);
 			cs.execute();
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
@@ -480,6 +446,7 @@ public class RulerService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide Years Of Experience of at least 0");
 				break;
 			default:
+				System.out.println(returnVal);
 				break;
 			}
 			return true;

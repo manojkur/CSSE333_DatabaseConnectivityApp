@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -11,11 +12,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,6 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import tables.Kingdom;
 import tables.Resource;
 
 public class ResourceService implements Services {
@@ -83,16 +87,16 @@ public class ResourceService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
-
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<Resource> resources = getResources();
+		for (Resource resource : resources) {
+			dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
+		
 		JLabel updateNameLabel = new JLabel("Name: ");
 		update.add(updateNameLabel);
 		JTextField updateNameText = (new JTextField() {
@@ -103,55 +107,28 @@ public class ResourceService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateNameText);
 
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
+		dropDown.addActionListener(new ActionListener() {
 
 			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
+			public void actionPerformed(ActionEvent e) {
 
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<Resource> resources = getResources();
-					Resource k = null;
-					for (Resource resource : resources) {
-						if (resource.ID == ID)
-							k = resource;
+				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+				Resource resource = null;
+				for (Resource k : resources) {
+					if (Integer.toString(k.ID).equals(id)) {
+						resource = k;
+						break;
 					}
-					if (k != null) {
-						updateNameText.setText(k.Name);
-					} else {
-						updateNameText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updateNameText.setText("");
 				}
+				updateNameText.setText(resource.Name);
 			}
 		});
-
+		
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Resource k = new Resource();
-				try {
-					k.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
+				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				k.Name = updateNameText.getText();
 				updateResource(k);
 
@@ -256,7 +233,7 @@ public class ResourceService implements Services {
 	public boolean updateResource(Resource k) {
 		try {
 			CallableStatement cs = this.dbService.getConnection()
-					.prepareCall("{ ? = call dbo.Update_Resource(?, ?, ?) }");
+					.prepareCall("{ ? = call dbo.Update_Resource(?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setInt(2, k.ID);
 			cs.setString(3, k.Name);

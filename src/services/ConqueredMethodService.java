@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -11,11 +12,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -29,6 +32,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import tables.ConquerMethod;
+import tables.Kingdom;
 
 public class ConqueredMethodService implements Services {
 	private DatabaseConnectionService dbService = null;
@@ -95,16 +99,16 @@ public class ConqueredMethodService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
-
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<ConquerMethod> conqueredMethods = getConquerMethods();
+		for (ConquerMethod conqueredMethod : conqueredMethods) {
+			dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
+		
 		JLabel updateNameLabel = new JLabel("Name: ");
 		update.add(updateNameLabel);
 		JTextField updateNameText = (new JTextField() {
@@ -125,60 +129,31 @@ public class ConqueredMethodService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateEffectivenessText);
 
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
-
+		dropDown.addActionListener(new ActionListener() {
 			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
+			public void actionPerformed(ActionEvent e) {
 
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<ConquerMethod> conquerMethods = getConquerMethods();
-					ConquerMethod k = null;
-					for (ConquerMethod conquerMethod : conquerMethods) {
-						if (conquerMethod.ID == ID)
-							k = conquerMethod;
+				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+				ConquerMethod conquerMethod = null;
+				for (ConquerMethod k : conqueredMethods) {
+					if (Integer.toString(k.ID).equals(id)) {
+						conquerMethod = k;
+						break;
 					}
-					if (k != null) {
-						updateNameText.setText(k.Name);
-						updateEffectivenessText.setText(k.Effectiveness);
-					} else {
-						updateNameText.setText("");
-						updateEffectivenessText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updateNameText.setText("");
-					updateEffectivenessText.setText("");
 				}
+				updateNameText.setText(conquerMethod.Name);
+				updateEffectivenessText.setText(conquerMethod.Effectiveness);
 			}
 		});
-
+		
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				ConquerMethod k = new ConquerMethod();
-				try {
-					k.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
+				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				k.Name = updateNameText.getText();
 				k.Effectiveness = updateEffectivenessText.getText();
+				System.out.println("n " + k.Name + " e " + k.Effectiveness);
 				updateConquerMethod(k);
 
 				updateNameText.setText("");
@@ -270,6 +245,7 @@ public class ConqueredMethodService implements Services {
 			cs.setString(3, k.Effectiveness);
 			cs.execute();
 			int returnVal = cs.getInt(1);
+			System.out.println(returnVal + " " + k.Effectiveness);
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a name");

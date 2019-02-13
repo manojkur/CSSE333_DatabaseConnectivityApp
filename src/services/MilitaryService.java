@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -11,11 +12,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,6 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import tables.Kingdom;
 import tables.Military;
 
 public class MilitaryService implements Services {
@@ -115,16 +119,16 @@ public class MilitaryService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
-
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<Military> militarys = getMilitarys();
+		for (Military military : militarys) {
+			dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
+		
 		JLabel updateKIDLabel = new JLabel("KID: ");
 		update.add(updateKIDLabel);
 		JTextField updateKIDText = (new JTextField() {
@@ -155,62 +159,31 @@ public class MilitaryService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateBudgetText);
 
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
+		dropDown.addActionListener(new ActionListener() {
 
 			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
+			public void actionPerformed(ActionEvent e) {
 
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<Military> militarys = getMilitarys();
-					Military k = null;
-					for (Military military : militarys) {
-						if (military.ID == ID)
-							k = military;
+				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+				Military military = null;
+				for (Military k : militarys) {
+					if (Integer.toString(k.ID).equals(id)) {
+						military = k;
+						break;
 					}
-					if (k != null) {
-						Long budget = k.Budget;
-						updateKIDText.setText(Integer.toString(k.KID));
-						updateNameText.setText(k.Name);
-						updateBudgetText.setText(budget.toString());
-					} else {
-						insertKIDText.setText("");
-						insertNameText.setText("");
-						insertBudgetText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					insertKIDText.setText("");
-					insertNameText.setText("");
-					insertBudgetText.setText("");
 				}
+				Long budget = military.Budget;
+				updateKIDText.setText(Integer.toString(military.KID));
+				updateNameText.setText(military.Name);
+				updateBudgetText.setText(budget.toString());
 			}
 		});
-
+		
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Military k = new Military();
-				try {
-					k.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
+				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				try {
 					k.Budget = Integer.parseInt(updateBudgetText.getText());
 				} catch (NumberFormatException e) {

@@ -2,6 +2,7 @@ package services;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -11,11 +12,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -29,6 +32,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import tables.Heir;
+import tables.Kingdom;
+import tables.Knight;
 
 public class HeirService implements Services {
 	private DatabaseConnectionService dbService = null;
@@ -134,16 +139,16 @@ public class HeirService implements Services {
 		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel updateIDLabel = new JLabel("ID: ");
-		update.add(updateIDLabel);
-		JTextField updateIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateIDText);
-
+		JComboBox<String> dropDown = new JComboBox<>();
+		List<Heir> heirs = getHeirs();
+		for (Heir heir : heirs) {
+			dropDown.addItem("ID: " + heir.ID + " - Name:  " + heir.TitleEnd);
+		}
+		JPanel innerPanel = new JPanel(new FlowLayout());
+		innerPanel.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel.add(dropDown);
+		update.add(innerPanel);
+		
 		JLabel updatePIDLabel = new JLabel("PID: ");
 		update.add(updatePIDLabel);
 		JTextField updatePIDText = (new JTextField() {
@@ -194,67 +199,32 @@ public class HeirService implements Services {
 		}).setMaxSize(new Dimension(width, height));
 		update.add(updateShortTitleText);
 
-		updateIDText.getDocument().addDocumentListener(new DocumentListener() {
+		dropDown.addActionListener(new ActionListener() {
 
 			@Override
-			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
+			public void actionPerformed(ActionEvent e) {
 
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				modifyText();
-			}
-
-			private void modifyText() {
-				try {
-					int ID = Integer.parseInt(updateIDText.getText());
-					List<Heir> heirs = getHeirs();
-					Heir k = null;
-					for (Heir heir : heirs) {
-						if (heir.ID == ID)
-							k = heir;
+				String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+				Heir heir = null;
+				for (Heir k : heirs) {
+					if (Integer.toString(k.ID).equals(id)) {
+						heir = k;
+						break;
 					}
-					if (k != null) {
-						updatePIDText.setText(Integer.toString(k.PID));
-						updateKIDText.setText(Integer.toString(k.KID));
-						updateTitleStartText.setText(k.TitleStart);
-						updateTitleEndText.setText(k.TitleEnd);
-						updateShortTitleText.setText(k.ShortTitle);
-					} else {
-						updatePIDText.setText("");
-						updateKIDText.setText("");
-						updateTitleStartText.setText("");
-						updateTitleEndText.setText("");
-						updateShortTitleText.setText("");
-					}
-				} catch (NumberFormatException e) {
-					updatePIDText.setText("");
-					updateKIDText.setText("");
-					updateTitleStartText.setText("");
-					updateTitleEndText.setText("");
-					updateShortTitleText.setText("");
 				}
+				updatePIDText.setText(Integer.toString(heir.PID));
+				updateKIDText.setText(Integer.toString(heir.KID));
+				updateTitleStartText.setText(heir.TitleStart);
+				updateTitleEndText.setText(heir.TitleEnd);
+				updateShortTitleText.setText(heir.ShortTitle);
 			}
 		});
-
+		
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Heir k = new Heir();
-				try {
-					k.ID = Integer.parseInt(updateIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
+				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				try {
 					k.PID = Integer.parseInt(updatePIDText.getText());
 				} catch (NumberFormatException e) {
