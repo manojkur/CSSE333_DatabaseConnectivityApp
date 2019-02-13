@@ -33,6 +33,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import tables.Kingdom;
 import tables.Ruler;
 
 public class RulerService implements Services {
@@ -316,13 +317,21 @@ public class RulerService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		delete.add(innerPanel);
+		
+		JComboBox<String> dropDown2 = new JComboBox<>();
+		for (Ruler ruler : rulers) {
+			dropDown2.addItem("ID: " + ruler.ID);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
 				deleteRuler(id);
 
 				

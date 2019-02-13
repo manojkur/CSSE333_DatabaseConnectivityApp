@@ -309,6 +309,7 @@ public class KingdomService implements Services {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Kingdom k = new Kingdom();
+				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				k.Name = updateNameText.getText();
 				k.ShortName = updateShortNameText.getText();
 
@@ -349,14 +350,21 @@ public class KingdomService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
-		delete.add(innerPanel);
+		JComboBox<String> dropDown2 = new JComboBox<>();
+		for (Kingdom kingdom : kingdoms) {
+			dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
 
 		JButton deleteButton = new JButton("Delete");
 		
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				deleteKingdom(id);
 
 				tabbedPane.remove(view);

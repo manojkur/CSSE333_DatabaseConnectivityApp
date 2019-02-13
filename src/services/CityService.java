@@ -35,6 +35,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import tables.City;
+import tables.Ruler;
 
 public class CityService implements Services {
 	private DatabaseConnectionService dbService = null;
@@ -272,13 +273,22 @@ public class CityService implements Services {
 		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		delete.add(innerPanel);
 
+		JComboBox<String> dropDown2 = new JComboBox<>();
+		for (City city : citys) {
+			dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+		}
+		JPanel innerPanel2 = new JPanel(new FlowLayout());
+		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+		innerPanel2.add(dropDown2);
+		delete.add(innerPanel2);
+		
+		
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 
-				int id = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 				deleteCity(id);
 
 				tabbedPane.remove(view);
