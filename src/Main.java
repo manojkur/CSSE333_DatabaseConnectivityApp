@@ -25,6 +25,7 @@ import services.FunctionsUsingService;
 import services.HeirService;
 import services.KingdomBuiltOnTopOfService;
 import services.KingdomCityService;
+import services.KingdomConqueredUsingMethodService;
 import services.KingdomConqueredUsingService;
 import services.KingdomMilitaryService;
 import services.KingdomRulerService;
@@ -105,6 +106,7 @@ public class Main {
 				KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
 				KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
 				KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
+				KingdomConqueredUsingMethodService kingdomConqueredUsingMethodService = new KingdomConqueredUsingMethodService(dbcs);
 
 				JFrame tableFrame = new JFrame("Kingdom Database entries");
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -129,6 +131,7 @@ public class Main {
 				viewServices.put(kingdomConqueredUsingService, "KingdomConqueredUsingView");
 				viewServices.put(kingdomMilitaryService, "KingdomMilitaryView");
 				viewServices.put(kingdomRulerService, "KingdomRulerView");
+				viewServices.put(kingdomConqueredUsingMethodService, "KingdomConqueredUsingMethodView");
 
 				// get 2/3 of the height, and 2/3 of the width
 				int height = screenSize.height * 2 / 3;
@@ -142,7 +145,7 @@ public class Main {
 				JPanel comboBoxPane = new JPanel(); // use FlowLayout
 				String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight", "Military",
 						"Resource", "ConqueredUsing", "ConquerMethod", "FunctionsUsing", "KingdomBuiltOnTopOfView",
-						"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
+						"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView", "KingdomConqueredUsingMethodView" };
 				JComboBox cb = new JComboBox(comboBoxItems);
 				cb.setEditable(false);
 
@@ -180,7 +183,7 @@ public class Main {
 				});
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			System.out.println("Please enter a valid username and password");
 		}
 

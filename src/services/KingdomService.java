@@ -299,17 +299,24 @@ public class KingdomService implements Services {
 							}
 						}
 						Calendar cal = Calendar.getInstance();
-						cal.setTime(kingdom.DateConquered);
-						Integer month = cal.get(Calendar.MONTH) + 1;
-						Integer day = cal.get(Calendar.DAY_OF_MONTH);
-						Integer year = cal.get(Calendar.YEAR);
+						Integer month = null, year = null, day = null;
+						if(kingdom.DateConquered != null){
+							cal.setTime(kingdom.DateConquered);
+							month = cal.get(Calendar.MONTH) + 1;
+							day = cal.get(Calendar.DAY_OF_MONTH);
+							year = cal.get(Calendar.YEAR);
+							updateDateConqueredYearText.setText(year.toString());
+							updateDateConqueredDayText.setText(day.toString());
+							updateDateConqueredMonthText.setText(month.toString());
+						} else {
+							updateDateConqueredYearText.setText("");
+							updateDateConqueredDayText.setText("");
+							updateDateConqueredMonthText.setText("");
+						}
+					
 						Long gdp = kingdom.GDP;
-	
 						updateNameText.setText(kingdom.Name);
 						updateShortNameText.setText(kingdom.ShortName);
-						updateDateConqueredYearText.setText(year.toString());
-						updateDateConqueredDayText.setText(day.toString());
-						updateDateConqueredMonthText.setText(month.toString());
 						updateGdpText.setText(gdp.toString());
 						updateSuccessionText.setText(kingdom.Succession);
 						updateTypeText.setText(kingdom.Type);
