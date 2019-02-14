@@ -38,9 +38,11 @@ import tables.Resource;
 public class ResourceService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public ResourceService(DatabaseConnectionService dbService) {
+	public ResourceService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -54,154 +56,154 @@ public class ResourceService implements Services {
 
 		int width = 500;
 		int height = 20;
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
 
-		JPanel insert = new JPanel();
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-
-		JLabel insertNameLabel = new JLabel("Name: ");
-		insert.add(insertNameLabel);
-		JTextField insertNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertNameText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Resource k = new Resource();
-				k.Name = insertNameText.getText();
-				addResource(k);
-
-				insertNameText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Resource resource : getResources()) {
-					dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+			JLabel insertNameLabel = new JLabel("Name: ");
+			insert.add(insertNameLabel);
+			JTextField insertNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				dropDown2.removeAllItems();
-				for (Resource resource : getResources()) {
-					dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
-				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertNameText);
 
-			}
-		});
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Resource k = new Resource();
+					k.Name = insertNameText.getText();
+					addResource(k);
 
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
+					insertNameText.setText("");
 
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Resource resource : getResources()) {
-			dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
-
-		JLabel updateNameLabel = new JLabel("Name: ");
-		update.add(updateNameLabel);
-		JTextField updateNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateNameText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				try {
-					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-					Resource resource = null;
-					for (Resource k : getResources()) {
-						if (Integer.toString(k.ID).equals(id)) {
-							resource = k;
-							break;
-						}
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Resource resource : getResources()) {
+						dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
 					}
-					updateNameText.setText(resource.Name);
-				} catch (Exception e1) {
+					dropDown2.removeAllItems();
+					for (Resource resource : getResources()) {
+						dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+					}
+
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Resource resource : getResources()) {
+				dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updateNameLabel = new JLabel("Name: ");
+			update.add(updateNameLabel);
+			JTextField updateNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateNameText);
+
+			dropDown.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					try {
+						String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+						Resource resource = null;
+						for (Resource k : getResources()) {
+							if (Integer.toString(k.ID).equals(id)) {
+								resource = k;
+								break;
+							}
+						}
+						updateNameText.setText(resource.Name);
+					} catch (Exception e1) {
+						updateNameText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Resource k = new Resource();
+					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					k.Name = updateNameText.getText();
+					updateResource(k);
+
 					updateNameText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Resource resource : getResources()) {
+						dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+					}
+					dropDown2.removeAllItems();
+					for (Resource resource : getResources()) {
+						dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Resource resource : getResources()) {
+				dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Resource k = new Resource();
-				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				k.Name = updateNameText.getText();
-				updateResource(k);
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
 
-				updateNameText.setText("");
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					deleteResource(id);
 
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Resource resource : getResources()) {
-					dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Resource resource : getResources()) {
+						dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+					}
+					dropDown2.removeAllItems();
+					for (Resource resource : getResources()) {
+						dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+					}
 				}
-				dropDown2.removeAllItems();
-				for (Resource resource : getResources()) {
-					dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
-				}
-			}
-		});
+			});
 
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Resource resource : getResources()) {
-			dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				deleteResource(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Resource resource : getResources()) {
-					dropDown.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
-				}
-				dropDown2.removeAllItems();
-				for (Resource resource : getResources()) {
-					dropDown2.addItem("ID: " + resource.ID + " - Name:  " + resource.Name);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

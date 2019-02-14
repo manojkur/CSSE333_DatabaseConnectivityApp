@@ -38,9 +38,11 @@ import tables.Ruler;
 public class RulerService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public RulerService(DatabaseConnectionService dbService) {
+	public RulerService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -53,326 +55,326 @@ public class RulerService implements Services {
 
 		int width = 500;
 		int height = 20;
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		JLabel insertPIDLabel = new JLabel("PID: ");
-		insert.add(insertPIDLabel);
-		JTextField insertPIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertPIDText);
-
-		JLabel insertKIDLabel = new JLabel("KID: ");
-		insert.add(insertKIDLabel);
-		JTextField insertKIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertKIDText);
-
-		JLabel insertHIDLabel = new JLabel("HID: ");
-		insert.add(insertHIDLabel);
-		JTextField insertHIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertHIDText);
-
-		JLabel insertYearsOfExperienceLabel = new JLabel("YearsOfExperience: ");
-		insert.add(insertYearsOfExperienceLabel);
-		JTextField insertYearsOfExperienceText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertYearsOfExperienceText);
-
-		JLabel insertTitleLabel = new JLabel("Title: ");
-		insert.add(insertTitleLabel);
-		JTextField insertTitleText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertTitleText);
-
-		JLabel insertDynastyLabel = new JLabel("Dynasty: ");
-		insert.add(insertDynastyLabel);
-		JTextField insertDynastyText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertDynastyText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Ruler p = new Ruler();
-				try {
-					p.PID = Integer.parseInt(insertPIDText.getText());
-				} catch (NumberFormatException e) {
-
+			JLabel insertPIDLabel = new JLabel("PID: ");
+			insert.add(insertPIDLabel);
+			JTextField insertPIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					p.KID = Integer.parseInt(insertKIDText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertPIDText);
 
+			JLabel insertKIDLabel = new JLabel("KID: ");
+			insert.add(insertKIDLabel);
+			JTextField insertKIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					p.HID = Integer.parseInt(insertHIDText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertKIDText);
 
+			JLabel insertHIDLabel = new JLabel("HID: ");
+			insert.add(insertHIDLabel);
+			JTextField insertHIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					p.YearsOfExperience = Integer.parseInt(insertYearsOfExperienceText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertHIDText);
 
+			JLabel insertYearsOfExperienceLabel = new JLabel("YearsOfExperience: ");
+			insert.add(insertYearsOfExperienceLabel);
+			JTextField insertYearsOfExperienceText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertYearsOfExperienceText);
 
-				p.Title = insertTitleText.getText();
-				p.Dynasty = insertDynastyText.getText();
-
-				addRuler(p);
-
-				insertPIDText.setText("");
-				insertKIDText.setText("");
-				insertHIDText.setText("");
-				insertYearsOfExperienceText.setText("");
-				insertTitleText.setText("");
-				insertDynastyText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Ruler ruler : getRulers()) {
-					dropDown.addItem("ID: " + ruler.ID);
+			JLabel insertTitleLabel = new JLabel("Title: ");
+			insert.add(insertTitleLabel);
+			JTextField insertTitleText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				dropDown2.removeAllItems();
-				for (Ruler ruler : getRulers()) {
-					dropDown2.addItem("ID: " + ruler.ID);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertTitleText);
+
+			JLabel insertDynastyLabel = new JLabel("Dynasty: ");
+			insert.add(insertDynastyLabel);
+			JTextField insertDynastyText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-			}
-		});
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertDynastyText);
 
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Ruler p = new Ruler();
+					try {
+						p.PID = Integer.parseInt(insertPIDText.getText());
+					} catch (NumberFormatException e) {
 
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Ruler ruler : getRulers()) {
-			dropDown.addItem("ID: " + ruler.ID);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
-
-		JLabel updatePIDLabel = new JLabel("PID: ");
-		update.add(updatePIDLabel);
-		JTextField updatePIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updatePIDText);
-
-		JLabel updateKIDLabel = new JLabel("KID: ");
-		update.add(updateKIDLabel);
-		JTextField updateKIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateKIDText);
-
-		JLabel updateHIDLabel = new JLabel("HID: ");
-		update.add(updateHIDLabel);
-		JTextField updateHIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateHIDText);
-
-		JLabel updateYearsOfExperienceLabel = new JLabel("YearsOfExperience: ");
-		update.add(updateYearsOfExperienceLabel);
-		JTextField updateYearsOfExperienceText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateYearsOfExperienceText);
-
-		JLabel updateTitleLabel = new JLabel("Title: ");
-		update.add(updateTitleLabel);
-		JTextField updateTitleText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateTitleText);
-
-		JLabel updateDynastyLabel = new JLabel("Dynasty: ");
-		update.add(updateDynastyLabel);
-		JTextField updateDynastyText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateDynastyText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String id = dropDown.getSelectedItem().toString().split(" ")[1];
-					List<Ruler> rulers = getRulers();
-					Ruler p = null;
-					for (Ruler ruler : rulers) {
-						if (Integer.toString(ruler.ID).equals(id)) {
-							p = ruler;
-							break;
-						}
 					}
-					Integer PID = p.PID;
-					Integer KID = p.KID;
-					Integer HID = p.HID;
-					Integer YearsOfExperience = p.YearsOfExperience;
+					try {
+						p.KID = Integer.parseInt(insertKIDText.getText());
+					} catch (NumberFormatException e) {
 
-					updatePIDText.setText(PID.toString());
-					updateKIDText.setText(KID.toString());
-					updateHIDText.setText(HID.toString());
-					updateYearsOfExperienceText.setText(YearsOfExperience.toString());
-					updateTitleText.setText(p.Title);
-					updateDynastyText.setText(p.Dynasty);
-				} catch (Exception e1) {
+					}
+					try {
+						p.HID = Integer.parseInt(insertHIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						p.YearsOfExperience = Integer.parseInt(insertYearsOfExperienceText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+
+					p.Title = insertTitleText.getText();
+					p.Dynasty = insertDynastyText.getText();
+
+					addRuler(p);
+
+					insertPIDText.setText("");
+					insertKIDText.setText("");
+					insertHIDText.setText("");
+					insertYearsOfExperienceText.setText("");
+					insertTitleText.setText("");
+					insertDynastyText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Ruler ruler : getRulers()) {
+						dropDown.addItem("ID: " + ruler.ID);
+					}
+					dropDown2.removeAllItems();
+					for (Ruler ruler : getRulers()) {
+						dropDown2.addItem("ID: " + ruler.ID);
+					}
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Ruler ruler : getRulers()) {
+				dropDown.addItem("ID: " + ruler.ID);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updatePIDLabel = new JLabel("PID: ");
+			update.add(updatePIDLabel);
+			JTextField updatePIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updatePIDText);
+
+			JLabel updateKIDLabel = new JLabel("KID: ");
+			update.add(updateKIDLabel);
+			JTextField updateKIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateKIDText);
+
+			JLabel updateHIDLabel = new JLabel("HID: ");
+			update.add(updateHIDLabel);
+			JTextField updateHIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateHIDText);
+
+			JLabel updateYearsOfExperienceLabel = new JLabel("YearsOfExperience: ");
+			update.add(updateYearsOfExperienceLabel);
+			JTextField updateYearsOfExperienceText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateYearsOfExperienceText);
+
+			JLabel updateTitleLabel = new JLabel("Title: ");
+			update.add(updateTitleLabel);
+			JTextField updateTitleText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateTitleText);
+
+			JLabel updateDynastyLabel = new JLabel("Dynasty: ");
+			update.add(updateDynastyLabel);
+			JTextField updateDynastyText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateDynastyText);
+
+			dropDown.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						String id = dropDown.getSelectedItem().toString().split(" ")[1];
+						List<Ruler> rulers = getRulers();
+						Ruler p = null;
+						for (Ruler ruler : rulers) {
+							if (Integer.toString(ruler.ID).equals(id)) {
+								p = ruler;
+								break;
+							}
+						}
+						Integer PID = p.PID;
+						Integer KID = p.KID;
+						Integer HID = p.HID;
+						Integer YearsOfExperience = p.YearsOfExperience;
+
+						updatePIDText.setText(PID.toString());
+						updateKIDText.setText(KID.toString());
+						updateHIDText.setText(HID.toString());
+						updateYearsOfExperienceText.setText(YearsOfExperience.toString());
+						updateTitleText.setText(p.Title);
+						updateDynastyText.setText(p.Dynasty);
+					} catch (Exception e1) {
+						updatePIDText.setText("");
+						updateKIDText.setText("");
+						updateHIDText.setText("");
+						updateYearsOfExperienceText.setText("");
+						updateTitleText.setText("");
+						updateDynastyText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Ruler p = new Ruler();
+					p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+
+					try {
+						p.PID = Integer.parseInt(updatePIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						p.KID = Integer.parseInt(updateKIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						p.HID = Integer.parseInt(updateHIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						p.YearsOfExperience = Integer.parseInt(updateYearsOfExperienceText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+
+					p.Title = updateTitleText.getText();
+					p.Dynasty = updateDynastyText.getText();
+					p.Dynasty = updateDynastyText.getText();
+
+					updateRuler(p);
+
 					updatePIDText.setText("");
 					updateKIDText.setText("");
 					updateHIDText.setText("");
 					updateYearsOfExperienceText.setText("");
 					updateTitleText.setText("");
 					updateDynastyText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Ruler ruler : getRulers()) {
+						dropDown.addItem("ID: " + ruler.ID);
+					}
+					dropDown2.removeAllItems();
+					for (Ruler ruler : getRulers()) {
+						dropDown2.addItem("ID: " + ruler.ID);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Ruler ruler : getRulers()) {
+				dropDown2.addItem("ID: " + ruler.ID);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Ruler p = new Ruler();
-				p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
 
-				try {
-					p.PID = Integer.parseInt(updatePIDText.getText());
-				} catch (NumberFormatException e) {
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
+					deleteRuler(id);
 
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Ruler ruler : getRulers()) {
+						dropDown.addItem("ID: " + ruler.ID);
+					}
+					dropDown2.removeAllItems();
+					for (Ruler ruler : getRulers()) {
+						dropDown2.addItem("ID: " + ruler.ID);
+					}
 				}
-				try {
-					p.KID = Integer.parseInt(updateKIDText.getText());
-				} catch (NumberFormatException e) {
+			});
 
-				}
-				try {
-					p.HID = Integer.parseInt(updateHIDText.getText());
-				} catch (NumberFormatException e) {
-
-				}
-				try {
-					p.YearsOfExperience = Integer.parseInt(updateYearsOfExperienceText.getText());
-				} catch (NumberFormatException e) {
-
-				}
-
-				p.Title = updateTitleText.getText();
-				p.Dynasty = updateDynastyText.getText();
-				p.Dynasty = updateDynastyText.getText();
-
-				updateRuler(p);
-
-				updatePIDText.setText("");
-				updateKIDText.setText("");
-				updateHIDText.setText("");
-				updateYearsOfExperienceText.setText("");
-				updateTitleText.setText("");
-				updateDynastyText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Ruler ruler : getRulers()) {
-					dropDown.addItem("ID: " + ruler.ID);
-				}
-				dropDown2.removeAllItems();
-				for (Ruler ruler : getRulers()) {
-					dropDown2.addItem("ID: " + ruler.ID);
-				}
-			}
-		});
-
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Ruler ruler : getRulers()) {
-			dropDown2.addItem("ID: " + ruler.ID);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
-				deleteRuler(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Ruler ruler : getRulers()) {
-					dropDown.addItem("ID: " + ruler.ID);
-				}
-				dropDown2.removeAllItems();
-				for (Ruler ruler : getRulers()) {
-					dropDown2.addItem("ID: " + ruler.ID);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

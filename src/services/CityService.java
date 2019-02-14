@@ -38,9 +38,11 @@ import tables.City;
 public class CityService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public CityService(DatabaseConnectionService dbService) {
+	public CityService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -53,291 +55,291 @@ public class CityService implements Services {
 
 		int width = 500;
 		int height = 20;
-
-		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		JLabel insertKIDLabel = new JLabel("KID: ");
-		insert.add(insertKIDLabel);
-		JTextField insertKIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertKIDText);
-
-		JLabel insertTIDLabel = new JLabel("TID: ");
-		insert.add(insertTIDLabel);
-		JTextField insertTIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertTIDText);
-
-		JLabel insertNameLabel = new JLabel("Name: ");
-		insert.add(insertNameLabel);
-		JTextField insertNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertNameText);
-
-		JLabel insertPopulationLabel = new JLabel("Population: ");
-		insert.add(insertPopulationLabel);
-		JTextField insertPopulationText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertPopulationText);
-
-		JLabel insertCoordinatesLabel = new JLabel("Coordinates: ");
-		insert.add(insertCoordinatesLabel);
-		JTextField insertCoordinatesText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertCoordinatesText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				City k = new City();
-				try {
-					k.KID = Integer.parseInt(insertKIDText.getText());
-				} catch (NumberFormatException e) {
-
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			JLabel insertKIDLabel = new JLabel("KID: ");
+			insert.add(insertKIDLabel);
+			JTextField insertKIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					k.TID = Integer.parseInt(insertTIDText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertKIDText);
 
+			JLabel insertTIDLabel = new JLabel("TID: ");
+			insert.add(insertTIDLabel);
+			JTextField insertTIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					k.Population = Integer.parseInt(insertPopulationText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertTIDText);
 
+			JLabel insertNameLabel = new JLabel("Name: ");
+			insert.add(insertNameLabel);
+			JTextField insertNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				k.Coordinates = insertCoordinatesText.getText();
-				k.Name = insertNameText.getText();
-				addCity(k);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertNameText);
 
-				insertKIDText.setText("");
-				insertTIDText.setText("");
-				insertPopulationText.setText("");
-				insertNameText.setText("");
-				insertCoordinatesText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-
-				dropDown.removeAllItems();
-				for (City city : getCitys()) {
-					dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+			JLabel insertPopulationLabel = new JLabel("Population: ");
+			insert.add(insertPopulationLabel);
+			JTextField insertPopulationText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				dropDown2.removeAllItems();
-				for (City city : getCitys()) {
-					dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertPopulationText);
+
+			JLabel insertCoordinatesLabel = new JLabel("Coordinates: ");
+			insert.add(insertCoordinatesLabel);
+			JTextField insertCoordinatesText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-			}
-		});
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertCoordinatesText);
 
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					City k = new City();
+					try {
+						k.KID = Integer.parseInt(insertKIDText.getText());
+					} catch (NumberFormatException e) {
 
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (City city : getCitys()) {
-			dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
-
-		JLabel updateKIDLabel = new JLabel("KID: ");
-		update.add(updateKIDLabel);
-		JTextField updateKIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateKIDText);
-
-		JLabel updateTIDLabel = new JLabel("TID: ");
-		update.add(updateTIDLabel);
-		JTextField updateTIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateTIDText);
-
-		JLabel updateNameLabel = new JLabel("Name: ");
-		update.add(updateNameLabel);
-		JTextField updateNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateNameText);
-
-		JLabel updatePopulationLabel = new JLabel("Population: ");
-		update.add(updatePopulationLabel);
-		JTextField updatePopulationText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updatePopulationText);
-
-		JLabel updateCoordinatesLabel = new JLabel("Coordinates: ");
-		update.add(updateCoordinatesLabel);
-		JTextField updateCoordinatesText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateCoordinatesText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				try {
-					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-
-					City city = null;
-					for (City k : getCitys()) {
-						if (Integer.toString(k.ID).equals(id)) {
-							city = k;
-							break;
-						}
 					}
-					updateTIDText.setText(Integer.toString(city.TID));
-					updateKIDText.setText(Integer.toString(city.KID));
-					updateNameText.setText(city.Name);
-					updateCoordinatesText.setText(city.Coordinates);
-					updatePopulationText.setText(Integer.toString(city.Population));
-				} catch (Exception e1) {
+					try {
+						k.TID = Integer.parseInt(insertTIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.Population = Integer.parseInt(insertPopulationText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					k.Coordinates = insertCoordinatesText.getText();
+					k.Name = insertNameText.getText();
+					addCity(k);
+
+					insertKIDText.setText("");
+					insertTIDText.setText("");
+					insertPopulationText.setText("");
+					insertNameText.setText("");
+					insertCoordinatesText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+
+					dropDown.removeAllItems();
+					for (City city : getCitys()) {
+						dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+					}
+					dropDown2.removeAllItems();
+					for (City city : getCitys()) {
+						dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+					}
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (City city : getCitys()) {
+				dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updateKIDLabel = new JLabel("KID: ");
+			update.add(updateKIDLabel);
+			JTextField updateKIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateKIDText);
+
+			JLabel updateTIDLabel = new JLabel("TID: ");
+			update.add(updateTIDLabel);
+			JTextField updateTIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateTIDText);
+
+			JLabel updateNameLabel = new JLabel("Name: ");
+			update.add(updateNameLabel);
+			JTextField updateNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateNameText);
+
+			JLabel updatePopulationLabel = new JLabel("Population: ");
+			update.add(updatePopulationLabel);
+			JTextField updatePopulationText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updatePopulationText);
+
+			JLabel updateCoordinatesLabel = new JLabel("Coordinates: ");
+			update.add(updateCoordinatesLabel);
+			JTextField updateCoordinatesText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateCoordinatesText);
+
+			dropDown.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					try {
+						String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+
+						City city = null;
+						for (City k : getCitys()) {
+							if (Integer.toString(k.ID).equals(id)) {
+								city = k;
+								break;
+							}
+						}
+						updateTIDText.setText(Integer.toString(city.TID));
+						updateKIDText.setText(Integer.toString(city.KID));
+						updateNameText.setText(city.Name);
+						updateCoordinatesText.setText(city.Coordinates);
+						updatePopulationText.setText(Integer.toString(city.Population));
+					} catch (Exception e1) {
+						updateTIDText.setText("");
+						updateKIDText.setText("");
+						updateNameText.setText("");
+						updateCoordinatesText.setText("");
+						updatePopulationText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					City k = new City();
+					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					try {
+						k.TID = Integer.parseInt(updateTIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.KID = Integer.parseInt(updateKIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.Population = Integer.parseInt(updatePopulationText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					k.Name = updateNameText.getText();
+					k.Coordinates = updateCoordinatesText.getText();
+					updateCity(k);
+
 					updateTIDText.setText("");
 					updateKIDText.setText("");
 					updateNameText.setText("");
 					updateCoordinatesText.setText("");
 					updatePopulationText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+
+					dropDown.removeAllItems();
+					for (City city : getCitys()) {
+						dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+					}
+					dropDown2.removeAllItems();
+					for (City city : getCitys()) {
+						dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			// added this wth changing tables names
+
+			for (City city : getCitys()) {
+				dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				City k = new City();
-				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				try {
-					k.TID = Integer.parseInt(updateTIDText.getText());
-				} catch (NumberFormatException e) {
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
 
+					int id;
+					try {
+						id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					} catch (NumberFormatException e) {
+						id = 0;
+					}
+					deleteCity(id);
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+
+					dropDown.removeAllItems();
+					for (City city : getCitys()) {
+						dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+					}
+					dropDown2.removeAllItems();
+					for (City city : getCitys()) {
+						dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+					}
 				}
-				try {
-					k.KID = Integer.parseInt(updateKIDText.getText());
-				} catch (NumberFormatException e) {
+			});
 
-				}
-				try {
-					k.Population = Integer.parseInt(updatePopulationText.getText());
-				} catch (NumberFormatException e) {
-
-				}
-				k.Name = updateNameText.getText();
-				k.Coordinates = updateCoordinatesText.getText();
-				updateCity(k);
-
-				updateTIDText.setText("");
-				updateKIDText.setText("");
-				updateNameText.setText("");
-				updateCoordinatesText.setText("");
-				updatePopulationText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-
-				dropDown.removeAllItems();
-				for (City city : getCitys()) {
-					dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
-				}
-				dropDown2.removeAllItems();
-				for (City city : getCitys()) {
-					dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
-				}
-			}
-		});
-
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		// added this wth changing tables names
-
-		for (City city : getCitys()) {
-			dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-
-				int id;
-				try {
-					id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				} catch (NumberFormatException e) {
-					id = 0;
-				}
-				deleteCity(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-
-				dropDown.removeAllItems();
-				for (City city : getCitys()) {
-					dropDown.addItem("ID: " + city.ID + " - Name:  " + city.Name);
-				}
-				dropDown2.removeAllItems();
-				for (City city : getCitys()) {
-					dropDown2.addItem("ID: " + city.ID + " - Name:  " + city.Name);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

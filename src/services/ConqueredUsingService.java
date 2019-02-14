@@ -38,9 +38,11 @@ import tables.ConqueredUsing;
 public class ConqueredUsingService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public ConqueredUsingService(DatabaseConnectionService dbService) {
+	public ConqueredUsingService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -54,199 +56,200 @@ public class ConqueredUsingService implements Services {
 		int width = 500;
 		int height = 20;
 
-		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel insertKIDLabel = new JLabel("KID: ");
-		insert.add(insertKIDLabel);
-		JTextField insertKIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertKIDText);
-
-		JLabel insertCMIDLabel = new JLabel("CMID: ");
-		insert.add(insertCMIDLabel);
-		JTextField insertCMIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertCMIDText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				ConqueredUsing p = new ConqueredUsing();
-				try {
-					p.KID = Integer.parseInt(insertKIDText.getText());
-				} catch (NumberFormatException e) {
-
+			JLabel insertKIDLabel = new JLabel("KID: ");
+			insert.add(insertKIDLabel);
+			JTextField insertKIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					p.CMID = Integer.parseInt(insertCMIDText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertKIDText);
 
+			JLabel insertCMIDLabel = new JLabel("CMID: ");
+			insert.add(insertCMIDLabel);
+			JTextField insertCMIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertCMIDText);
 
-				addConqueredUsing(p);
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					ConqueredUsing p = new ConqueredUsing();
+					try {
+						p.KID = Integer.parseInt(insertKIDText.getText());
+					} catch (NumberFormatException e) {
 
-				insertKIDText.setText("");
-				insertCMIDText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-
-				dropDown.removeAllItems();
-				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
-					dropDown.addItem("ID: " + conqueredUsing.ID);
-				}
-				dropDown2.removeAllItems();
-				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
-					dropDown2.addItem("ID: " + conqueredUsing.ID);
-				}
-			}
-		});
-
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
-
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
-			dropDown.addItem("ID: " + conqueredUsing.ID);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
-
-		JLabel updateKIDLabel = new JLabel("KID: ");
-		update.add(updateKIDLabel);
-		JTextField updateKIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateKIDText);
-
-		JLabel updateCMIDLabel = new JLabel("CMID: ");
-		update.add(updateCMIDLabel);
-		JTextField updateCMIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateCMIDText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String id = dropDown.getSelectedItem().toString().split(" ")[1];
-					List<ConqueredUsing> conqueredUsings = getConqueredUsings();
-					ConqueredUsing k = null;
-					for (ConqueredUsing conqueredUsing : conqueredUsings) {
-						if (Integer.toString(conqueredUsing.ID).equals(id)) {
-							k = conqueredUsing;
-							break;
-						}
 					}
-					Integer KID = k.KID;
-					Integer CMID = k.CMID;
-					updateKIDText.setText(KID.toString());
-					updateCMIDText.setText(CMID.toString());
-				} catch (Exception e1) {
+					try {
+						p.CMID = Integer.parseInt(insertCMIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+
+					addConqueredUsing(p);
+
+					insertKIDText.setText("");
+					insertCMIDText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+
+					dropDown.removeAllItems();
+					for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+						dropDown.addItem("ID: " + conqueredUsing.ID);
+					}
+					dropDown2.removeAllItems();
+					for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+						dropDown2.addItem("ID: " + conqueredUsing.ID);
+					}
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+				dropDown.addItem("ID: " + conqueredUsing.ID);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updateKIDLabel = new JLabel("KID: ");
+			update.add(updateKIDLabel);
+			JTextField updateKIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateKIDText);
+
+			JLabel updateCMIDLabel = new JLabel("CMID: ");
+			update.add(updateCMIDLabel);
+			JTextField updateCMIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateCMIDText);
+
+			dropDown.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						String id = dropDown.getSelectedItem().toString().split(" ")[1];
+						List<ConqueredUsing> conqueredUsings = getConqueredUsings();
+						ConqueredUsing k = null;
+						for (ConqueredUsing conqueredUsing : conqueredUsings) {
+							if (Integer.toString(conqueredUsing.ID).equals(id)) {
+								k = conqueredUsing;
+								break;
+							}
+						}
+						Integer KID = k.KID;
+						Integer CMID = k.CMID;
+						updateKIDText.setText(KID.toString());
+						updateCMIDText.setText(CMID.toString());
+					} catch (Exception e1) {
+						updateKIDText.setText("");
+						updateCMIDText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					ConqueredUsing p = new ConqueredUsing();
+					p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+
+					try {
+						p.KID = Integer.parseInt(updateKIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						p.CMID = Integer.parseInt(updateCMIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+
+					updateConqueredUsing(p);
 					updateKIDText.setText("");
 					updateCMIDText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+						dropDown.addItem("ID: " + conqueredUsing.ID);
+					}
+					dropDown2.removeAllItems();
+					for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+						dropDown2.addItem("ID: " + conqueredUsing.ID);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+				dropDown2.addItem("ID: " + conqueredUsing.ID);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				ConqueredUsing p = new ConqueredUsing();
-				p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
 
-				try {
-					p.KID = Integer.parseInt(updateKIDText.getText());
-				} catch (NumberFormatException e) {
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
+					deleteConqueredUsing(id);
 
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+						dropDown.addItem("ID: " + conqueredUsing.ID);
+					}
+					dropDown2.removeAllItems();
+					for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
+						dropDown2.addItem("ID: " + conqueredUsing.ID);
+					}
 				}
-				try {
-					p.CMID = Integer.parseInt(updateCMIDText.getText());
-				} catch (NumberFormatException e) {
+			});
 
-				}
-
-				updateConqueredUsing(p);
-				updateKIDText.setText("");
-				updateCMIDText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
-					dropDown.addItem("ID: " + conqueredUsing.ID);
-				}
-				dropDown2.removeAllItems();
-				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
-					dropDown2.addItem("ID: " + conqueredUsing.ID);
-				}
-			}
-		});
-
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
-			dropDown2.addItem("ID: " + conqueredUsing.ID);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
-				deleteConqueredUsing(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
-					dropDown.addItem("ID: " + conqueredUsing.ID);
-				}
-				dropDown2.removeAllItems();
-				for (ConqueredUsing conqueredUsing : getConqueredUsings()) {
-					dropDown2.addItem("ID: " + conqueredUsing.ID);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

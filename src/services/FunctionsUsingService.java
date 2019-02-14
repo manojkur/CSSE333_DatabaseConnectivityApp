@@ -39,9 +39,11 @@ import tables.FunctionsUsing;
 public class FunctionsUsingService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public FunctionsUsingService(DatabaseConnectionService dbService) {
+	public FunctionsUsingService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -54,230 +56,230 @@ public class FunctionsUsingService implements Services {
 
 		int width = 500;
 		int height = 20;
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		JLabel insertRIDLabel = new JLabel("RID: ");
-		insert.add(insertRIDLabel);
-		JTextField insertRIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertRIDText);
-
-		JLabel insertCIDLabel = new JLabel("CID: ");
-		insert.add(insertCIDLabel);
-		JTextField insertCIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertCIDText);
-
-		JLabel insertQuantityLabel = new JLabel("Quantity: ");
-		insert.add(insertQuantityLabel);
-		JTextField insertQuantityText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertQuantityText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				FunctionsUsing k = new FunctionsUsing();
-				try {
-					k.RID = Integer.parseInt(insertRIDText.getText());
-				} catch (NumberFormatException e) {
-
+			JLabel insertRIDLabel = new JLabel("RID: ");
+			insert.add(insertRIDLabel);
+			JTextField insertRIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					k.Quantity = Integer.parseInt(insertQuantityText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertRIDText);
 
+			JLabel insertCIDLabel = new JLabel("CID: ");
+			insert.add(insertCIDLabel);
+			JTextField insertCIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					k.CID = Integer.parseInt(insertCIDText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertCIDText);
 
+			JLabel insertQuantityLabel = new JLabel("Quantity: ");
+			insert.add(insertQuantityLabel);
+			JTextField insertQuantityText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				addFunctionsUsing(k);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertQuantityText);
 
-				insertRIDText.setText("");
-				insertCIDText.setText("");
-				insertQuantityText.setText("");
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					FunctionsUsing k = new FunctionsUsing();
+					try {
+						k.RID = Integer.parseInt(insertRIDText.getText());
+					} catch (NumberFormatException e) {
 
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
-					dropDown.addItem("ID: " + functionsUsing.ID);
-				}
-				dropDown2.removeAllItems();
-				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
-					dropDown2.addItem("ID: " + functionsUsing.ID);
-				}
-
-			}
-		});
-
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
-
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
-			dropDown.addItem("ID: " + functionsUsing.ID);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
-
-		JLabel updateRIDLabel = new JLabel("RID: ");
-		update.add(updateRIDLabel);
-		JTextField updateRIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateRIDText);
-
-		JLabel updateCIDLabel = new JLabel("CID: ");
-		update.add(updateCIDLabel);
-		JTextField updateCIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateCIDText);
-
-		JLabel updateQuantityLabel = new JLabel("Quantity: ");
-		update.add(updateQuantityLabel);
-		JTextField updateQuantityText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateQuantityText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String id = dropDown.getSelectedItem().toString().split(" ")[1];
-					List<FunctionsUsing> functionsUsings = getFunctionsUsings();
-					FunctionsUsing k = null;
-					for (FunctionsUsing functionsUsing : functionsUsings) {
-						if (Integer.toString(functionsUsing.ID).equals(id)) {
-							k = functionsUsing;
-							break;
-						}
 					}
-					updateRIDText.setText(Integer.toString(k.RID));
-					updateCIDText.setText(Integer.toString(k.CID));
-					updateQuantityText.setText(Integer.toString(k.Quantity));
-				} catch (Exception e1) {
+					try {
+						k.Quantity = Integer.parseInt(insertQuantityText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.CID = Integer.parseInt(insertCIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					addFunctionsUsing(k);
+
+					insertRIDText.setText("");
+					insertCIDText.setText("");
+					insertQuantityText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+						dropDown.addItem("ID: " + functionsUsing.ID);
+					}
+					dropDown2.removeAllItems();
+					for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+						dropDown2.addItem("ID: " + functionsUsing.ID);
+					}
+
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+				dropDown.addItem("ID: " + functionsUsing.ID);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updateRIDLabel = new JLabel("RID: ");
+			update.add(updateRIDLabel);
+			JTextField updateRIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateRIDText);
+
+			JLabel updateCIDLabel = new JLabel("CID: ");
+			update.add(updateCIDLabel);
+			JTextField updateCIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateCIDText);
+
+			JLabel updateQuantityLabel = new JLabel("Quantity: ");
+			update.add(updateQuantityLabel);
+			JTextField updateQuantityText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateQuantityText);
+
+			dropDown.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						String id = dropDown.getSelectedItem().toString().split(" ")[1];
+						List<FunctionsUsing> functionsUsings = getFunctionsUsings();
+						FunctionsUsing k = null;
+						for (FunctionsUsing functionsUsing : functionsUsings) {
+							if (Integer.toString(functionsUsing.ID).equals(id)) {
+								k = functionsUsing;
+								break;
+							}
+						}
+						updateRIDText.setText(Integer.toString(k.RID));
+						updateCIDText.setText(Integer.toString(k.CID));
+						updateQuantityText.setText(Integer.toString(k.Quantity));
+					} catch (Exception e1) {
+						updateRIDText.setText("");
+						updateCIDText.setText("");
+						updateQuantityText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					FunctionsUsing k = new FunctionsUsing();
+					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+					try {
+						k.RID = Integer.parseInt(updateRIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.CID = Integer.parseInt(updateCIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.Quantity = Integer.parseInt(updateQuantityText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					updateFunctionsUsing(k);
+
 					updateRIDText.setText("");
 					updateCIDText.setText("");
 					updateQuantityText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+						dropDown.addItem("ID: " + functionsUsing.ID);
+					}
+					dropDown2.removeAllItems();
+					for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+						dropDown2.addItem("ID: " + functionsUsing.ID);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+				dropDown2.addItem("ID: " + functionsUsing.ID);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				FunctionsUsing k = new FunctionsUsing();
-				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
-				try {
-					k.RID = Integer.parseInt(updateRIDText.getText());
-				} catch (NumberFormatException e) {
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
 
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
+					deleteFunctionsUsing(id);
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+						dropDown.addItem("ID: " + functionsUsing.ID);
+					}
+					dropDown2.removeAllItems();
+					for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
+						dropDown2.addItem("ID: " + functionsUsing.ID);
+					}
 				}
-				try {
-					k.CID = Integer.parseInt(updateCIDText.getText());
-				} catch (NumberFormatException e) {
+			});
 
-				}
-				try {
-					k.Quantity = Integer.parseInt(updateQuantityText.getText());
-				} catch (NumberFormatException e) {
-
-				}
-				updateFunctionsUsing(k);
-
-				updateRIDText.setText("");
-				updateCIDText.setText("");
-				updateQuantityText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
-					dropDown.addItem("ID: " + functionsUsing.ID);
-				}
-				dropDown2.removeAllItems();
-				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
-					dropDown2.addItem("ID: " + functionsUsing.ID);
-				}
-			}
-		});
-
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
-			dropDown2.addItem("ID: " + functionsUsing.ID);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
-				deleteFunctionsUsing(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
-					dropDown.addItem("ID: " + functionsUsing.ID);
-				}
-				dropDown2.removeAllItems();
-				for (FunctionsUsing functionsUsing : getFunctionsUsings()) {
-					dropDown2.addItem("ID: " + functionsUsing.ID);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

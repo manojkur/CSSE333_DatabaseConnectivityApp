@@ -38,9 +38,11 @@ import tables.Military;
 public class MilitaryService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public MilitaryService(DatabaseConnectionService dbService) {
+	public MilitaryService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -53,221 +55,221 @@ public class MilitaryService implements Services {
 
 		int width = 500;
 		int height = 20;
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		JLabel insertKIDLabel = new JLabel("KID: ");
-		insert.add(insertKIDLabel);
-		JTextField insertKIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertKIDText);
-
-		JLabel insertNameLabel = new JLabel("Name: ");
-		insert.add(insertNameLabel);
-		JTextField insertNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertNameText);
-
-		JLabel insertBudgetLabel = new JLabel("Budget: ");
-		insert.add(insertBudgetLabel);
-		JTextField insertBudgetText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertBudgetText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Military k = new Military();
-				try {
-					k.KID = Integer.parseInt(insertKIDText.getText());
-				} catch (NumberFormatException e) {
-
+			JLabel insertKIDLabel = new JLabel("KID: ");
+			insert.add(insertKIDLabel);
+			JTextField insertKIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					k.Budget = Integer.parseInt(insertBudgetText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertKIDText);
 
+			JLabel insertNameLabel = new JLabel("Name: ");
+			insert.add(insertNameLabel);
+			JTextField insertNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				k.Name = insertNameText.getText();
-				addMilitary(k);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertNameText);
 
-				insertKIDText.setText("");
-				insertNameText.setText("");
-				insertBudgetText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Military military : getMilitarys()) {
-					dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+			JLabel insertBudgetLabel = new JLabel("Budget: ");
+			insert.add(insertBudgetLabel);
+			JTextField insertBudgetText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				dropDown2.removeAllItems();
-				for (Military military : getMilitarys()) {
-					dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
-				}
-			}
-		});
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertBudgetText);
 
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Military k = new Military();
+					try {
+						k.KID = Integer.parseInt(insertKIDText.getText());
+					} catch (NumberFormatException e) {
 
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Military military : getMilitarys()) {
-			dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
-
-		JLabel updateKIDLabel = new JLabel("KID: ");
-		update.add(updateKIDLabel);
-		JTextField updateKIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateKIDText);
-
-		JLabel updateNameLabel = new JLabel("Name: ");
-		update.add(updateNameLabel);
-		JTextField updateNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateNameText);
-
-		JLabel updateBudgetLabel = new JLabel("Budget: ");
-		update.add(updateBudgetLabel);
-		JTextField updateBudgetText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateBudgetText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				try {
-					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-					Military military = null;
-					for (Military k : getMilitarys()) {
-						if (Integer.toString(k.ID).equals(id)) {
-							military = k;
-							break;
-						}
 					}
-					Long budget = military.Budget;
-					updateKIDText.setText(Integer.toString(military.KID));
-					updateNameText.setText(military.Name);
-					updateBudgetText.setText(budget.toString());
-				} catch (Exception e1) {
+					try {
+						k.Budget = Integer.parseInt(insertBudgetText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					k.Name = insertNameText.getText();
+					addMilitary(k);
+
+					insertKIDText.setText("");
+					insertNameText.setText("");
+					insertBudgetText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Military military : getMilitarys()) {
+						dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+					}
+					dropDown2.removeAllItems();
+					for (Military military : getMilitarys()) {
+						dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+					}
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Military military : getMilitarys()) {
+				dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updateKIDLabel = new JLabel("KID: ");
+			update.add(updateKIDLabel);
+			JTextField updateKIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateKIDText);
+
+			JLabel updateNameLabel = new JLabel("Name: ");
+			update.add(updateNameLabel);
+			JTextField updateNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateNameText);
+
+			JLabel updateBudgetLabel = new JLabel("Budget: ");
+			update.add(updateBudgetLabel);
+			JTextField updateBudgetText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateBudgetText);
+
+			dropDown.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					try {
+						String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+						Military military = null;
+						for (Military k : getMilitarys()) {
+							if (Integer.toString(k.ID).equals(id)) {
+								military = k;
+								break;
+							}
+						}
+						Long budget = military.Budget;
+						updateKIDText.setText(Integer.toString(military.KID));
+						updateNameText.setText(military.Name);
+						updateBudgetText.setText(budget.toString());
+					} catch (Exception e1) {
+						updateKIDText.setText("");
+						updateNameText.setText("");
+						updateBudgetText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Military k = new Military();
+					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					try {
+						k.Budget = Integer.parseInt(updateBudgetText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.KID = Integer.parseInt(updateKIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					k.Name = updateNameText.getText();
+					updateMilitary(k);
+
 					updateKIDText.setText("");
 					updateNameText.setText("");
 					updateBudgetText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Military military : getMilitarys()) {
+						dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+					}
+					dropDown2.removeAllItems();
+					for (Military military : getMilitarys()) {
+						dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Military military : getMilitarys()) {
+				dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Military k = new Military();
-				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				try {
-					k.Budget = Integer.parseInt(updateBudgetText.getText());
-				} catch (NumberFormatException e) {
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					deleteMilitary(id);
 
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Military military : getMilitarys()) {
+						dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+					}
+					dropDown2.removeAllItems();
+					for (Military military : getMilitarys()) {
+						dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+					}
 				}
-				try {
-					k.KID = Integer.parseInt(updateKIDText.getText());
-				} catch (NumberFormatException e) {
+			});
 
-				}
-				k.Name = updateNameText.getText();
-				updateMilitary(k);
-
-				updateKIDText.setText("");
-				updateNameText.setText("");
-				updateBudgetText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Military military : getMilitarys()) {
-					dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
-				}
-				dropDown2.removeAllItems();
-				for (Military military : getMilitarys()) {
-					dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
-				}
-			}
-		});
-
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Military military : getMilitarys()) {
-			dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				deleteMilitary(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Military military : getMilitarys()) {
-					dropDown.addItem("ID: " + military.ID + " - Name:  " + military.Name);
-				}
-				dropDown2.removeAllItems();
-				for (Military military : getMilitarys()) {
-					dropDown2.addItem("ID: " + military.ID + " - Name:  " + military.Name);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

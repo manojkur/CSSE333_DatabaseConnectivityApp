@@ -4,8 +4,13 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
@@ -68,100 +73,120 @@ public class Main {
 
 		try {
 			Boolean connectionBool = dbcs.connect(user, password);
-
-			KingdomService ks = new KingdomService(dbcs);
-			PersonService person = new PersonService(dbcs);
-			RulerService ruler = new RulerService(dbcs);
-			HeirService heir = new HeirService(dbcs);
-			CityService city = new CityService(dbcs);
-			TerrainService terrainService = new TerrainService(dbcs);
-			KnightService knight = new KnightService(dbcs);
-			MilitaryService military = new MilitaryService(dbcs);
-			ResourceService resource = new ResourceService(dbcs);
-			ConqueredUsingService conqueredUsing = new ConqueredUsingService(dbcs);
-			ConqueredMethodService conquerMethod = new ConqueredMethodService(dbcs);
-			FunctionsUsingService functionsUsing = new FunctionsUsingService(dbcs);
-
-			KingdomBuiltOnTopOfService kingdomBuiltOnTopOfService = new KingdomBuiltOnTopOfService(dbcs);
-			KingdomCityService kingdomCityService = new KingdomCityService(dbcs);
-			KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
-			KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
-			KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
-
-			JFrame tableFrame = new JFrame("Kingdom Database entries");
-			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-			Map<Services, String> services = new HashMap<>();
-			services.put(ks, "Kingdom");
-			services.put(person, "Person");
-			services.put(ruler, "Ruler");
-			services.put(heir, "Heir");
-			services.put(city, "City");
-			services.put(terrainService, "Terrain");
-			services.put(knight, "Knight");
-			services.put(military, "Military");
-			services.put(resource, "Resource");
-			services.put(conqueredUsing, "ConqueredUsing");
-			services.put(conquerMethod, "ConquerMethod");
-			services.put(functionsUsing, "FunctionsUsing");
-
-			Map<ViewServices, String> viewServices = new HashMap<>();
-			viewServices.put(kingdomBuiltOnTopOfService, "KingdomBuiltOnTopOfView");
-			viewServices.put(kingdomCityService, "KingdomCityView");
-			viewServices.put(kingdomConqueredUsingService, "KingdomConqueredUsingView");
-			viewServices.put(kingdomMilitaryService, "KingdomMilitaryView");
-			viewServices.put(kingdomRulerService, "KingdomRulerView");
-
-			// get 2/3 of the height, and 2/3 of the width
-			int height = screenSize.height * 2 / 3;
-			int width = screenSize.width * 2 / 3;
-
-			// set the jframe height and width
-			tableFrame.setPreferredSize(new Dimension(width, height));
-
-			JPanel kingdomCards = new JPanel(new BorderLayout());
-
-			JPanel comboBoxPane = new JPanel(); // use FlowLayout
-			String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight", "Military",
-					"Resource", "ConqueredUsing", "ConquerMethod", "FunctionsUsing", "KingdomBuiltOnTopOfView",
-					"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
-			JComboBox cb = new JComboBox(comboBoxItems);
-			cb.setEditable(false);
-
-			JPanel cards = new JPanel(new CardLayout());
-			for (Services service : services.keySet()) {
-				cards.add(service.getJPanel(), services.get(service));
-			}
-
-			for (ViewServices service : viewServices.keySet()) {
-				cards.add(service.getScrollableTable(), viewServices.get(service));
-			}
-
-			cb.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent evt) {
-					CardLayout cl = (CardLayout) (cards.getLayout());
-					cl.show(cards, (String) evt.getItem());
+			PreparedStatement cs = dbcs.getConnection().prepareStatement(
+					"SELECT DP1.name AS DatabaseRoleName, DP2.name AS DatabaseUserName FROM sys.database_role_members AS DRM "
+					+ "RIGHT OUTER JOIN sys.database_principals AS DP1"
+					+ " ON DRM.role_principal_id = DP1.principal_id "
+					+ "LEFT OUTER JOIN sys.database_principals AS DP2 "
+					+ "ON DRM.member_principal_id = DP2.principal_id"
+					+ " where dp2.name = ?");
+			cs.setString(1, user);
+			ResultSet rs = cs.executeQuery();
+			boolean isOwner = false;
+			while(rs.next()){
+				if(rs.getString("DatabaseRoleName").equals("db_owner")){
+					isOwner = true;
 				}
-			});
-			CardLayout cl = (CardLayout) cards.getLayout();
-			cl.show(cards, "Kingdom");
-			comboBoxPane.add(cb);
-			kingdomCards.add(comboBoxPane, BorderLayout.PAGE_START);
-			kingdomCards.add(cards, BorderLayout.CENTER);
+			}
+			if(connectionBool){
+				// tables
+				KingdomService ks = new KingdomService(dbcs, isOwner);
+				PersonService person = new PersonService(dbcs, isOwner);
+				RulerService ruler = new RulerService(dbcs, isOwner);
+				HeirService heir = new HeirService(dbcs, isOwner);
+				CityService city = new CityService(dbcs, isOwner);
+				TerrainService terrainService = new TerrainService(dbcs, isOwner);
+				KnightService knight = new KnightService(dbcs, isOwner);
+				MilitaryService military = new MilitaryService(dbcs, isOwner);
+				ResourceService resource = new ResourceService(dbcs, isOwner);
+				ConqueredUsingService conqueredUsing = new ConqueredUsingService(dbcs, isOwner);
+				ConqueredMethodService conquerMethod = new ConqueredMethodService(dbcs, isOwner);
+				FunctionsUsingService functionsUsing = new FunctionsUsingService(dbcs, isOwner);
 
-			tableFrame.add(kingdomCards);
-			tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			tableFrame.pack();
-			tableFrame.setVisible(true);
+				
+				// views 
+				KingdomBuiltOnTopOfService kingdomBuiltOnTopOfService = new KingdomBuiltOnTopOfService(dbcs);
+				KingdomCityService kingdomCityService = new KingdomCityService(dbcs);
+				KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
+				KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
+				KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
 
-			tableFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-				@Override
-				public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-					dbcs.closeConnection();
+				JFrame tableFrame = new JFrame("Kingdom Database entries");
+				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+				Map<Services, String> services = new HashMap<>();
+				services.put(ks, "Kingdom");
+				services.put(person, "Person");
+				services.put(ruler, "Ruler");
+				services.put(heir, "Heir");
+				services.put(city, "City");
+				services.put(terrainService, "Terrain");
+				services.put(knight, "Knight");
+				services.put(military, "Military");
+				services.put(resource, "Resource");
+				services.put(conqueredUsing, "ConqueredUsing");
+				services.put(conquerMethod, "ConquerMethod");
+				services.put(functionsUsing, "FunctionsUsing");
+
+				Map<ViewServices, String> viewServices = new HashMap<>();
+				viewServices.put(kingdomBuiltOnTopOfService, "KingdomBuiltOnTopOfView");
+				viewServices.put(kingdomCityService, "KingdomCityView");
+				viewServices.put(kingdomConqueredUsingService, "KingdomConqueredUsingView");
+				viewServices.put(kingdomMilitaryService, "KingdomMilitaryView");
+				viewServices.put(kingdomRulerService, "KingdomRulerView");
+
+				// get 2/3 of the height, and 2/3 of the width
+				int height = screenSize.height * 2 / 3;
+				int width = screenSize.width * 2 / 3;
+
+				// set the jframe height and width
+				tableFrame.setPreferredSize(new Dimension(width, height));
+
+				JPanel kingdomCards = new JPanel(new BorderLayout());
+
+				JPanel comboBoxPane = new JPanel(); // use FlowLayout
+				String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight", "Military",
+						"Resource", "ConqueredUsing", "ConquerMethod", "FunctionsUsing", "KingdomBuiltOnTopOfView",
+						"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView" };
+				JComboBox cb = new JComboBox(comboBoxItems);
+				cb.setEditable(false);
+
+				JPanel cards = new JPanel(new CardLayout());
+				for (Services service : services.keySet()) {
+					cards.add(service.getJPanel(), services.get(service));
 				}
-			});
+
+				for (ViewServices service : viewServices.keySet()) {
+					cards.add(service.getScrollableTable(), viewServices.get(service));
+				}
+
+				cb.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						CardLayout cl = (CardLayout) (cards.getLayout());
+						cl.show(cards, (String) evt.getItem());
+					}
+				});
+				CardLayout cl = (CardLayout) cards.getLayout();
+				cl.show(cards, "Kingdom");
+				comboBoxPane.add(cb);
+				kingdomCards.add(comboBoxPane, BorderLayout.PAGE_START);
+				kingdomCards.add(cards, BorderLayout.CENTER);
+
+				tableFrame.add(kingdomCards);
+				tableFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				tableFrame.pack();
+				tableFrame.setVisible(true);
+
+				tableFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+					@Override
+					public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+						dbcs.closeConnection();
+					}
+				});
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("Please enter a valid username and password");
 		}
 
 	}

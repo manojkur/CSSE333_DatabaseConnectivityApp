@@ -15,6 +15,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javax.print.attribute.standard.MediaSize.ISO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -39,9 +40,11 @@ import tables.Kingdom;
 public class KingdomService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public KingdomService(DatabaseConnectionService dbService) {
+	public KingdomService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -54,263 +57,298 @@ public class KingdomService implements Services {
 
 		int width = 500;
 		int height = 20;
-
-		JPanel insert = new JPanel();
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		// insert.setMaximumSize(new Dimension(200, 200));
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		// insert.setLayout(new FlowLayout());
-		JLabel insertNameLabel = new JLabel("Name: ");
-		insert.add(insertNameLabel);
-		JTextField insertNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertNameText);
-
-		JLabel insertShortNameLabel = new JLabel("ShortName: ");
-		insert.add(insertShortNameLabel);
-		JTextField insertShortNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertShortNameText);
-
-		JLabel insertDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
-		insert.add(insertDateConqueredYearLabel);
-		JTextField insertDateConqueredYearText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertDateConqueredYearText);
-
-		JLabel insertDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
-		insert.add(insertDateConqueredMonthLabel);
-		JTextField insertDateConqueredMonthText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertDateConqueredMonthText);
-
-		JLabel insertDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
-		insert.add(insertDateConqueredDayLabel);
-		JTextField insertDateConqueredDayText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertDateConqueredDayText);
-
-		JLabel insertGdpLabel = new JLabel("GDP: ");
-		insert.add(insertGdpLabel);
-		JTextField insertGdpText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertGdpText);
-
-		JLabel insertSuccessionLabel = new JLabel("Succession: ");
-		insert.add(insertSuccessionLabel);
-		JTextField insertSuccessionText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertSuccessionText);
-
-		JLabel insertTypeLabel = new JLabel("Type: ");
-		insert.add(insertTypeLabel);
-		JTextField insertTypeText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertTypeText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Kingdom k = new Kingdom();
-				k.Name = insertNameText.getText();
-				k.ShortName = insertShortNameText.getText();
-
-				try {
-					k.DateConquered = java.sql.Date.valueOf(insertDateConqueredYearText.getText() + "-"
-							+ insertDateConqueredMonthText.getText() + "-" + insertDateConqueredDayText.getText());
-				} catch (IllegalArgumentException e) {
-
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			// insert.setMaximumSize(new Dimension(200, 200));
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			// insert.setLayout(new FlowLayout());
+			JLabel insertNameLabel = new JLabel("Name: ");
+			insert.add(insertNameLabel);
+			JTextField insertNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					k.GDP = Integer.parseInt(insertGdpText.getText());
-				} catch (NumberFormatException e) {
-
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertNameText);
+	
+			JLabel insertShortNameLabel = new JLabel("ShortName: ");
+			insert.add(insertShortNameLabel);
+			JTextField insertShortNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				k.Succession = insertSuccessionText.getText();
-				k.Type = insertTypeText.getText();
-				addKingdom(k);
-
-				insertNameText.setText("");
-				insertShortNameText.setText("");
-				insertDateConqueredYearText.setText("");
-				insertDateConqueredDayText.setText("");
-				insertDateConqueredMonthText.setText("");
-				insertGdpText.setText("");
-				insertSuccessionText.setText("");
-				insertTypeText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Kingdom kingdom : getKingdoms()) {
-					dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertShortNameText);
+	
+			JLabel insertDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
+			insert.add(insertDateConqueredYearLabel);
+			JTextField insertDateConqueredYearText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				dropDown2.removeAllItems();
-				for (Kingdom kingdom : getKingdoms()) {
-					dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertDateConqueredYearText);
+	
+			JLabel insertDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
+			insert.add(insertDateConqueredMonthLabel);
+			JTextField insertDateConqueredMonthText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-			}
-		});
-
-		insert.add(insertButton);
-
-		tabbedPane.addTab("Insert", insert);
-
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Kingdom kingdom : getKingdoms()) {
-			dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
-
-		JLabel updateNameLabel = new JLabel("Name: ");
-		update.add(updateNameLabel);
-		JTextField updateNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateNameText);
-
-		JLabel updateShortNameLabel = new JLabel("ShortName: ");
-		update.add(updateShortNameLabel);
-		JTextField updateShortNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateShortNameText);
-
-		JLabel updateDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
-		update.add(updateDateConqueredYearLabel);
-		JTextField updateDateConqueredYearText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateDateConqueredYearText);
-
-		JLabel updateDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
-		update.add(updateDateConqueredMonthLabel);
-		JTextField updateDateConqueredMonthText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateDateConqueredMonthText);
-
-		JLabel updateDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
-		update.add(updateDateConqueredDayLabel);
-		JTextField updateDateConqueredDayText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateDateConqueredDayText);
-
-		JLabel updateGdpLabel = new JLabel("GDP: ");
-		update.add(updateGdpLabel);
-		JTextField updateGdpText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateGdpText);
-
-		JLabel updateSuccessionLabel = new JLabel("Succession: ");
-		update.add(updateSuccessionLabel);
-		JTextField updateSuccessionText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateSuccessionText);
-
-		JLabel updateTypeLabel = new JLabel("Type: ");
-		update.add(updateTypeLabel);
-		JTextField updateTypeText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateTypeText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				try {
-					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-					Kingdom kingdom = null;
-					for (Kingdom k : getKingdoms()) {
-						if (Integer.toString(k.ID).equals(id)) {
-							kingdom = k;
-							break;
-						}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertDateConqueredMonthText);
+	
+			JLabel insertDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
+			insert.add(insertDateConqueredDayLabel);
+			JTextField insertDateConqueredDayText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertDateConqueredDayText);
+	
+			JLabel insertGdpLabel = new JLabel("GDP: ");
+			insert.add(insertGdpLabel);
+			JTextField insertGdpText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertGdpText);
+	
+			JLabel insertSuccessionLabel = new JLabel("Succession: ");
+			insert.add(insertSuccessionLabel);
+			JTextField insertSuccessionText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertSuccessionText);
+	
+			JLabel insertTypeLabel = new JLabel("Type: ");
+			insert.add(insertTypeLabel);
+			JTextField insertTypeText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertTypeText);
+	
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Kingdom k = new Kingdom();
+					k.Name = insertNameText.getText();
+					k.ShortName = insertShortNameText.getText();
+	
+					try {
+						k.DateConquered = java.sql.Date.valueOf(insertDateConqueredYearText.getText() + "-"
+								+ insertDateConqueredMonthText.getText() + "-" + insertDateConqueredDayText.getText());
+					} catch (IllegalArgumentException e) {
+	
 					}
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(kingdom.DateConquered);
-					Integer month = cal.get(Calendar.MONTH) + 1;
-					Integer day = cal.get(Calendar.DAY_OF_MONTH);
-					Integer year = cal.get(Calendar.YEAR);
-					Long gdp = kingdom.GDP;
-
-					updateNameText.setText(kingdom.Name);
-					updateShortNameText.setText(kingdom.ShortName);
-					updateDateConqueredYearText.setText(year.toString());
-					updateDateConqueredDayText.setText(day.toString());
-					updateDateConqueredMonthText.setText(month.toString());
-					updateGdpText.setText(gdp.toString());
-					updateSuccessionText.setText(kingdom.Succession);
-					updateTypeText.setText(kingdom.Type);
-				} catch (Exception e1) {
+					try {
+						k.GDP = Integer.parseInt(insertGdpText.getText());
+					} catch (NumberFormatException e) {
+	
+					}
+					k.Succession = insertSuccessionText.getText();
+					k.Type = insertTypeText.getText();
+					addKingdom(k);
+	
+					insertNameText.setText("");
+					insertShortNameText.setText("");
+					insertDateConqueredYearText.setText("");
+					insertDateConqueredDayText.setText("");
+					insertDateConqueredMonthText.setText("");
+					insertGdpText.setText("");
+					insertSuccessionText.setText("");
+					insertTypeText.setText("");
+	
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Kingdom kingdom : getKingdoms()) {
+						dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+					}
+					dropDown2.removeAllItems();
+					for (Kingdom kingdom : getKingdoms()) {
+						dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+					}
+				}
+			});
+	
+			insert.add(insertButton);
+	
+			tabbedPane.addTab("Insert", insert);
+	
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	
+			for (Kingdom kingdom : getKingdoms()) {
+				dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+	
+			JLabel updateNameLabel = new JLabel("Name: ");
+			update.add(updateNameLabel);
+			JTextField updateNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateNameText);
+	
+			JLabel updateShortNameLabel = new JLabel("ShortName: ");
+			update.add(updateShortNameLabel);
+			JTextField updateShortNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateShortNameText);
+	
+			JLabel updateDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
+			update.add(updateDateConqueredYearLabel);
+			JTextField updateDateConqueredYearText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateDateConqueredYearText);
+	
+			JLabel updateDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
+			update.add(updateDateConqueredMonthLabel);
+			JTextField updateDateConqueredMonthText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateDateConqueredMonthText);
+	
+			JLabel updateDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
+			update.add(updateDateConqueredDayLabel);
+			JTextField updateDateConqueredDayText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateDateConqueredDayText);
+	
+			JLabel updateGdpLabel = new JLabel("GDP: ");
+			update.add(updateGdpLabel);
+			JTextField updateGdpText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateGdpText);
+	
+			JLabel updateSuccessionLabel = new JLabel("Succession: ");
+			update.add(updateSuccessionLabel);
+			JTextField updateSuccessionText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateSuccessionText);
+	
+			JLabel updateTypeLabel = new JLabel("Type: ");
+			update.add(updateTypeLabel);
+			JTextField updateTypeText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateTypeText);
+	
+			dropDown.addActionListener(new ActionListener() {
+	
+				@Override
+				public void actionPerformed(ActionEvent e) {
+	
+					try {
+						String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+						Kingdom kingdom = null;
+						for (Kingdom k : getKingdoms()) {
+							if (Integer.toString(k.ID).equals(id)) {
+								kingdom = k;
+								break;
+							}
+						}
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(kingdom.DateConquered);
+						Integer month = cal.get(Calendar.MONTH) + 1;
+						Integer day = cal.get(Calendar.DAY_OF_MONTH);
+						Integer year = cal.get(Calendar.YEAR);
+						Long gdp = kingdom.GDP;
+	
+						updateNameText.setText(kingdom.Name);
+						updateShortNameText.setText(kingdom.ShortName);
+						updateDateConqueredYearText.setText(year.toString());
+						updateDateConqueredDayText.setText(day.toString());
+						updateDateConqueredMonthText.setText(month.toString());
+						updateGdpText.setText(gdp.toString());
+						updateSuccessionText.setText(kingdom.Succession);
+						updateTypeText.setText(kingdom.Type);
+					} catch (Exception e1) {
+						updateNameText.setText("");
+						updateShortNameText.setText("");
+						updateDateConqueredYearText.setText("");
+						updateDateConqueredDayText.setText("");
+						updateDateConqueredMonthText.setText("");
+						updateGdpText.setText("");
+						updateSuccessionText.setText("");
+						updateTypeText.setText("");
+					}
+				}
+			});
+	
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Kingdom k = new Kingdom();
+					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					k.Name = updateNameText.getText();
+					k.ShortName = updateShortNameText.getText();
+	
+					try {
+						k.DateConquered = java.sql.Date.valueOf(updateDateConqueredYearText.getText() + "-"
+								+ updateDateConqueredMonthText.getText() + "-" + updateDateConqueredDayText.getText());
+					} catch (IllegalArgumentException e) {
+	
+					}
+					try {
+						k.GDP = Integer.parseInt(updateGdpText.getText());
+					} catch (NumberFormatException e) {
+	
+					}
+					k.Succession = updateSuccessionText.getText();
+					k.Type = updateTypeText.getText();
+					updateKingdom(k);
+	
 					updateNameText.setText("");
 					updateShortNameText.setText("");
 					updateDateConqueredYearText.setText("");
@@ -319,96 +357,62 @@ public class KingdomService implements Services {
 					updateGdpText.setText("");
 					updateSuccessionText.setText("");
 					updateTypeText.setText("");
+	
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Kingdom kingdom : getKingdoms()) {
+						dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+					}
+					dropDown2.removeAllItems();
+					for (Kingdom kingdom : getKingdoms()) {
+						dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+					}
 				}
+			});
+	
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+	
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	
+			for (Kingdom kingdom : getKingdoms()) {
+				dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
 			}
-		});
-
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Kingdom k = new Kingdom();
-				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				k.Name = updateNameText.getText();
-				k.ShortName = updateShortNameText.getText();
-
-				try {
-					k.DateConquered = java.sql.Date.valueOf(updateDateConqueredYearText.getText() + "-"
-							+ updateDateConqueredMonthText.getText() + "-" + updateDateConqueredDayText.getText());
-				} catch (IllegalArgumentException e) {
-
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
+	
+			JButton deleteButton = new JButton("Delete");
+	
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+	
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					deleteKingdom(id);
+	
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Kingdom kingdom : getKingdoms()) {
+						dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+					}
+					dropDown2.removeAllItems();
+					for (Kingdom kingdom : getKingdoms()) {
+						dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+					}
 				}
-				try {
-					k.GDP = Integer.parseInt(updateGdpText.getText());
-				} catch (NumberFormatException e) {
-
-				}
-				k.Succession = updateSuccessionText.getText();
-				k.Type = updateTypeText.getText();
-				updateKingdom(k);
-
-				updateNameText.setText("");
-				updateShortNameText.setText("");
-				updateDateConqueredYearText.setText("");
-				updateDateConqueredDayText.setText("");
-				updateDateConqueredMonthText.setText("");
-				updateGdpText.setText("");
-				updateSuccessionText.setText("");
-				updateTypeText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Kingdom kingdom : getKingdoms()) {
-					dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
-				}
-				dropDown2.removeAllItems();
-				for (Kingdom kingdom : getKingdoms()) {
-					dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
-				}
-			}
-		});
-
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Kingdom kingdom : getKingdoms()) {
-			dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
+			});
+	
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
+	
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				deleteKingdom(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Kingdom kingdom : getKingdoms()) {
-					dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
-				}
-				dropDown2.removeAllItems();
-				for (Kingdom kingdom : getKingdoms()) {
-					dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

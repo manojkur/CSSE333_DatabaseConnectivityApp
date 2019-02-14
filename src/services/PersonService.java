@@ -37,9 +37,11 @@ import tables.Person;
 public class PersonService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public PersonService(DatabaseConnectionService dbService) {
+	public PersonService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -53,256 +55,257 @@ public class PersonService implements Services {
 		int width = 500;
 		int height = 20;
 
-		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		JLabel insertFirstNameLabel = new JLabel("FirstName: ");
-		insert.add(insertFirstNameLabel);
-		JTextField insertFirstNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertFirstNameText);
-
-		JLabel insertLastNameLabel = new JLabel("LastName: ");
-		insert.add(insertLastNameLabel);
-		JTextField insertLastNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertLastNameText);
-
-		JLabel insertOtherNamesLabel = new JLabel("OtherNames: ");
-		insert.add(insertOtherNamesLabel);
-		JTextField insertOtherNamesText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertOtherNamesText);
-
-		JLabel insertSuffixLabel = new JLabel("Suffix: ");
-		insert.add(insertSuffixLabel);
-		JTextField insertSuffixText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertSuffixText);
-
-		JLabel insertGenderLabel = new JLabel("Gender: ");
-		insert.add(insertGenderLabel);
-		JTextField insertGenderText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertGenderText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Person p = new Person();
-				p.FirstName = insertFirstNameText.getText();
-				p.LastName = insertLastNameText.getText();
-				p.OtherNames = insertOtherNamesText.getText();
-				p.Suffix = insertSuffixText.getText();
-				p.Gender = insertGenderText.getText();
-
-				addPerson(p);
-
-				insertFirstNameText.setText("");
-				insertLastNameText.setText("");
-				insertOtherNamesText.setText("");
-				insertSuffixText.setText("");
-				insertGenderText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Person person : getPersons()) {
-					dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			JLabel insertFirstNameLabel = new JLabel("FirstName: ");
+			insert.add(insertFirstNameLabel);
+			JTextField insertFirstNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				dropDown2.removeAllItems();
-				for (Person person : getPersons()) {
-					dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertFirstNameText);
+
+			JLabel insertLastNameLabel = new JLabel("LastName: ");
+			insert.add(insertLastNameLabel);
+			JTextField insertLastNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertLastNameText);
 
-			}
-		});
+			JLabel insertOtherNamesLabel = new JLabel("OtherNames: ");
+			insert.add(insertOtherNamesLabel);
+			JTextField insertOtherNamesText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertOtherNamesText);
 
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
+			JLabel insertSuffixLabel = new JLabel("Suffix: ");
+			insert.add(insertSuffixLabel);
+			JTextField insertSuffixText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertSuffixText);
 
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			JLabel insertGenderLabel = new JLabel("Gender: ");
+			insert.add(insertGenderLabel);
+			JTextField insertGenderText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertGenderText);
 
-		for (Person person : getPersons()) {
-			dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Person p = new Person();
+					p.FirstName = insertFirstNameText.getText();
+					p.LastName = insertLastNameText.getText();
+					p.OtherNames = insertOtherNamesText.getText();
+					p.Suffix = insertSuffixText.getText();
+					p.Gender = insertGenderText.getText();
 
-		JLabel updateFirstNameLabel = new JLabel("FirstName: ");
-		update.add(updateFirstNameLabel);
-		JTextField updateFirstNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateFirstNameText);
+					addPerson(p);
 
-		JLabel updateLastNameLabel = new JLabel("LastName: ");
-		update.add(updateLastNameLabel);
-		JTextField updateLastNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateLastNameText);
+					insertFirstNameText.setText("");
+					insertLastNameText.setText("");
+					insertOtherNamesText.setText("");
+					insertSuffixText.setText("");
+					insertGenderText.setText("");
 
-		JLabel updateOtherNamesLabel = new JLabel("OtherNames: ");
-		update.add(updateOtherNamesLabel);
-		JTextField updateOtherNamesText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateOtherNamesText);
-
-		JLabel updateSuffixLabel = new JLabel("Suffix: ");
-		update.add(updateSuffixLabel);
-		JTextField updateSuffixText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateSuffixText);
-
-		JLabel updateGenderLabel = new JLabel("Gender: ");
-		update.add(updateGenderLabel);
-		JTextField updateGenderText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateGenderText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-					Person person = null;
-					for (Person k : getPersons()) {
-						if (Integer.toString(k.ID).equals(id)) {
-							person = k;
-							break;
-						}
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Person person : getPersons()) {
+						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
 					}
-					updateFirstNameText.setText(person.FirstName);
-					updateLastNameText.setText(person.LastName);
-					updateOtherNamesText.setText(person.OtherNames);
-					updateSuffixText.setText(person.Suffix);
-					updateGenderText.setText(person.Gender);
-				} catch (Exception e1) {
+					dropDown2.removeAllItems();
+					for (Person person : getPersons()) {
+						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+					}
+
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Person person : getPersons()) {
+				dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updateFirstNameLabel = new JLabel("FirstName: ");
+			update.add(updateFirstNameLabel);
+			JTextField updateFirstNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateFirstNameText);
+
+			JLabel updateLastNameLabel = new JLabel("LastName: ");
+			update.add(updateLastNameLabel);
+			JTextField updateLastNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateLastNameText);
+
+			JLabel updateOtherNamesLabel = new JLabel("OtherNames: ");
+			update.add(updateOtherNamesLabel);
+			JTextField updateOtherNamesText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateOtherNamesText);
+
+			JLabel updateSuffixLabel = new JLabel("Suffix: ");
+			update.add(updateSuffixLabel);
+			JTextField updateSuffixText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateSuffixText);
+
+			JLabel updateGenderLabel = new JLabel("Gender: ");
+			update.add(updateGenderLabel);
+			JTextField updateGenderText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateGenderText);
+
+			dropDown.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+						Person person = null;
+						for (Person k : getPersons()) {
+							if (Integer.toString(k.ID).equals(id)) {
+								person = k;
+								break;
+							}
+						}
+						updateFirstNameText.setText(person.FirstName);
+						updateLastNameText.setText(person.LastName);
+						updateOtherNamesText.setText(person.OtherNames);
+						updateSuffixText.setText(person.Suffix);
+						updateGenderText.setText(person.Gender);
+					} catch (Exception e1) {
+						updateFirstNameText.setText("");
+						updateLastNameText.setText("");
+						updateOtherNamesText.setText("");
+						updateSuffixText.setText("");
+						updateGenderText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Person p = new Person();
+					p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					p.FirstName = updateFirstNameText.getText();
+					p.LastName = updateLastNameText.getText();
+					p.OtherNames = updateOtherNamesText.getText();
+					p.Suffix = updateSuffixText.getText();
+					p.Gender = updateGenderText.getText();
+
+					updatePerson(p);
 					updateFirstNameText.setText("");
 					updateLastNameText.setText("");
 					updateOtherNamesText.setText("");
 					updateSuffixText.setText("");
 					updateGenderText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Person person : getPersons()) {
+						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+					}
+					dropDown2.removeAllItems();
+					for (Person person : getPersons()) {
+						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Person person : getPersons()) {
+				dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Person p = new Person();
-				p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				p.FirstName = updateFirstNameText.getText();
-				p.LastName = updateLastNameText.getText();
-				p.OtherNames = updateOtherNamesText.getText();
-				p.Suffix = updateSuffixText.getText();
-				p.Gender = updateGenderText.getText();
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
 
-				updatePerson(p);
-				updateFirstNameText.setText("");
-				updateLastNameText.setText("");
-				updateOtherNamesText.setText("");
-				updateSuffixText.setText("");
-				updateGenderText.setText("");
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					deletePerson(id);
 
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Person person : getPersons()) {
-					dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Person person : getPersons()) {
+						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+					}
+					dropDown2.removeAllItems();
+					for (Person person : getPersons()) {
+						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+					}
 				}
-				dropDown2.removeAllItems();
-				for (Person person : getPersons()) {
-					dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
-				}
-			}
-		});
+			});
 
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Person person : getPersons()) {
-			dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				deletePerson(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Person person : getPersons()) {
-					dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
-				}
-				dropDown2.removeAllItems();
-				for (Person person : getPersons()) {
-					dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

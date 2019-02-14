@@ -39,9 +39,11 @@ import tables.Knight;
 public class KnightService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public KnightService(DatabaseConnectionService dbService) {
+	public KnightService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -54,228 +56,228 @@ public class KnightService implements Services {
 
 		int width = 500;
 		int height = 20;
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		JLabel insertPIDLabel = new JLabel("PID: ");
-		insert.add(insertPIDLabel);
-		JTextField insertPIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertPIDText);
-
-		JLabel insertMIDLabel = new JLabel("MID: ");
-		insert.add(insertMIDLabel);
-		JTextField insertMIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertMIDText);
-
-		JLabel insertKillCountLabel = new JLabel("KillCount: ");
-		insert.add(insertKillCountLabel);
-		JTextField insertKillCountText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertKillCountText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Knight k = new Knight();
-				try {
-					k.PID = Integer.parseInt(insertPIDText.getText());
-				} catch (NumberFormatException e) {
-
+			JLabel insertPIDLabel = new JLabel("PID: ");
+			insert.add(insertPIDLabel);
+			JTextField insertPIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					k.KillCount = Integer.parseInt(insertKillCountText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertPIDText);
 
+			JLabel insertMIDLabel = new JLabel("MID: ");
+			insert.add(insertMIDLabel);
+			JTextField insertMIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				try {
-					k.MID = Integer.parseInt(insertMIDText.getText());
-				} catch (NumberFormatException e) {
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertMIDText);
 
+			JLabel insertKillCountLabel = new JLabel("KillCount: ");
+			insert.add(insertKillCountLabel);
+			JTextField insertKillCountText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				addKnight(k);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertKillCountText);
 
-				insertPIDText.setText("");
-				insertMIDText.setText("");
-				insertKillCountText.setText("");
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Knight k = new Knight();
+					try {
+						k.PID = Integer.parseInt(insertPIDText.getText());
+					} catch (NumberFormatException e) {
 
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Knight knight : getKnights()) {
-					dropDown.addItem("ID: " + knight.ID);
-				}
-				dropDown2.removeAllItems();
-				for (Knight knight : getKnights()) {
-					dropDown2.addItem("ID: " + knight.ID);
-				}
-			}
-		});
-
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
-
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Knight knight : getKnights()) {
-			dropDown.addItem("ID: " + knight.ID);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
-
-		JLabel updatePIDLabel = new JLabel("PID: ");
-		update.add(updatePIDLabel);
-		JTextField updatePIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updatePIDText);
-
-		JLabel updateMIDLabel = new JLabel("MID: ");
-		update.add(updateMIDLabel);
-		JTextField updateMIDText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateMIDText);
-
-		JLabel updateKillCountLabel = new JLabel("KillCount: ");
-		update.add(updateKillCountLabel);
-		JTextField updateKillCountText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateKillCountText);
-
-		dropDown.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String id = dropDown.getSelectedItem().toString().split(" ")[1];
-					List<Knight> knights = getKnights();
-					Knight k = null;
-					for (Knight knight : knights) {
-						if (Integer.toString(knight.ID).equals(id)) {
-							k = knight;
-							break;
-						}
 					}
-					updatePIDText.setText(Integer.toString(k.PID));
-					updateMIDText.setText(Integer.toString(k.MID));
-					updateKillCountText.setText(Integer.toString(k.KillCount));
-				} catch (Exception e1) {
+					try {
+						k.KillCount = Integer.parseInt(insertKillCountText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.MID = Integer.parseInt(insertMIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					addKnight(k);
+
+					insertPIDText.setText("");
+					insertMIDText.setText("");
+					insertKillCountText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Knight knight : getKnights()) {
+						dropDown.addItem("ID: " + knight.ID);
+					}
+					dropDown2.removeAllItems();
+					for (Knight knight : getKnights()) {
+						dropDown2.addItem("ID: " + knight.ID);
+					}
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Knight knight : getKnights()) {
+				dropDown.addItem("ID: " + knight.ID);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updatePIDLabel = new JLabel("PID: ");
+			update.add(updatePIDLabel);
+			JTextField updatePIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updatePIDText);
+
+			JLabel updateMIDLabel = new JLabel("MID: ");
+			update.add(updateMIDLabel);
+			JTextField updateMIDText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateMIDText);
+
+			JLabel updateKillCountLabel = new JLabel("KillCount: ");
+			update.add(updateKillCountLabel);
+			JTextField updateKillCountText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateKillCountText);
+
+			dropDown.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						String id = dropDown.getSelectedItem().toString().split(" ")[1];
+						List<Knight> knights = getKnights();
+						Knight k = null;
+						for (Knight knight : knights) {
+							if (Integer.toString(knight.ID).equals(id)) {
+								k = knight;
+								break;
+							}
+						}
+						updatePIDText.setText(Integer.toString(k.PID));
+						updateMIDText.setText(Integer.toString(k.MID));
+						updateKillCountText.setText(Integer.toString(k.KillCount));
+					} catch (Exception e1) {
+						updatePIDText.setText("");
+						updateMIDText.setText("");
+						updateKillCountText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Knight k = new Knight();
+					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(":")[1].substring(1));
+					try {
+						k.PID = Integer.parseInt(updatePIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.MID = Integer.parseInt(updateMIDText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					try {
+						k.KillCount = Integer.parseInt(updateKillCountText.getText());
+					} catch (NumberFormatException e) {
+
+					}
+					updateKnight(k);
+
 					updatePIDText.setText("");
 					updateMIDText.setText("");
 					updateKillCountText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Knight knight : getKnights()) {
+						dropDown.addItem("ID: " + knight.ID);
+					}
+					dropDown2.removeAllItems();
+					for (Knight knight : getKnights()) {
+						dropDown2.addItem("ID: " + knight.ID);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (Knight knight : getKnights()) {
+				dropDown2.addItem("ID: " + knight.ID);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Knight k = new Knight();
-				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(":")[1].substring(1));
-				try {
-					k.PID = Integer.parseInt(updatePIDText.getText());
-				} catch (NumberFormatException e) {
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
+					deleteKnight(id);
 
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (Knight knight : getKnights()) {
+						dropDown.addItem("ID: " + knight.ID);
+					}
+					dropDown2.removeAllItems();
+					for (Knight knight : getKnights()) {
+						dropDown2.addItem("ID: " + knight.ID);
+					}
 				}
-				try {
-					k.MID = Integer.parseInt(updateMIDText.getText());
-				} catch (NumberFormatException e) {
+			});
 
-				}
-				try {
-					k.KillCount = Integer.parseInt(updateKillCountText.getText());
-				} catch (NumberFormatException e) {
-
-				}
-				updateKnight(k);
-
-				updatePIDText.setText("");
-				updateMIDText.setText("");
-				updateKillCountText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Knight knight : getKnights()) {
-					dropDown.addItem("ID: " + knight.ID);
-				}
-				dropDown2.removeAllItems();
-				for (Knight knight : getKnights()) {
-					dropDown2.addItem("ID: " + knight.ID);
-				}
-			}
-		});
-
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (Knight knight : getKnights()) {
-			dropDown2.addItem("ID: " + knight.ID);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split(" ")[1]);
-				deleteKnight(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (Knight knight : getKnights()) {
-					dropDown.addItem("ID: " + knight.ID);
-				}
-				dropDown2.removeAllItems();
-				for (Knight knight : getKnights()) {
-					dropDown2.addItem("ID: " + knight.ID);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}

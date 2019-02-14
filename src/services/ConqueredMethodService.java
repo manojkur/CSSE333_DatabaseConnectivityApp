@@ -38,9 +38,11 @@ import tables.ConquerMethod;
 public class ConqueredMethodService implements Services {
 	private DatabaseConnectionService dbService = null;
 	private JComponent view;
+	private boolean isOwner;
 
-	public ConqueredMethodService(DatabaseConnectionService dbService) {
+	public ConqueredMethodService(DatabaseConnectionService dbService, boolean isOwner) {
 		this.dbService = dbService;
+		this.isOwner = isOwner;
 	}
 
 	public JPanel getJPanel() {
@@ -53,181 +55,181 @@ public class ConqueredMethodService implements Services {
 
 		int width = 500;
 		int height = 20;
+		if (this.isOwner) {
+			JPanel insert = new JPanel();
+			insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
+			insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JPanel insert = new JPanel();
-		insert.setLayout(new BoxLayout(insert, BoxLayout.Y_AXIS));
-		insert.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		JLabel insertNameLabel = new JLabel("Name: ");
-		insert.add(insertNameLabel);
-		JTextField insertNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertNameText);
-
-		JLabel insertEffectivenessLabel = new JLabel("Effectiveness (VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW): ");
-		insert.add(insertEffectivenessLabel);
-		JTextField insertEffectivenessText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		insert.add(insertEffectivenessText);
-
-		JButton insertButton = new JButton("Insert");
-		insertButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				ConquerMethod k = new ConquerMethod();
-				k.Effectiveness = insertEffectivenessText.getText();
-				k.Name = insertNameText.getText();
-				addConquerMethod(k);
-
-				insertNameText.setText("");
-				insertEffectivenessText.setText("");
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-
-				dropDown.removeAllItems();
-				for (ConquerMethod conqueredMethod : getConquerMethods()) {
-					dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+			JLabel insertNameLabel = new JLabel("Name: ");
+			insert.add(insertNameLabel);
+			JTextField insertNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-				dropDown2.removeAllItems();
-				for (ConquerMethod conqueredMethod : getConquerMethods()) {
-					dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertNameText);
+
+			JLabel insertEffectivenessLabel = new JLabel("Effectiveness (VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW): ");
+			insert.add(insertEffectivenessLabel);
+			JTextField insertEffectivenessText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
 				}
-			}
-		});
+			}).setMaxSize(new Dimension(width, height));
+			insert.add(insertEffectivenessText);
 
-		insert.add(insertButton);
-		tabbedPane.addTab("Insert", insert);
+			JButton insertButton = new JButton("Insert");
+			insertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					ConquerMethod k = new ConquerMethod();
+					k.Effectiveness = insertEffectivenessText.getText();
+					k.Name = insertNameText.getText();
+					addConquerMethod(k);
 
-		JPanel update = new JPanel();
-		update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
-		update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+					insertNameText.setText("");
+					insertEffectivenessText.setText("");
 
-		for (ConquerMethod conqueredMethod : getConquerMethods()) {
-			dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
-		}
-		JPanel innerPanel = new JPanel(new FlowLayout());
-		innerPanel.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel.add(dropDown);
-		update.add(innerPanel);
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
 
-		JLabel updateNameLabel = new JLabel("Name: ");
-		update.add(updateNameLabel);
-		JTextField updateNameText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateNameText);
-
-		JLabel updateEffectivenessLabel = new JLabel("Effectiveness: ");
-		update.add(updateEffectivenessLabel);
-		JTextField updateEffectivenessText = (new JTextField() {
-			public JTextField setMaxSize(Dimension d) {
-				setMaximumSize(d);
-				return this;
-			}
-		}).setMaxSize(new Dimension(width, height));
-		update.add(updateEffectivenessText);
-
-		dropDown.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				try {
-					String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
-					ConquerMethod conquerMethod = null;
-					for (ConquerMethod k : getConquerMethods()) {
-						if (Integer.toString(k.ID).equals(id)) {
-							conquerMethod = k;
-							break;
-						}
+					dropDown.removeAllItems();
+					for (ConquerMethod conqueredMethod : getConquerMethods()) {
+						dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
 					}
-					updateNameText.setText(conquerMethod.Name);
-					updateEffectivenessText.setText(conquerMethod.Effectiveness);
-				} catch (Exception e1) {
+					dropDown2.removeAllItems();
+					for (ConquerMethod conqueredMethod : getConquerMethods()) {
+						dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+					}
+				}
+			});
+
+			insert.add(insertButton);
+			tabbedPane.addTab("Insert", insert);
+
+			JPanel update = new JPanel();
+			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
+			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (ConquerMethod conqueredMethod : getConquerMethods()) {
+				dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+			}
+			JPanel innerPanel = new JPanel(new FlowLayout());
+			innerPanel.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel.add(dropDown);
+			update.add(innerPanel);
+
+			JLabel updateNameLabel = new JLabel("Name: ");
+			update.add(updateNameLabel);
+			JTextField updateNameText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateNameText);
+
+			JLabel updateEffectivenessLabel = new JLabel("Effectiveness: ");
+			update.add(updateEffectivenessLabel);
+			JTextField updateEffectivenessText = (new JTextField() {
+				public JTextField setMaxSize(Dimension d) {
+					setMaximumSize(d);
+					return this;
+				}
+			}).setMaxSize(new Dimension(width, height));
+			update.add(updateEffectivenessText);
+
+			dropDown.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					try {
+						String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
+						ConquerMethod conquerMethod = null;
+						for (ConquerMethod k : getConquerMethods()) {
+							if (Integer.toString(k.ID).equals(id)) {
+								conquerMethod = k;
+								break;
+							}
+						}
+						updateNameText.setText(conquerMethod.Name);
+						updateEffectivenessText.setText(conquerMethod.Effectiveness);
+					} catch (Exception e1) {
+						updateNameText.setText("");
+						updateEffectivenessText.setText("");
+					}
+				}
+			});
+
+			JButton updateButton = new JButton("Update");
+			updateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					ConquerMethod k = new ConquerMethod();
+					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					k.Name = updateNameText.getText();
+					k.Effectiveness = updateEffectivenessText.getText();
+					System.out.println("n " + k.Name + " e " + k.Effectiveness);
+					updateConquerMethod(k);
+
 					updateNameText.setText("");
 					updateEffectivenessText.setText("");
+
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+
+					dropDown.removeAllItems();
+					for (ConquerMethod conqueredMethod : getConquerMethods()) {
+						dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+					}
+					dropDown2.removeAllItems();
+					for (ConquerMethod conqueredMethod : getConquerMethods()) {
+						dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+					}
 				}
+			});
+
+			update.add(updateButton);
+			tabbedPane.addTab("Update", update);
+
+			JPanel delete = new JPanel();
+			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
+			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			for (ConquerMethod conqueredMethod : getConquerMethods()) {
+				dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
 			}
-		});
+			JPanel innerPanel2 = new JPanel(new FlowLayout());
+			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
+			innerPanel2.add(dropDown2);
+			delete.add(innerPanel2);
 
-		JButton updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				ConquerMethod k = new ConquerMethod();
-				k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				k.Name = updateNameText.getText();
-				k.Effectiveness = updateEffectivenessText.getText();
-				System.out.println("n " + k.Name + " e " + k.Effectiveness);
-				updateConquerMethod(k);
+			JButton deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
 
-				updateNameText.setText("");
-				updateEffectivenessText.setText("");
+					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					deleteConquerMethod(id);
 
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-
-				dropDown.removeAllItems();
-				for (ConquerMethod conqueredMethod : getConquerMethods()) {
-					dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+					tabbedPane.remove(view);
+					view = getScrollableTable();
+					tabbedPane.insertTab("View", null, view, "View", 0);
+					dropDown.removeAllItems();
+					for (ConquerMethod conqueredMethod : getConquerMethods()) {
+						dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+					}
+					dropDown2.removeAllItems();
+					for (ConquerMethod conqueredMethod : getConquerMethods()) {
+						dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+					}
 				}
-				dropDown2.removeAllItems();
-				for (ConquerMethod conqueredMethod : getConquerMethods()) {
-					dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
-				}
-			}
-		});
+			});
 
-		update.add(updateButton);
-		tabbedPane.addTab("Update", update);
-
-		JPanel delete = new JPanel();
-		delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
-		delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		for (ConquerMethod conqueredMethod : getConquerMethods()) {
-			dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
+			delete.add(deleteButton);
+			tabbedPane.addTab("Delete", delete);
 		}
-		JPanel innerPanel2 = new JPanel(new FlowLayout());
-		innerPanel2.setMaximumSize(new Dimension(width, height + 20));
-		innerPanel2.add(dropDown2);
-		delete.add(innerPanel2);
-
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-
-				int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
-				deleteConquerMethod(id);
-
-				tabbedPane.remove(view);
-				view = getScrollableTable();
-				tabbedPane.insertTab("View", null, view, "View", 0);
-				dropDown.removeAllItems();
-				for (ConquerMethod conqueredMethod : getConquerMethods()) {
-					dropDown.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
-				}
-				dropDown2.removeAllItems();
-				for (ConquerMethod conqueredMethod : getConquerMethods()) {
-					dropDown2.addItem("ID: " + conqueredMethod.ID + " - Name:  " + conqueredMethod.Name);
-				}
-			}
-		});
-
-		delete.add(deleteButton);
-		tabbedPane.addTab("Delete", delete);
-
 		panel.add(tabbedPane);
 		return panel;
 	}
