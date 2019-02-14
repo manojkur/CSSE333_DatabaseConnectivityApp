@@ -4,13 +4,9 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
@@ -46,7 +42,6 @@ public class Main {
 
 	public static void main(String[] args) {
 		DatabaseConnectionService dbcs = new DatabaseConnectionService("golem.csse.rose-hulman.edu", "KingdomDB");
-		Statement stmt;
 
 		JFrame frame = new JFrame("Credentials");
 		String user = JOptionPane.showInputDialog(frame, "Please enter your username");
