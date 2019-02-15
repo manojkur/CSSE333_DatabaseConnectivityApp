@@ -95,23 +95,30 @@ public class FunctionsUsingService implements Services {
 			insertButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					FunctionsUsing k = new FunctionsUsing();
+					boolean noErrors = true;
 					try {
 						k.RID = Integer.parseInt(insertRIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Resource ID");
+						noErrors = false;
 					}
 					try {
 						k.Quantity = Integer.parseInt(insertQuantityText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!insertQuantityText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an integer for Quantity");
+							noErrors = false;
+						}
 					}
 					try {
 						k.CID = Integer.parseInt(insertCIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for City ID");
+						noErrors = false;
 					}
-					addFunctionsUsing(k);
-
+					if (noErrors) {
+						addFunctionsUsing(k);
+					}
 					insertRIDText.setText("");
 					insertCIDText.setText("");
 					insertQuantityText.setText("");
@@ -206,23 +213,30 @@ public class FunctionsUsingService implements Services {
 				public void actionPerformed(ActionEvent ae) {
 					FunctionsUsing k = new FunctionsUsing();
 					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
+					boolean noErrors = true;
 					try {
 						k.RID = Integer.parseInt(updateRIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Resource ID");
+						noErrors = false;
 					}
 					try {
 						k.CID = Integer.parseInt(updateCIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for City ID");
+						noErrors = false;
 					}
 					try {
 						k.Quantity = Integer.parseInt(updateQuantityText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!updateQuantityText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an integer for Quantity");
+							noErrors = false;
+						}
 					}
-					updateFunctionsUsing(k);
-
+					if (noErrors) {
+						updateFunctionsUsing(k);
+					}
 					updateRIDText.setText("");
 					updateCIDText.setText("");
 					updateQuantityText.setText("");

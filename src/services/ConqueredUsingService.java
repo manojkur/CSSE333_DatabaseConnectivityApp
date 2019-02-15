@@ -85,19 +85,22 @@ public class ConqueredUsingService implements Services {
 			insertButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					ConqueredUsing p = new ConqueredUsing();
+					boolean noErrors = true;
 					try {
 						p.KID = Integer.parseInt(insertKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Kingdom ID");
+						noErrors = false;
 					}
 					try {
 						p.CMID = Integer.parseInt(insertCMIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Conquer Method ID");
+						noErrors = false;
 					}
-
-					addConqueredUsing(p);
-
+					if (noErrors) {
+						addConqueredUsing(p);
+					}
 					insertKIDText.setText("");
 					insertCMIDText.setText("");
 
@@ -181,19 +184,22 @@ public class ConqueredUsingService implements Services {
 				public void actionPerformed(ActionEvent ae) {
 					ConqueredUsing p = new ConqueredUsing();
 					p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
-
+					boolean noErrors = true;
 					try {
 						p.KID = Integer.parseInt(updateKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Kingdom ID");
+						noErrors = false;
 					}
 					try {
 						p.CMID = Integer.parseInt(updateCMIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Conquer Method ID");
+						noErrors = false;
 					}
-
-					updateConqueredUsing(p);
+					if (noErrors) {
+						updateConqueredUsing(p);
+					}
 					updateKIDText.setText("");
 					updateCMIDText.setText("");
 
@@ -341,17 +347,17 @@ public class ConqueredUsingService implements Services {
 			cs.execute();
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
-			case 2:
+			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a Kingdom ID");
 				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "Please provide a Conquer Method ID");
+				break;
 			case 3:
-				JOptionPane.showMessageDialog(null, "Please provide a conquer method ID");
+				JOptionPane.showMessageDialog(null, "The Kingdom ID does not exist");
 				break;
 			case 4:
-				JOptionPane.showMessageDialog(null, "Please provide a city ID");
-				break;
-			case 5:
-				JOptionPane.showMessageDialog(null, "Please provide a conquer Method ID");
+				JOptionPane.showMessageDialog(null, "The Conquer Method ID does not exist");
 				break;
 			default:
 				break;
@@ -379,10 +385,10 @@ public class ConqueredUsingService implements Services {
 				JOptionPane.showMessageDialog(null, "The ID " + p.ID + " does not exist");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "The city ID doesn't exist");
+				JOptionPane.showMessageDialog(null, "The Kingdom ID doesn't exist");
 				break;
 			case 3:
-				JOptionPane.showMessageDialog(null, "The conquer method ID doesn't exist");
+				JOptionPane.showMessageDialog(null, "The Conquer Method ID doesn't exist");
 				break;
 			default:
 				break;

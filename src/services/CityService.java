@@ -113,24 +113,32 @@ public class CityService implements Services {
 			insertButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					City k = new City();
+					boolean noErrors = true;
 					try {
 						k.KID = Integer.parseInt(insertKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Kingdom ID");
+						noErrors = false;
 					}
 					try {
 						k.TID = Integer.parseInt(insertTIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Terrain ID");
+						noErrors = false;
 					}
 					try {
 						k.Population = Integer.parseInt(insertPopulationText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!insertPopulationText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an integer for Population");
+							noErrors = false;
+						}
 					}
 					k.Coordinates = insertCoordinatesText.getText();
 					k.Name = insertNameText.getText();
-					addCity(k);
+					if (noErrors) {
+						addCity(k);
+					}
 
 					insertKIDText.setText("");
 					insertTIDText.setText("");
@@ -253,25 +261,33 @@ public class CityService implements Services {
 				public void actionPerformed(ActionEvent ae) {
 					City k = new City();
 					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					boolean noErrors = true;
 					try {
 						k.TID = Integer.parseInt(updateTIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Terrain ID");
+						noErrors = false;
 					}
 					try {
 						k.KID = Integer.parseInt(updateKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Kingdom ID");
+						noErrors = false;
 					}
 					try {
 						k.Population = Integer.parseInt(updatePopulationText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!updatePopulationText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an integer for Population");
+							noErrors = false;
+						}
 					}
 					k.Name = updateNameText.getText();
 					k.Coordinates = updateCoordinatesText.getText();
-					updateCity(k);
 
+					if (noErrors) {
+						updateCity(k);
+					}
 					updateTIDText.setText("");
 					updateKIDText.setText("");
 					updateNameText.setText("");
@@ -452,7 +468,12 @@ public class CityService implements Services {
 						"Name can only include alphabetical characters, dashes, and apostrophes");
 				break;
 			case 5:
-				JOptionPane.showMessageDialog(null, "The population must be greater than 10");
+				JOptionPane.showMessageDialog(null,
+						"Please enter coordinates that follow the format 12.34567,12.34567");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null,
+						"Please enter coordinates that are numbers and follow 12.34567,12.34567");
 				break;
 			default:
 				break;
@@ -489,7 +510,18 @@ public class CityService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a valid Terrain ID");
 				break;
 			case 4:
-				JOptionPane.showMessageDialog(null, "Please provide a population greater than or equalt to 10");
+				JOptionPane.showMessageDialog(null, "The City Name must be unique and non-null");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null,
+						"Name can only include alphabetical characters, dashes, and apostrophes");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null, "The population must be greater than 10");
+				break;
+			case 7:
+				JOptionPane.showMessageDialog(null,
+						"Please enter coordinates that follow the format 12.34567,12.34567");
 				break;
 			default:
 				break;
@@ -512,6 +544,9 @@ public class CityService implements Services {
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "The FunctionsUsing table is currently referencing this city");
 				break;
 			default:
 				break;

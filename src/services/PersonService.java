@@ -132,11 +132,11 @@ public class PersonService implements Services {
 					tabbedPane.insertTab("View", null, view, "View", 0);
 					dropDown.removeAllItems();
 					for (Person person : getPersons()) {
-						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName);
 					}
 					dropDown2.removeAllItems();
 					for (Person person : getPersons()) {
-						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName);
 					}
 
 				}
@@ -150,7 +150,7 @@ public class PersonService implements Services {
 			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 			for (Person person : getPersons()) {
-				dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+				dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName);
 			}
 			JPanel innerPanel = new JPanel(new FlowLayout());
 			innerPanel.setMaximumSize(new Dimension(width, height + 20));
@@ -258,11 +258,11 @@ public class PersonService implements Services {
 					tabbedPane.insertTab("View", null, view, "View", 0);
 					dropDown.removeAllItems();
 					for (Person person : getPersons()) {
-						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName);
 					}
 					dropDown2.removeAllItems();
 					for (Person person : getPersons()) {
-						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName);
 					}
 				}
 			});
@@ -275,7 +275,7 @@ public class PersonService implements Services {
 			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 			for (Person person : getPersons()) {
-				dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+				dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName);
 			}
 			JPanel innerPanel2 = new JPanel(new FlowLayout());
 			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
@@ -294,11 +294,11 @@ public class PersonService implements Services {
 					tabbedPane.insertTab("View", null, view, "View", 0);
 					dropDown.removeAllItems();
 					for (Person person : getPersons()) {
-						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+						dropDown.addItem("ID: " + person.ID + " - Name:  " + person.FirstName);
 					}
 					dropDown2.removeAllItems();
 					for (Person person : getPersons()) {
-						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName + " " + person.LastName);
+						dropDown2.addItem("ID: " + person.ID + " - Name:  " + person.FirstName);
 					}
 				}
 			});
@@ -389,18 +389,34 @@ public class PersonService implements Services {
 					.prepareCall("{ ? = call dbo.Insert_Person(?, ?, ?, ?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setString(2, p.FirstName);
-			cs.setString(3, p.LastName);
-			cs.setString(4, p.OtherNames);
+			cs.setString(3, p.OtherNames);
+			cs.setString(4, p.LastName);
 			cs.setString(5, p.Suffix);
 			cs.setString(6, p.Gender);
 			cs.execute();
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a First Name");
+				JOptionPane.showMessageDialog(null, "Please enter a First Name");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Gender markers include: M F X. Please choose one");
+				JOptionPane.showMessageDialog(null,
+						"The First Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null,
+						"The Other Names Name must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null,
+						"The Last Name must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null,
+						"The Suffix Name must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null, "Gender markers be: M F X. Please choose one");
 				break;
 			default:
 				break;
@@ -419,8 +435,8 @@ public class PersonService implements Services {
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setInt(2, p.ID);
 			cs.setString(3, p.FirstName);
-			cs.setString(4, p.LastName);
-			cs.setString(5, p.OtherNames);
+			cs.setString(4, p.OtherNames);
+			cs.setString(5, p.LastName);
 			cs.setString(6, p.Suffix);
 			cs.setString(7, p.Gender);
 
@@ -430,8 +446,24 @@ public class PersonService implements Services {
 			case 1:
 				JOptionPane.showMessageDialog(null, "The ID " + p.ID + " does not exist");
 				break;
+			case 2:
+				JOptionPane.showMessageDialog(null,
+						"The First Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null,
+						"The Last Name must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null,
+						"The Other Name must only contain letters, dashes, apostraphes and spaces");
+				break;
 			case 5:
-				JOptionPane.showMessageDialog(null, "Gender markers include: M F X. Please choose one");
+				JOptionPane.showMessageDialog(null,
+						"The Suffix Name must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 7:
+				JOptionPane.showMessageDialog(null, "Gender markers be: M F X. Please choose one");
 				break;
 			default:
 				break;
@@ -454,6 +486,15 @@ public class PersonService implements Services {
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "The Knight table is currently referencing this person");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null, "The Heir table is currently referencing this person");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null, "The Ruler table is currently referencing this person");
 				break;
 			default:
 				break;

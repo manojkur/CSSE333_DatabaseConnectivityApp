@@ -114,17 +114,25 @@ public class HeirService implements Services {
 			insertButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					Heir k = new Heir();
+					boolean noErrors = true;
 					try {
 						k.PID = Integer.parseInt(insertPIDText.getText());
+					} catch (NumberFormatException e) {
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Person ID");
+						noErrors = false;
+					}
+					try {
 						k.KID = Integer.parseInt(insertKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Kingdom ID");
+						noErrors = false;
 					}
 					k.TitleStart = insertTitleStartText.getText();
 					k.TitleEnd = insertTitleEndText.getText();
 					k.ShortTitle = insertShortTitleText.getText();
-					addHeir(k);
-
+					if (noErrors) {
+						addHeir(k);
+					}
 					insertPIDText.setText("");
 					insertKIDText.setText("");
 					insertTitleEndText.setText("");
@@ -244,21 +252,25 @@ public class HeirService implements Services {
 				public void actionPerformed(ActionEvent ae) {
 					Heir k = new Heir();
 					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					boolean noErrors = true;
 					try {
 						k.PID = Integer.parseInt(updatePIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Person ID");
+						noErrors = false;
 					}
 					try {
 						k.KID = Integer.parseInt(updateKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Kingdom ID");
+						noErrors = false;
 					}
 					k.TitleStart = updateTitleStartText.getText();
 					k.TitleEnd = updateTitleEndText.getText();
 					k.ShortTitle = updateShortTitleText.getText();
-					updateHeir(k);
-
+					if (noErrors) {
+						updateHeir(k);
+					}
 					updatePIDText.setText("");
 					updateKIDText.setText("");
 					updateTitleEndText.setText("");
@@ -430,6 +442,18 @@ public class HeirService implements Services {
 			case 4:
 				JOptionPane.showMessageDialog(null, "The Kingdom ID " + k.KID + " does not exist");
 				break;
+			case 5:
+				JOptionPane.showMessageDialog(null,
+						"The Heir Title Start must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null,
+						"The Heir Title End must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 7:
+				JOptionPane.showMessageDialog(null,
+						"The Heir Stort Title must only contain letters, dashes, apostraphes and spaces");
+				break;
 			default:
 				break;
 			}
@@ -464,6 +488,18 @@ public class HeirService implements Services {
 			case 3:
 				JOptionPane.showMessageDialog(null, "Please provide a valid Kingdom ID");
 				break;
+			case 4:
+				JOptionPane.showMessageDialog(null,
+						"The Heir Title Start must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null,
+						"The Heir Title End must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null,
+						"The Heir Short Title must only contain letters, dashes, apostraphes and spaces");
+				break;
 			default:
 				break;
 			}
@@ -485,6 +521,9 @@ public class HeirService implements Services {
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "The Ruler table is currently referencing this heir");
 				break;
 			default:
 				break;

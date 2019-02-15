@@ -94,19 +94,25 @@ public class MilitaryService implements Services {
 			insertButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					Military k = new Military();
+					boolean noErrors = true;
 					try {
 						k.KID = Integer.parseInt(insertKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Kingdom ID");
+						noErrors = false;
 					}
 					try {
-						k.Budget = Integer.parseInt(insertBudgetText.getText());
+						k.Budget = Long.parseLong(insertBudgetText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!insertBudgetText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an integer for Budget");
+							noErrors = false;
+						}
 					}
 					k.Name = insertNameText.getText();
-					addMilitary(k);
-
+					if (noErrors) {
+						addMilitary(k);
+					}
 					insertKIDText.setText("");
 					insertNameText.setText("");
 					insertBudgetText.setText("");
@@ -201,19 +207,25 @@ public class MilitaryService implements Services {
 				public void actionPerformed(ActionEvent ae) {
 					Military k = new Military();
 					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
+					boolean noErrors = true;
 					try {
-						k.Budget = Integer.parseInt(updateBudgetText.getText());
+						k.Budget = Long.parseLong(updateBudgetText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!updateBudgetText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an number for Budget");
+							noErrors = false;
+						}
 					}
 					try {
 						k.KID = Integer.parseInt(updateKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Kingdom ID");
+						noErrors = false;
 					}
 					k.Name = updateNameText.getText();
-					updateMilitary(k);
-
+					if (noErrors) {
+						updateMilitary(k);
+					}
 					updateKIDText.setText("");
 					updateNameText.setText("");
 					updateBudgetText.setText("");
@@ -368,13 +380,14 @@ public class MilitaryService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a Kingdom ID");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a name");
+				JOptionPane.showMessageDialog(null,
+						"The Military Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
 				break;
 			case 3:
-				JOptionPane.showMessageDialog(null, "Please provide a budget");
+				JOptionPane.showMessageDialog(null, "The Kingdom ID is not provided");
 				break;
 			case 4:
-				JOptionPane.showMessageDialog(null, "The Kingdom ID " + k.KID + " does not exist");
+				JOptionPane.showMessageDialog(null, "The Budget must be at least 0");
 				break;
 			default:
 				break;
@@ -403,7 +416,14 @@ public class MilitaryService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a valid ID");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a valid Kingdom ID");
+				JOptionPane.showMessageDialog(null,
+						"The Military Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null, "Please provide a the Kingdom ID");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null, "The Budget must be at least 0");
 				break;
 			default:
 				break;
@@ -426,6 +446,9 @@ public class MilitaryService implements Services {
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "The Knight table is currently referencing this military");
 				break;
 			default:
 				break;

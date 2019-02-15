@@ -124,20 +124,26 @@ public class RulerService implements Services {
 			insertButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					Ruler p = new Ruler();
+					boolean noErrors = true;
 					try {
 						p.PID = Integer.parseInt(insertPIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an number for Person ID");
+						noErrors = false;
 					}
 					try {
 						p.KID = Integer.parseInt(insertKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an number for Kingdom ID");
+						noErrors = false;
 					}
 					try {
 						p.HID = Integer.parseInt(insertHIDText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!insertHIDText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an number for Heir ID");
+							noErrors = false;
+						}
 					}
 					try {
 						p.YearsOfExperience = Integer.parseInt(insertYearsOfExperienceText.getText());
@@ -148,7 +154,9 @@ public class RulerService implements Services {
 					p.Title = insertTitleText.getText();
 					p.Dynasty = insertDynastyText.getText();
 
-					addRuler(p);
+					if (noErrors) {
+						addRuler(p);
+					}
 
 					insertPIDText.setText("");
 					insertKIDText.setText("");
@@ -287,21 +295,26 @@ public class RulerService implements Services {
 				public void actionPerformed(ActionEvent ae) {
 					Ruler p = new Ruler();
 					p.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(" ")[1]);
-
+					boolean noErrors = true;
 					try {
 						p.PID = Integer.parseInt(updatePIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an number for Person ID");
+						noErrors = false;
 					}
 					try {
 						p.KID = Integer.parseInt(updateKIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an number for Kingdom ID");
+						noErrors = false;
 					}
 					try {
 						p.HID = Integer.parseInt(updateHIDText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!updateHIDText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an number for Heir ID");
+							noErrors = false;
+						}
 					}
 					try {
 						p.YearsOfExperience = Integer.parseInt(updateYearsOfExperienceText.getText());
@@ -313,8 +326,9 @@ public class RulerService implements Services {
 					p.Dynasty = updateDynastyText.getText();
 					p.Dynasty = updateDynastyText.getText();
 
-					updateRuler(p);
-
+					if (noErrors) {
+						updateRuler(p);
+					}
 					updatePIDText.setText("");
 					updateKIDText.setText("");
 					updateHIDText.setText("");
@@ -479,16 +493,22 @@ public class RulerService implements Services {
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a Person ID");
+				JOptionPane.showMessageDialog(null, "The Person ID does not exist");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a Kingdom ID");
+				JOptionPane.showMessageDialog(null, "The Kingdom ID does not exist");
 				break;
 			case 3:
-				JOptionPane.showMessageDialog(null, "Please provide a Years Of Experience of at least 0");
+				JOptionPane.showMessageDialog(null, "The Heir ID does not exist");
 				break;
 			case 4:
-				JOptionPane.showMessageDialog(null, "Please provide a Title");
+				JOptionPane.showMessageDialog(null, "Title can only include alphabetical characters");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null, "Dynasty can only include alphabetical characters");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null, "Please provide Years Of Experience of at least 0");
 				break;
 			default:
 				break;
@@ -518,7 +538,22 @@ public class RulerService implements Services {
 			case 1:
 				JOptionPane.showMessageDialog(null, "The ID " + p.ID + " does not exist");
 				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "The Person ID does not exist");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null, "The Kingdom ID does not exist");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null, "The Heir ID does not exist");
+				break;
 			case 5:
+				JOptionPane.showMessageDialog(null, "Title can only include alphabetical characters");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null, "Dynasty can only include alphabetical characters");
+				break;
+			case 7:
 				JOptionPane.showMessageDialog(null, "Please provide Years Of Experience of at least 0");
 				break;
 			default:

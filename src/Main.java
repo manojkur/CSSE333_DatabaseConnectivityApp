@@ -73,20 +73,19 @@ public class Main {
 			Boolean connectionBool = dbcs.connect(user, password);
 			PreparedStatement cs = dbcs.getConnection().prepareStatement(
 					"SELECT DP1.name AS DatabaseRoleName, DP2.name AS DatabaseUserName FROM sys.database_role_members AS DRM "
-					+ "RIGHT OUTER JOIN sys.database_principals AS DP1"
-					+ " ON DRM.role_principal_id = DP1.principal_id "
-					+ "LEFT OUTER JOIN sys.database_principals AS DP2 "
-					+ "ON DRM.member_principal_id = DP2.principal_id"
-					+ " where dp2.name = ?");
+							+ "RIGHT OUTER JOIN sys.database_principals AS DP1"
+							+ " ON DRM.role_principal_id = DP1.principal_id "
+							+ "LEFT OUTER JOIN sys.database_principals AS DP2 "
+							+ "ON DRM.member_principal_id = DP2.principal_id" + " where dp2.name = ?");
 			cs.setString(1, user);
 			ResultSet rs = cs.executeQuery();
-			boolean isOwner = false;
-			while(rs.next()){
-				if(rs.getString("DatabaseRoleName").equals("db_owner")){
-					isOwner = true;
+			boolean isOwner = true;
+			while (rs.next()) {
+				if (rs.getString("DatabaseRoleName").equals("db_datareader")) {
+					isOwner = false;
 				}
 			}
-			if(connectionBool){
+			if (connectionBool) {
 				// tables
 				KingdomService ks = new KingdomService(dbcs, isOwner);
 				PersonService person = new PersonService(dbcs, isOwner);
@@ -101,16 +100,18 @@ public class Main {
 				ConqueredMethodService conquerMethod = new ConqueredMethodService(dbcs, isOwner);
 				FunctionsUsingService functionsUsing = new FunctionsUsingService(dbcs, isOwner);
 
-				
-				// views 
+				// views
 				KingdomBuiltOnTopOfService kingdomBuiltOnTopOfService = new KingdomBuiltOnTopOfService(dbcs);
 				KingdomCityService kingdomCityService = new KingdomCityService(dbcs);
 				KingdomConqueredUsingService kingdomConqueredUsingService = new KingdomConqueredUsingService(dbcs);
 				KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
 				KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
-				KingdomConqueredUsingMethodService kingdomConqueredUsingMethodService = new KingdomConqueredUsingMethodService(dbcs);
-				FunctionsUsingResourceCityService functionsUsingResourceCityService = new FunctionsUsingResourceCityService(dbcs);
-				KnightPersonMilitaryViewService knightPersonMilitaryViewService = new KnightPersonMilitaryViewService(dbcs);
+				KingdomConqueredUsingMethodService kingdomConqueredUsingMethodService = new KingdomConqueredUsingMethodService(
+						dbcs);
+				FunctionsUsingResourceCityService functionsUsingResourceCityService = new FunctionsUsingResourceCityService(
+						dbcs);
+				KnightPersonMilitaryViewService knightPersonMilitaryViewService = new KnightPersonMilitaryViewService(
+						dbcs);
 
 				JFrame tableFrame = new JFrame("Kingdom Database entries");
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -149,9 +150,11 @@ public class Main {
 				JPanel kingdomCards = new JPanel(new BorderLayout());
 
 				JPanel comboBoxPane = new JPanel(); // use FlowLayout
-				String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight", "Military",
-						"Resource", "ConqueredUsing", "ConquerMethod", "FunctionsUsing", "KingdomBuiltOnTopOfView",
-						"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView", "KingdomConqueredUsingMethodView", "FunctionsUsingResourceCityView", "KnightPersonMilitaryViewService" };
+				String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight",
+						"Military", "Resource", "ConqueredUsing", "ConquerMethod", "FunctionsUsing",
+						"KingdomBuiltOnTopOfView", "KingdomCityView", "KingdomConqueredUsingView",
+						"KingdomMilitaryView", "KingdomRulerView", "KingdomConqueredUsingMethodView",
+						"FunctionsUsingResourceCityView", "KnightPersonMilitaryViewService" };
 				JComboBox cb = new JComboBox(comboBoxItems);
 				cb.setEditable(false);
 
@@ -167,7 +170,16 @@ public class Main {
 				cb.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent evt) {
 						CardLayout cl = (CardLayout) (cards.getLayout());
-						cl.show(cards, (String) evt.getItem());
+						String item = (String) evt.getItem();
+						cards.removeAll();
+						for (Services service : services.keySet()) {
+							cards.add(service.getJPanel(), services.get(service));
+						}
+
+						for (ViewServices service : viewServices.keySet()) {
+							cards.add(service.getScrollableTable(), viewServices.get(service));
+						}
+						cl.show(cards, item);
 					}
 				});
 				CardLayout cl = (CardLayout) cards.getLayout();

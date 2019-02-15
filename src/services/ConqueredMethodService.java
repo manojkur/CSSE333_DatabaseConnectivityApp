@@ -320,17 +320,17 @@ public class ConqueredMethodService implements Services {
 			cs.setString(3, k.Effectiveness);
 			cs.execute();
 			int returnVal = cs.getInt(1);
-			System.out.println(returnVal + " " + k.Effectiveness);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a name");
+				JOptionPane.showMessageDialog(null, "The Name must be unique and non-null");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide an Effectiveness");
+				JOptionPane.showMessageDialog(null,
+						"Name can only include alphabetical characters, dashes, and apostrophes");
 				break;
 			case 3:
 				JOptionPane.showMessageDialog(null,
-						"Please provide an Effectiveness from the following: VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW");
+						"Please provide a Effectiveness from the following: VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW");
 				break;
 			default:
 				break;
@@ -359,6 +359,10 @@ public class ConqueredMethodService implements Services {
 				break;
 			case 2:
 				JOptionPane.showMessageDialog(null,
+						"Please provide a unique Name that only uses letters, dashes, apostraphes and spaces");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null,
 						"Please provide a Effectiveness from the following: VERY HIGH, HIGH, MEDIUM, LOW, VERY LOW");
 				break;
 			default:
@@ -383,6 +387,10 @@ public class ConqueredMethodService implements Services {
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 2:
+				JOptionPane.showMessageDialog(null,
+						"The ConqueredUsing table is currently referencing this conquering method");
 				break;
 			default:
 				break;

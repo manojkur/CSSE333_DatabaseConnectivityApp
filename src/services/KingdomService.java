@@ -15,7 +15,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import javax.print.attribute.standard.MediaSize.ISO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -72,7 +71,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			insert.add(insertNameText);
-	
+
 			JLabel insertShortNameLabel = new JLabel("ShortName: ");
 			insert.add(insertShortNameLabel);
 			JTextField insertShortNameText = (new JTextField() {
@@ -82,7 +81,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			insert.add(insertShortNameText);
-	
+
 			JLabel insertDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
 			insert.add(insertDateConqueredYearLabel);
 			JTextField insertDateConqueredYearText = (new JTextField() {
@@ -92,7 +91,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			insert.add(insertDateConqueredYearText);
-	
+
 			JLabel insertDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
 			insert.add(insertDateConqueredMonthLabel);
 			JTextField insertDateConqueredMonthText = (new JTextField() {
@@ -102,7 +101,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			insert.add(insertDateConqueredMonthText);
-	
+
 			JLabel insertDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
 			insert.add(insertDateConqueredDayLabel);
 			JTextField insertDateConqueredDayText = (new JTextField() {
@@ -112,7 +111,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			insert.add(insertDateConqueredDayText);
-	
+
 			JLabel insertGdpLabel = new JLabel("GDP: ");
 			insert.add(insertGdpLabel);
 			JTextField insertGdpText = (new JTextField() {
@@ -122,7 +121,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			insert.add(insertGdpText);
-	
+
 			JLabel insertSuccessionLabel = new JLabel("Succession: ");
 			insert.add(insertSuccessionLabel);
 			JTextField insertSuccessionText = (new JTextField() {
@@ -132,7 +131,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			insert.add(insertSuccessionText);
-	
+
 			JLabel insertTypeLabel = new JLabel("Type: ");
 			insert.add(insertTypeLabel);
 			JTextField insertTypeText = (new JTextField() {
@@ -142,29 +141,39 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			insert.add(insertTypeText);
-	
+
 			JButton insertButton = new JButton("Insert");
 			insertButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					Kingdom k = new Kingdom();
 					k.Name = insertNameText.getText();
 					k.ShortName = insertShortNameText.getText();
-	
+					boolean noErrors = true;
 					try {
 						k.DateConquered = java.sql.Date.valueOf(insertDateConqueredYearText.getText() + "-"
 								+ insertDateConqueredMonthText.getText() + "-" + insertDateConqueredDayText.getText());
 					} catch (IllegalArgumentException e) {
-	
+						if (!(insertDateConqueredYearText.getText().equals("")
+								&& insertDateConqueredMonthText.getText().equals("")
+								&& insertDateConqueredDayText.getText().equals(""))) {
+
+							JOptionPane.showMessageDialog(null, "Please enter a valid date");
+							noErrors = false;
+						}
 					}
 					try {
-						k.GDP = Integer.parseInt(insertGdpText.getText());
+						k.GDP = Long.parseLong(insertGdpText.getText());
 					} catch (NumberFormatException e) {
-	
+						if (!insertGdpText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an number for GDP");
+							noErrors = false;
+						}
 					}
 					k.Succession = insertSuccessionText.getText();
 					k.Type = insertTypeText.getText();
-					addKingdom(k);
-	
+					if (noErrors) {
+						addKingdom(k);
+					}
 					insertNameText.setText("");
 					insertShortNameText.setText("");
 					insertDateConqueredYearText.setText("");
@@ -173,7 +182,7 @@ public class KingdomService implements Services {
 					insertGdpText.setText("");
 					insertSuccessionText.setText("");
 					insertTypeText.setText("");
-	
+
 					tabbedPane.remove(view);
 					view = getScrollableTable();
 					tabbedPane.insertTab("View", null, view, "View", 0);
@@ -187,15 +196,15 @@ public class KingdomService implements Services {
 					}
 				}
 			});
-	
+
 			insert.add(insertButton);
-	
+
 			tabbedPane.addTab("Insert", insert);
-	
+
 			JPanel update = new JPanel();
 			update.setLayout(new BoxLayout(update, BoxLayout.Y_AXIS));
 			update.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-	
+
 			for (Kingdom kingdom : getKingdoms()) {
 				dropDown.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
 			}
@@ -203,7 +212,7 @@ public class KingdomService implements Services {
 			innerPanel.setMaximumSize(new Dimension(width, height + 20));
 			innerPanel.add(dropDown);
 			update.add(innerPanel);
-	
+
 			JLabel updateNameLabel = new JLabel("Name: ");
 			update.add(updateNameLabel);
 			JTextField updateNameText = (new JTextField() {
@@ -213,7 +222,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			update.add(updateNameText);
-	
+
 			JLabel updateShortNameLabel = new JLabel("ShortName: ");
 			update.add(updateShortNameLabel);
 			JTextField updateShortNameText = (new JTextField() {
@@ -223,7 +232,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			update.add(updateShortNameText);
-	
+
 			JLabel updateDateConqueredYearLabel = new JLabel("Date Conquered Year: ");
 			update.add(updateDateConqueredYearLabel);
 			JTextField updateDateConqueredYearText = (new JTextField() {
@@ -233,7 +242,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			update.add(updateDateConqueredYearText);
-	
+
 			JLabel updateDateConqueredMonthLabel = new JLabel("Date Conquered Month: ");
 			update.add(updateDateConqueredMonthLabel);
 			JTextField updateDateConqueredMonthText = (new JTextField() {
@@ -243,7 +252,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			update.add(updateDateConqueredMonthText);
-	
+
 			JLabel updateDateConqueredDayLabel = new JLabel("Date Conquered Day: ");
 			update.add(updateDateConqueredDayLabel);
 			JTextField updateDateConqueredDayText = (new JTextField() {
@@ -253,7 +262,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			update.add(updateDateConqueredDayText);
-	
+
 			JLabel updateGdpLabel = new JLabel("GDP: ");
 			update.add(updateGdpLabel);
 			JTextField updateGdpText = (new JTextField() {
@@ -263,7 +272,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			update.add(updateGdpText);
-	
+
 			JLabel updateSuccessionLabel = new JLabel("Succession: ");
 			update.add(updateSuccessionLabel);
 			JTextField updateSuccessionText = (new JTextField() {
@@ -273,7 +282,7 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			update.add(updateSuccessionText);
-	
+
 			JLabel updateTypeLabel = new JLabel("Type: ");
 			update.add(updateTypeLabel);
 			JTextField updateTypeText = (new JTextField() {
@@ -283,12 +292,12 @@ public class KingdomService implements Services {
 				}
 			}).setMaxSize(new Dimension(width, height));
 			update.add(updateTypeText);
-	
+
 			dropDown.addActionListener(new ActionListener() {
-	
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
-	
+
 					try {
 						String id = dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1];
 						Kingdom kingdom = null;
@@ -300,7 +309,7 @@ public class KingdomService implements Services {
 						}
 						Calendar cal = Calendar.getInstance();
 						Integer month = null, year = null, day = null;
-						if(kingdom.DateConquered != null){
+						if (kingdom.DateConquered != null) {
 							cal.setTime(kingdom.DateConquered);
 							month = cal.get(Calendar.MONTH) + 1;
 							day = cal.get(Calendar.DAY_OF_MONTH);
@@ -313,7 +322,7 @@ public class KingdomService implements Services {
 							updateDateConqueredDayText.setText("");
 							updateDateConqueredMonthText.setText("");
 						}
-					
+
 						Long gdp = kingdom.GDP;
 						updateNameText.setText(kingdom.Name);
 						updateShortNameText.setText(kingdom.ShortName);
@@ -332,7 +341,7 @@ public class KingdomService implements Services {
 					}
 				}
 			});
-	
+
 			JButton updateButton = new JButton("Update");
 			updateButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
@@ -340,22 +349,31 @@ public class KingdomService implements Services {
 					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 					k.Name = updateNameText.getText();
 					k.ShortName = updateShortNameText.getText();
-	
+					boolean noErrors = true;
 					try {
 						k.DateConquered = java.sql.Date.valueOf(updateDateConqueredYearText.getText() + "-"
 								+ updateDateConqueredMonthText.getText() + "-" + updateDateConqueredDayText.getText());
 					} catch (IllegalArgumentException e) {
-	
+						if (!(updateDateConqueredYearText.getText().equals("")
+								&& updateDateConqueredMonthText.getText().equals("")
+								&& updateDateConqueredDayText.getText().equals(""))) {
+							JOptionPane.showMessageDialog(null, "Please enter a valid Date");
+							noErrors = false;
+						}
 					}
 					try {
-						k.GDP = Integer.parseInt(updateGdpText.getText());
+						k.GDP = Long.parseLong(updateGdpText.getText());
 					} catch (NumberFormatException e) {
-	
+						if (!updateGdpText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an number for GDP");
+							noErrors = false;
+						}
 					}
 					k.Succession = updateSuccessionText.getText();
 					k.Type = updateTypeText.getText();
-					updateKingdom(k);
-	
+					if (noErrors) {
+						updateKingdom(k);
+					}
 					updateNameText.setText("");
 					updateShortNameText.setText("");
 					updateDateConqueredYearText.setText("");
@@ -364,7 +382,7 @@ public class KingdomService implements Services {
 					updateGdpText.setText("");
 					updateSuccessionText.setText("");
 					updateTypeText.setText("");
-	
+
 					tabbedPane.remove(view);
 					view = getScrollableTable();
 					tabbedPane.insertTab("View", null, view, "View", 0);
@@ -378,14 +396,14 @@ public class KingdomService implements Services {
 					}
 				}
 			});
-	
+
 			update.add(updateButton);
 			tabbedPane.addTab("Update", update);
-	
+
 			JPanel delete = new JPanel();
 			delete.setLayout(new BoxLayout(delete, BoxLayout.Y_AXIS));
 			delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-	
+
 			for (Kingdom kingdom : getKingdoms()) {
 				dropDown2.addItem("ID: " + kingdom.ID + " - Name:  " + kingdom.Name);
 			}
@@ -393,15 +411,15 @@ public class KingdomService implements Services {
 			innerPanel2.setMaximumSize(new Dimension(width, height + 20));
 			innerPanel2.add(dropDown2);
 			delete.add(innerPanel2);
-	
+
 			JButton deleteButton = new JButton("Delete");
-	
+
 			deleteButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
-	
+
 					int id = Integer.parseInt(dropDown2.getSelectedItem().toString().split("-")[0].split(" ")[1]);
 					deleteKingdom(id);
-	
+
 					tabbedPane.remove(view);
 					view = getScrollableTable();
 					tabbedPane.insertTab("View", null, view, "View", 0);
@@ -415,10 +433,10 @@ public class KingdomService implements Services {
 					}
 				}
 			});
-	
+
 			delete.add(deleteButton);
 			tabbedPane.addTab("Delete", delete);
-	
+
 		}
 		panel.add(tabbedPane);
 		return panel;
@@ -527,16 +545,26 @@ public class KingdomService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a Name");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a ShortName");
+				JOptionPane.showMessageDialog(null, "Please provide a shortname");
 				break;
-			case 4:
-				JOptionPane.showMessageDialog(null, "Please provide a GDP");
-				break;
-			case 5:
+			case 3:
 				JOptionPane.showMessageDialog(null, "Please provide a Date that has happened");
 				break;
+			case 4:
+				JOptionPane.showMessageDialog(null,
+						"The Kingdom Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null,
+						"The Kingdom Short Name must only contain letters, dashes, apostraphes and spaces");
+				break;
 			case 6:
-				JOptionPane.showMessageDialog(null, "Please provide the Kingdom Type");
+				JOptionPane.showMessageDialog(null,
+						"The Kingdom Succession must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 7:
+				JOptionPane.showMessageDialog(null,
+						"The Kingdom Type must only contain letters, dashes, apostraphes and spaces");
 				break;
 			default:
 				break;
@@ -567,8 +595,24 @@ public class KingdomService implements Services {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
 				break;
-			case 5:
+			case 2:
 				JOptionPane.showMessageDialog(null, "Please provide a Date that has happened");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null,
+						"The Kingdom Short Name must be unique and only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null,
+						"The Kingdom Succession must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null,
+						"The Kingdom Type must only contain letters, dashes, apostraphes and spaces");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null,
+						"The Kingdom Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
 				break;
 			default:
 				break;
@@ -591,6 +635,21 @@ public class KingdomService implements Services {
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "The City table is currently referencing this kingdom");
+				break;
+			case 3:
+				JOptionPane.showMessageDialog(null, "The ConqueredUsing table is currently referencing this kingdom");
+				break;
+			case 4:
+				JOptionPane.showMessageDialog(null, "The Military table is currently referencing this kingdom");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null, "The Heir table is currently referencing this kingdom");
+				break;
+			case 6:
+				JOptionPane.showMessageDialog(null, "The Ruler table is currently referencing this kingdom");
 				break;
 			default:
 				break;

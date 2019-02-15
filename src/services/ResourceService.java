@@ -292,7 +292,8 @@ public class ResourceService implements Services {
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a name");
+				JOptionPane.showMessageDialog(null,
+						"The Resource Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
 				break;
 			default:
 				break;
@@ -317,6 +318,10 @@ public class ResourceService implements Services {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid ID");
 				break;
+			case 2:
+				JOptionPane.showMessageDialog(null,
+						"The Resource Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
+				break;
 			default:
 				break;
 			}
@@ -338,6 +343,9 @@ public class ResourceService implements Services {
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "The FunctionsUsing table is currently referencing this resource");
 				break;
 			default:
 				break;

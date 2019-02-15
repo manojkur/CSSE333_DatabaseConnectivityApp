@@ -95,23 +95,30 @@ public class KnightService implements Services {
 			insertButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					Knight k = new Knight();
+					boolean noErrors = true;
 					try {
 						k.PID = Integer.parseInt(insertPIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Person ID");
+						noErrors = false;
 					}
 					try {
 						k.KillCount = Integer.parseInt(insertKillCountText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!insertKillCountText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an integer for Kill Count");
+							noErrors = false;
+						}
 					}
 					try {
 						k.MID = Integer.parseInt(insertMIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Military ID");
+						noErrors = false;
 					}
-					addKnight(k);
-
+					if (noErrors) {
+						addKnight(k);
+					}
 					insertPIDText.setText("");
 					insertMIDText.setText("");
 					insertKillCountText.setText("");
@@ -204,24 +211,31 @@ public class KnightService implements Services {
 			updateButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					Knight k = new Knight();
+					boolean noErrors = true;
 					k.ID = Integer.parseInt(dropDown.getSelectedItem().toString().split(":")[1].substring(1));
 					try {
 						k.PID = Integer.parseInt(updatePIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Person ID");
+						noErrors = false;
 					}
 					try {
 						k.MID = Integer.parseInt(updateMIDText.getText());
 					} catch (NumberFormatException e) {
-
+						JOptionPane.showMessageDialog(null, "Please enter an integer for Military ID");
+						noErrors = false;
 					}
 					try {
 						k.KillCount = Integer.parseInt(updateKillCountText.getText());
 					} catch (NumberFormatException e) {
-
+						if (!updateKillCountText.getText().equals("")) {
+							JOptionPane.showMessageDialog(null, "Please enter an integer for Kill Count");
+							noErrors = false;
+						}
 					}
-					updateKnight(k);
-
+					if (noErrors) {
+						updateKnight(k);
+					}
 					updatePIDText.setText("");
 					updateMIDText.setText("");
 					updateKillCountText.setText("");
@@ -379,13 +393,13 @@ public class KnightService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a Military ID");
 				break;
 			case 3:
-				JOptionPane.showMessageDialog(null, "Please provide a kill count of at least 0");
-				break;
-			case 4:
 				JOptionPane.showMessageDialog(null, "The Person ID " + k.PID + " does not exist");
 				break;
-			case 5:
+			case 4:
 				JOptionPane.showMessageDialog(null, "The Military ID " + k.MID + " does not exist");
+				break;
+			case 5:
+				JOptionPane.showMessageDialog(null, "Please provide a killcount of at least 0");
 				break;
 			default:
 				break;
@@ -414,13 +428,13 @@ public class KnightService implements Services {
 				JOptionPane.showMessageDialog(null, "Please provide a valid ID");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Please provide a killcount of at least 0");
-				break;
-			case 3:
 				JOptionPane.showMessageDialog(null, "Please provide a valid Person ID");
 				break;
+			case 3:
+				JOptionPane.showMessageDialog(null, "Please provide a valid Military ID");
+				break;
 			case 4:
-				JOptionPane.showMessageDialog(null, "Please provide a valid Kingdom ID");
+				JOptionPane.showMessageDialog(null, "Please provide a killcount of at least 0");
 				break;
 			default:
 				break;

@@ -319,7 +319,8 @@ public class TerrainService implements Services {
 			int returnVal = cs.getInt(1);
 			switch (returnVal) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Please provide a name");
+				JOptionPane.showMessageDialog(null,
+						"The Terrain Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
 				break;
 			case 2:
 				JOptionPane.showMessageDialog(null,
@@ -340,7 +341,6 @@ public class TerrainService implements Services {
 			CallableStatement cs = this.dbService.getConnection()
 					.prepareCall("{ ? = call dbo.Update_Terrain(?, ?, ?) }");
 			cs.registerOutParameter(1, Types.INTEGER);
-			System.out.println(k.ID);
 			cs.setInt(2, k.ID);
 			cs.setString(3, k.Name);
 			cs.setString(4, k.TraverseDifficulty);
@@ -353,7 +353,7 @@ public class TerrainService implements Services {
 				break;
 			case 2:
 				JOptionPane.showMessageDialog(null,
-						"The terrain name must be unique, non-null and only contain letters, dashes, apostrophes, and spaces");
+						"The Terrain Name must be unique, non-null and only contain letters, dashes, apostraphes and spaces");
 				break;
 			case 3:
 				JOptionPane.showMessageDialog(null,
@@ -380,6 +380,9 @@ public class TerrainService implements Services {
 			switch (returnVal) {
 			case 1:
 				JOptionPane.showMessageDialog(null, "Please provide a valid id");
+				break;
+			case 2:
+				JOptionPane.showMessageDialog(null, "The City table is currently referencing this terrain");
 				break;
 			default:
 				break;
