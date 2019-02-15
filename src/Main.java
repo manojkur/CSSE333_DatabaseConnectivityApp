@@ -21,6 +21,7 @@ import services.CityService;
 import services.ConqueredMethodService;
 import services.ConqueredUsingService;
 import services.DatabaseConnectionService;
+import services.FunctionsUsingResourceCityService;
 import services.FunctionsUsingService;
 import services.HeirService;
 import services.KingdomBuiltOnTopOfService;
@@ -30,6 +31,7 @@ import services.KingdomConqueredUsingService;
 import services.KingdomMilitaryService;
 import services.KingdomRulerService;
 import services.KingdomService;
+import services.KnightPersonMilitaryViewService;
 import services.KnightService;
 import services.MilitaryService;
 import services.PersonService;
@@ -107,6 +109,8 @@ public class Main {
 				KingdomMilitaryService kingdomMilitaryService = new KingdomMilitaryService(dbcs);
 				KingdomRulerService kingdomRulerService = new KingdomRulerService(dbcs);
 				KingdomConqueredUsingMethodService kingdomConqueredUsingMethodService = new KingdomConqueredUsingMethodService(dbcs);
+				FunctionsUsingResourceCityService functionsUsingResourceCityService = new FunctionsUsingResourceCityService(dbcs);
+				KnightPersonMilitaryViewService knightPersonMilitaryViewService = new KnightPersonMilitaryViewService(dbcs);
 
 				JFrame tableFrame = new JFrame("Kingdom Database entries");
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -132,6 +136,8 @@ public class Main {
 				viewServices.put(kingdomMilitaryService, "KingdomMilitaryView");
 				viewServices.put(kingdomRulerService, "KingdomRulerView");
 				viewServices.put(kingdomConqueredUsingMethodService, "KingdomConqueredUsingMethodView");
+				viewServices.put(functionsUsingResourceCityService, "FunctionsUsingResourceCityView");
+				viewServices.put(knightPersonMilitaryViewService, "KnightPersonMilitaryViewService");
 
 				// get 2/3 of the height, and 2/3 of the width
 				int height = screenSize.height * 2 / 3;
@@ -145,7 +151,7 @@ public class Main {
 				JPanel comboBoxPane = new JPanel(); // use FlowLayout
 				String comboBoxItems[] = { "Kingdom", "Person", "Ruler", "Heir", "City", "Terrain", "Knight", "Military",
 						"Resource", "ConqueredUsing", "ConquerMethod", "FunctionsUsing", "KingdomBuiltOnTopOfView",
-						"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView", "KingdomConqueredUsingMethodView" };
+						"KingdomCityView", "KingdomConqueredUsingView", "KingdomMilitaryView", "KingdomRulerView", "KingdomConqueredUsingMethodView", "FunctionsUsingResourceCityView", "KnightPersonMilitaryViewService" };
 				JComboBox cb = new JComboBox(comboBoxItems);
 				cb.setEditable(false);
 
